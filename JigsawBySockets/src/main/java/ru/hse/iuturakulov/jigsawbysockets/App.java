@@ -33,7 +33,7 @@ public class App extends Application {
         });
 
         stage.setOnHidden((e) -> {
-            // Player.logout();
+            Player.logout();
             System.exit(0);
         });
 
@@ -50,12 +50,11 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/%s.fxml".formatted(fxml)));
         return fxmlLoader.load();
     }
 
     public static void main(String[] args) {
         launch();
-
     }
 }

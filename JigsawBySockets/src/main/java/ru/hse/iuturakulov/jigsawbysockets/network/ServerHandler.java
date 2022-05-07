@@ -4,7 +4,6 @@ import ru.hse.iuturakulov.jigsawbysockets.models.Player;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -17,7 +16,7 @@ public class ServerHandler {
 
     }
 
-    public static void handleRegister() {
+    public static void handleRegister(String playerName) {
 
     }
 
@@ -27,6 +26,9 @@ public class ServerHandler {
 
     public static void initialize(String response) {
         Constants.LOGGER.log(Level.INFO, response);
+
+
+
     }
 
 

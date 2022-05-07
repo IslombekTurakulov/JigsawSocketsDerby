@@ -20,23 +20,21 @@ public class LauncherController implements Initializable {
     private TextField loginPlayer;
 
     @FXML
-    private PasswordField passwordPlayer;
-
-    @FXML
     private void login(ActionEvent actionEvent) {
         Constants.LOGGER.log(Level.INFO, actionEvent.toString());
-        Player.login(loginPlayer.getText(), passwordPlayer.getText());
+        Player.login(loginPlayer.getText());
     }
 
-    @FXML
+/*    @FXML
     private void registerSection(ActionEvent actionEvent) {
         Constants.LOGGER.log(Level.INFO, actionEvent.toString());
         App.setRoot("register_form");
-    }
+    }*/
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // TODO: server connection
+        Constants.LOGGER.log(Level.WARNING, "Launch connection...");
         ServerSocket.connect("127.0.0.1", 5000);
     }
 }

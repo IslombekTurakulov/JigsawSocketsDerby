@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 
-public class ServerSocket {
+public abstract class ServerSocket {
 
     private static BufferedReader bufferedReader;
     private static PrintStream printStream;
@@ -26,7 +26,7 @@ public class ServerSocket {
         Constants.LOGGER.log(Level.INFO, "Start connection");
         try {
             serverSocket = new Socket(InetAddress.getByName(address), port);
-            printStream = new PrintStream(serverSocket.getOutputStream());
+            printStream = new PrintStream(serverSocket.getOutputStream(), true);
             bufferedReader = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         } catch (IOException e) {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Error", "Failed to connect to server", true);
@@ -48,5 +48,9 @@ public class ServerSocket {
         } catch (IOException exception) {
             Constants.LOGGER.log(Level.SEVERE, ServerSocket.class.getName(), exception);
         }
+    }
+
+    public static void sendRequest(String line) {
+        printStream.println(line);
     }
 }

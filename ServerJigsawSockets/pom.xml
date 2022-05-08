@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                ru.hse.iuturakulov.serverjigsawsockets/ru.hse.iuturakulov.serverjigsawsockets.HelloApplication
+                                ru.hse.iuturakulov.serverjigsawsockets/ru.hse.iuturakulov.serverjigsawsockets.ServerMain
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

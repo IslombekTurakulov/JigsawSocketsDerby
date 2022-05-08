@@ -1,9 +1,9 @@
-package ru.hse.iuturakulov.serverjigsawsockets;
+package ru.hse.iuturakulov.serverjigsawsockets.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class ServerMainController {
     @FXML
     private Label welcomeText;
 

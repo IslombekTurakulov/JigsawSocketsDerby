@@ -1,6 +1,7 @@
 package ru.hse.iuturakulov.jigsawbysockets.network;
 
 import javafx.scene.control.Alert;
+import ru.hse.iuturakulov.jigsawbysockets.App;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 
@@ -10,16 +11,29 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 public abstract class ServerSocket {
 
+    public static Socket serverSocket;
     private static BufferedReader bufferedReader;
     private static PrintStream printStream;
-    private static Socket serverSocket;
+    public static Thread thread;
 
     public static void attachToClient() {
-        new Thread(ServerSocket::run).start();
+        thread =  new Thread(() -> {
+            try {
+                while (serverSocket != null && !(serverSocket.isClosed())) {
+                    ServerHandler.initializeResponses(bufferedReader.readLine());
+                }
+                Constants.LOGGER.log(Level.WARNING, "Server is closing...");
+                printStream.close();
+            } catch (NullPointerException | IOException exception) {
+                Constants.LOGGER.log(Level.SEVERE, ("%s: %s").formatted(ServerSocket.class.getName(), exception));
+            }
+        });
+        thread.start();
     }
 
     public static void connect(String address, int port) {
@@ -33,21 +47,6 @@ public abstract class ServerSocket {
         }
         Constants.LOGGER.log(Level.INFO, "Connecting...");
         attachToClient();
-    }
-
-    private static void run() {
-        try {
-            while (serverSocket != null && !(serverSocket.isClosed())) {
-                ServerHandler.initialize(bufferedReader.readLine());
-            }
-            Constants.LOGGER.log(Level.INFO, "Server is closing...");
-            printStream.close();
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
-        } catch (IOException exception) {
-            Constants.LOGGER.log(Level.SEVERE, ServerSocket.class.getName(), exception);
-        }
     }
 
     public static void sendRequest(String line) {

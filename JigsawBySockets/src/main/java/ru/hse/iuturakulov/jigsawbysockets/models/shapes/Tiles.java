@@ -1,4 +1,4 @@
-package ru.hse.iuturakulov.serverjigsawsockets.models;
+package ru.hse.iuturakulov.jigsawbysockets.models.shapes;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;

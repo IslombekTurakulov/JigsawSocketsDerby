@@ -3,6 +3,7 @@ module ru.hse.iuturakulov.jigsawbysockets {
     requires javafx.fxml;
     requires java.logging;
     requires org.json;
+    requires com.google.gson;
 
 
     opens ru.hse.iuturakulov.jigsawbysockets to javafx.fxml;

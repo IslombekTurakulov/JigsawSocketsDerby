@@ -5,6 +5,8 @@ import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
+import java.util.logging.Level;
+
 public class Player {
     private static int uniqueId;
     private final String playerName;
@@ -18,10 +20,15 @@ public class Player {
         isPlayerOnline = false;
     }
 
+    public Player(String name) {
+        playerName = name;
+    }
+
     public static void login(String name) {
+        Constants.LOGGER.log(Level.INFO, "Sending login request..");
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
-        jsonSender.putRequest("action", "login");
+        jsonSender.putRequest("function", "login");
         jsonSender.putRequest("username", name);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
         uniqueId = Constants.uniqueId.incrementAndGet();
@@ -30,14 +37,14 @@ public class Player {
     public static void logout() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
-        jsonSender.putRequest("action", "logout");
+        jsonSender.putRequest("function", "logout");
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
     public static void register(String playerName) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
-        jsonSender.putRequest("action", "register");
+        jsonSender.putRequest("function", "register");
         jsonSender.putRequest("username", playerName);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }

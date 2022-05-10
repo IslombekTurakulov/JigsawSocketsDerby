@@ -17,7 +17,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("LoginWindow"), 800, 600, Color.TRANSPARENT);
+        scene = new Scene(loadFXML("login_form"), 800, 600, Color.TRANSPARENT);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.initStyle(StageStyle.TRANSPARENT);
 
@@ -33,7 +33,9 @@ public class App extends Application {
         });
 
         stage.setOnHidden((e) -> {
-            Player.logout();
+            if (Player.getPlayer() != null) {
+                Player.logout();
+            }
             System.exit(0);
         });
 
@@ -50,7 +52,7 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/%s.fxml".formatted(fxml)));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("fxml/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
 

@@ -17,19 +17,13 @@ import java.util.logging.Level;
 
 public class LauncherController implements Initializable {
     @FXML
-    private TextField loginPlayer;
+    private TextField usernameField;
 
     @FXML
     private void login(ActionEvent actionEvent) {
         Constants.LOGGER.log(Level.INFO, actionEvent.toString());
-        Player.login(loginPlayer.getText());
+        Player.login(usernameField.getText());
     }
-
-/*    @FXML
-    private void registerSection(ActionEvent actionEvent) {
-        Constants.LOGGER.log(Level.INFO, actionEvent.toString());
-        App.setRoot("register_form");
-    }*/
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

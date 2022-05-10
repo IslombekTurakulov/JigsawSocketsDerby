@@ -6,4 +6,16 @@ import java.util.logging.Logger;
 public class Constants {
     public static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
     public static AtomicInteger uniqueId = new AtomicInteger();
+    /**
+     * The constant SIZE.
+     */
+    public static final int SIZE = 35;
+    /**
+     * The constant WIDTH_CELL.
+     */
+    public static final int WIDTH_CELL = 9;
+    /**
+     * The constant HEIGHT_CELL.
+     */
+    public static final int HEIGHT_CELL = 9;
 }

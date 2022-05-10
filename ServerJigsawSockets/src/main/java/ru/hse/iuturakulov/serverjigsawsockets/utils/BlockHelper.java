@@ -1,6 +1,6 @@
 package ru.hse.iuturakulov.serverjigsawsockets.utils;
 
-import ru.hse.iuturakulov.serverjigsawsockets.models.ShapeFactory;
+import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.ShapeFactory;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.BlockOrientation;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.BlockPosition;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.BlockSide;

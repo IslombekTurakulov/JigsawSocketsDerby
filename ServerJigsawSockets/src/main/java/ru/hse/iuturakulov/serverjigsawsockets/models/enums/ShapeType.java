@@ -7,5 +7,6 @@ public enum ShapeType {
     BLOCK_S,
     BLOCK_Z,
     BLOCK_T,
-    BLOCK_O
+    BLOCK_O,
+    NONE
 }

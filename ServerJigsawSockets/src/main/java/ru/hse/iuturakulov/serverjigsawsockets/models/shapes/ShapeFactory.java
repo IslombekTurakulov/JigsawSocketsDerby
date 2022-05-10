@@ -1,9 +1,7 @@
-package ru.hse.iuturakulov.serverjigsawsockets.models;
+package ru.hse.iuturakulov.serverjigsawsockets.models.shapes;
 
 
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.*;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.OneBlock;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.Shape;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.BlockHelper;
 
 import java.util.Random;
@@ -19,6 +17,7 @@ public class ShapeFactory {
 
     private final BlockHelper blockHelper = new BlockHelper();
     private final Random random = new Random();
+    private ShapeType currentShape;
 
     public static ShapeFactory getInstance() {
         return SingletonHolder.SHAPE_FACTORY;
@@ -30,20 +29,29 @@ public class ShapeFactory {
      * @return the random figure
      */
     public Shape getRandomFigure() {
-        ShapeType shapeType = ShapeType.values()[random.nextInt(7)];
         BlockOrientation type = BlockOrientation.values()[random.nextInt(2)];
         BlockSide blockSide = BlockSide.values()[random.nextInt(2)];
         BlockType blockType = BlockType.values()[random.nextInt(3)];
         BlockPosition blockPosition = BlockPosition.values()[random.nextInt(2)];
-        return switch (shapeType) {
+        Shape shape = switch (currentShape) {
             case BLOCK_I -> blockHelper.generateIBlock(blockPosition);
             case BLOCK_J -> blockHelper.generateJBlock(type, blockSide);
             case BLOCK_L -> blockHelper.generateLBlock(blockType, blockPosition, blockSide);
             case BLOCK_S -> blockHelper.generateSBlock(blockSide);
             case BLOCK_Z -> blockHelper.generateZBlock(blockSide);
             case BLOCK_T -> blockHelper.generateTBlock(blockPosition, blockType, blockSide);
-            case BLOCK_O -> new OneBlock();
+            default -> new OneBlock();
         };
+        shape.setShapeType(currentShape);
+        return shape;
+    }
+
+    public void setCurrentShape(ShapeType currentShape) {
+        this.currentShape = currentShape;
+    }
+
+    public void setRandomShape() {
+        this.currentShape = ShapeType.values()[random.nextInt(7)];
     }
 
     public static class SingletonHolder {

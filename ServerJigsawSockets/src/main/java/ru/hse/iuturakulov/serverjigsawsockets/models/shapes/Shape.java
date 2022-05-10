@@ -2,6 +2,7 @@ package ru.hse.iuturakulov.serverjigsawsockets.models.shapes;
 
 import javafx.scene.paint.Color;
 import ru.hse.iuturakulov.serverjigsawsockets.models.CustomPoint;
+import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
 
 /**
  * The type Shape.
@@ -16,6 +17,7 @@ public class Shape implements IShape {
      * The Color.
      */
     protected final Color color;
+    protected ShapeType shapeType;
     /**
      * The Squares.
      */
@@ -35,6 +37,14 @@ public class Shape implements IShape {
      */
     public Shape(Color clr) {
         color = clr;
+    }
+
+    public ShapeType getShapeType() {
+        return shapeType;
+    }
+
+    public void setShapeType(ShapeType shape) {
+        shapeType = shape;
     }
 
     /**

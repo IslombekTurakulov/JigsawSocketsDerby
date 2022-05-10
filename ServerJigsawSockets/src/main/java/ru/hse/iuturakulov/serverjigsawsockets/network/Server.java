@@ -28,6 +28,7 @@ public class Server implements Runnable {
 
     public static void createServer(int port) {
         isRunning = true;
+        Logger.getLogger(Server.class.getSimpleName()).log(Level.INFO, "Server starting");
         serverThread = new Thread(new Server(port));
         serverThread.start();
     }
@@ -35,13 +36,16 @@ public class Server implements Runnable {
     public static void stop() {
         isRunning = false;
         if (serverSocket != null) {
+            Logger.getLogger(Server.class.getSimpleName()).log(Level.INFO, "Stopping the server");
             try {
                 serverSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Player.playersList.clear();
-            Client.onlineClients.removeAll(Client.onlineClients);
+            Client.onlineClients.removeIf(Client::close);
+            Client.onlineClients.clear();
+            Logger.getLogger(Server.class.getSimpleName()).log(Level.INFO, "Server stopped");
         }
     }
 
@@ -59,16 +63,16 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
+            Logger.getLogger(Server.class.getSimpleName()).log(Level.INFO, "Server is running");
             serverSocket = new ServerSocket(port);
             while (true) {
                 if (isRunning) {
                     Socket s = serverSocket.accept();
                     new ClientHandler(s);
-
                 }
             }
         } catch (IOException exception) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, exception);
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, exception.getMessage());
         }
     }
 }

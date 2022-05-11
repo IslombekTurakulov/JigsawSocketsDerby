@@ -1,19 +1,21 @@
 package ru.hse.iuturakulov.jigsawbysockets.network;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.hse.iuturakulov.jigsawbysockets.App;
 import ru.hse.iuturakulov.jigsawbysockets.models.Game;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
+import ru.hse.iuturakulov.jigsawbysockets.models.shapes.FigureType;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket.serverSocket;
@@ -28,7 +30,7 @@ public class ServerHandler {
         if (isIt(jsonResponse, "status", "success")) {
             if (isIt(jsonResponse, "type", "login")) {
                 JSONObject parsed = jsonResponse.getJSONObject("player");
-                Player.setPlayer(new Player(parsed.getString("username"), parsed.getInt("points")));
+                Player.setPlayer(new Player(parsed.getString("username"), parsed.getInt("placed")));
                 App.setRoot("main_form");
                 Constants.LOGGER.log(Level.INFO, "Connected.. Opening Main home form");
             } else {
@@ -59,7 +61,8 @@ public class ServerHandler {
             Player.setPlayer(new Player(parsedResponse.getString("playerName"), parsedResponse.getInt("playerPoints")));
         } else if (isIt(parsedResponse, function, "single_player")) {
             if (isIt(parsedResponse, "status", "success")) {
-
+                JSONArray json = parsedResponse.getJSONArray("move");
+                Game.array.addAll(List.of(new Gson().fromJson(json.toString(), FigureType[].class)));
                 Game.setCurrentPlayingGame(new Game());
                 Platform.runLater(() ->
                         App.setRoot("game_form")

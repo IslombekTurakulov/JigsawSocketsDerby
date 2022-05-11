@@ -1,11 +1,12 @@
 package ru.hse.iuturakulov.jigsawbysockets.utils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class Constants {
     public static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
-    public static AtomicInteger uniqueId = new AtomicInteger();
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     /**
      * The constant SIZE.
      */
@@ -18,4 +19,5 @@ public class Constants {
      * The constant HEIGHT_CELL.
      */
     public static final int HEIGHT_CELL = 9;
+    public static AtomicInteger uniqueId = new AtomicInteger();
 }

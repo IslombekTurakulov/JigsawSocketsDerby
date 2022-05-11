@@ -1,7 +1,7 @@
 package ru.hse.iuturakulov.jigsawbysockets.models.shapes;
 
 import javafx.scene.paint.Color;
-import ru.hse.iuturakulov.serverjigsawsockets.models.CustomPoint;
+import ru.hse.iuturakulov.jigsawbysockets.models.CustomPoint;
 
 /**
  * The type of block.

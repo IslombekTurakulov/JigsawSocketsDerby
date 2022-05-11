@@ -3,7 +3,7 @@ package ru.hse.iuturakulov.jigsawbysockets.models.shapes;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import static ru.hse.iuturakulov.serverjigsawsockets.utils.Constants.*;
+import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
 
 public class Tiles {
     final int coordinatesX;

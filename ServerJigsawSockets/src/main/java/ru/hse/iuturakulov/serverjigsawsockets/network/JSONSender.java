@@ -1,11 +1,13 @@
 package ru.hse.iuturakulov.serverjigsawsockets.network;
 
 
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
+import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.FigureType;
 
 import java.util.ArrayList;
 
@@ -44,7 +46,7 @@ public class JSONSender {
         if (player != null) {
             JSONObject playerJson = new JSONObject();
             playerJson.put("username", player.getPlayerName());
-            playerJson.put("points", player.getPlacedBlocks());
+            playerJson.put("placed", player.getPlacedBlocks());
             putRequest("player", playerJson);
         }
         putRequest("message", msg);
@@ -65,7 +67,7 @@ public class JSONSender {
             if (client.getPlayerName().equalsIgnoreCase(myUsername)) continue;
             JSONObject playerJSON = new JSONObject();
             playerJSON.put("username", client.getPlayerName());
-            playerJSON.put("points", client.getPlacedBlocks());
+            playerJSON.put("placed", client.getPlacedBlocks());
             jsonResponse.put(playerJSON);
         }
         putRequest("type", "get-online-players");
@@ -84,7 +86,7 @@ public class JSONSender {
         clearRequests();
         putRequest("type", "player-connected");
         putRequest("player", username);
-        putRequest("points", points);
+        putRequest("placed", points);
         return getRequestInstance();
     }
 
@@ -103,11 +105,13 @@ public class JSONSender {
         return getRequestInstance();
     }
 
-    public JSONObject singleGameStarted(ArrayList<ShapeType> shape) {
+    public JSONObject singleGameStarted(ArrayList<FigureType> shape) {
         clearRequests();
+        Gson gson = new Gson();
+        gson.toJson(shape);
         putRequest("type", "single_player");
         putRequest("status", "success");
-        request.put("move", shape);
+        request.put("move", shape.toArray());
         return request;
     }
 

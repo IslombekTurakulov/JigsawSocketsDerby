@@ -1,6 +1,8 @@
 package ru.hse.iuturakulov.jigsawbysockets.models.enums;
 
-public enum ShapeType {
+import java.io.Serializable;
+
+public enum ShapeType implements Serializable {
     BLOCK_I,
     BLOCK_J,
     BLOCK_L,
@@ -8,5 +10,9 @@ public enum ShapeType {
     BLOCK_Z,
     BLOCK_T,
     BLOCK_O,
-    NONE
+    NONE;
+
+    public String getStatus() {
+        return this.name();
+    }
 }

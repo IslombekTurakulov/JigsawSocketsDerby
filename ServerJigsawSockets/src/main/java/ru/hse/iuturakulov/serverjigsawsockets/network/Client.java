@@ -30,7 +30,6 @@ public class Client extends Player {
         printStream = _printStream;
         startListener();
         onlineClients.add(this);
-        playersList.add(this);
     }
 
     private static boolean isIt(JSONObject parsedResponse, String key, String value) {
@@ -141,6 +140,7 @@ public class Client extends Player {
     public void remove() {
         setOnlineOnArrayList(false);
         onlineClients.remove(this);
+        playersList.remove(this);
     }
 
     private void handlePlayMove(int x, int y) {

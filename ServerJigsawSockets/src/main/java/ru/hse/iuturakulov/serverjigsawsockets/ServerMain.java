@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 import ru.hse.iuturakulov.serverjigsawsockets.network.Server;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class ServerMain extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setOnCloseRequest(e -> {
+            Client.onlineClients.removeIf(Client::close);
             Server.closeSocket();
             System.exit(0);
         });

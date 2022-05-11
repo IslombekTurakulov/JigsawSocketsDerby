@@ -1,9 +1,7 @@
 package ru.hse.iuturakulov.serverjigsawsockets.models;
 
 import javafx.scene.shape.Rectangle;
-import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
 import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.Shape;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.ShapeFactory;
 import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 
 import java.util.ArrayList;
@@ -54,8 +52,8 @@ public abstract class GameLogic {
     }
 
     private void randomTurn() {
-        ShapeFactory.getInstance().setRandomShape();
-        nextTurn = ShapeFactory.getInstance().getRandomFigure();
+       /* ShapeFactory.getInstance().setRandomShape();
+        nextTurn = ShapeFactory.getInstance().getRandomFigure();*/
     }
 
     public Shape getCurrentTurn() {

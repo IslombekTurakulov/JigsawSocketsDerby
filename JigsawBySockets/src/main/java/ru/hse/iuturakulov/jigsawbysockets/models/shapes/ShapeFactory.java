@@ -27,11 +27,7 @@ public class ShapeFactory {
      *
      * @return the random figure
      */
-    public Shape getRandomFigure() {
-        BlockOrientation type = BlockOrientation.values()[random.nextInt(2)];
-        BlockSide blockSide = BlockSide.values()[random.nextInt(2)];
-        BlockType blockType = BlockType.values()[random.nextInt(3)];
-        BlockPosition blockPosition = BlockPosition.values()[random.nextInt(2)];
+    public Shape getRandomFigure(BlockOrientation type, BlockSide blockSide, BlockType blockType, BlockPosition blockPosition) {
         Shape shape = switch (currentShape) {
             case BLOCK_I -> blockHelper.generateIBlock(blockPosition);
             case BLOCK_J -> blockHelper.generateJBlock(type, blockSide);

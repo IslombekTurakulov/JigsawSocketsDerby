@@ -1,8 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.hse.iuturakulov.jigsawbysockets.contollers.GameFormController">
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17"
+            fx:controller="ru.hse.iuturakulov.jigsawbysockets.contollers.GameFormController">
+    <children>
+        <BorderPane fx:id="borderGamePane" layoutX="10.0" layoutY="10.0" prefHeight="600.0" prefWidth="800.0"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <left>
+                <AnchorPane fx:id="leftGamePaneTimer" disable="true" maxHeight="-Infinity" maxWidth="-Infinity"
+                            minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="200.0"
+                            style="-fx-background-color: red;" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="200.0" spacing="15.0"
+                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                              AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Text fx:id="yourNameForGame" accessibleText="Your name" strokeType="OUTSIDE"
+                                      strokeWidth="0.0" text="Your name" textAlignment="CENTER" wrappingWidth="195.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="18.0"/>
+                                    </font>
+                                </Text>
+                                <Text fx:id="currentGameMode" accessibleText="Game mode that you are playing"
+                                      strokeType="OUTSIDE" strokeWidth="0.0" text="Game mode" textAlignment="CENTER"
+                                      wrappingWidth="195.0">
+                                    <font>
+                                        <Font name="Arial Italic" size="18.0"/>
+                                    </font>
+                                </Text>
+                                <Text fx:id="opponentsNameForGame" strokeType="OUTSIDE" strokeWidth="0.0"
+                                      text="Opponents name" textAlignment="CENTER" wrappingWidth="195.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="18.0"/>
+                                    </font>
+                                </Text>
+                            </children>
+                            <padding>
+                                <Insets top="10.0"/>
+                            </padding>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </left>
+            <right>
+                <AnchorPane disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                            minWidth="-Infinity" prefHeight="600.0" prefWidth="200.0" style="-fx-background-color: red;"
+                            BorderPane.alignment="CENTER">
+                    <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="200.0" spacing="15.0"
+                          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                          AnchorPane.topAnchor="0.0">
+                        <padding>
+                            <Insets top="10.0"/>
+                        </padding>
+                        <children>
+                            <Text fx:id="timeCurrentGame" strokeType="OUTSIDE" strokeWidth="0.0" text="Time-left: "
+                                  textAlignment="CENTER" wrappingWidth="195.0">
+                                <font>
+                                    <Font name="Arial Bold Italic" size="18.0"/>
+                                </font>
+                            </Text>
+                            <Text fx:id="maxTimeForGame" strokeType="OUTSIDE" strokeWidth="0.0" text="Max Time">
+                                <font>
+                                    <Font name="Arial Bold" size="18.0"/>
+                                </font>
+                            </Text>
+                        </children>
+                    </VBox>
+                </AnchorPane>
+            </right>
+            <center>
+                <Pane fx:id="tilesForGame" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: yellow;"
+                      BorderPane.alignment="CENTER"/>
+            </center>
+        </BorderPane>
+    </children>
 </AnchorPane>

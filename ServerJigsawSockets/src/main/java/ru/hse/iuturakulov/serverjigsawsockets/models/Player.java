@@ -6,8 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.Figure;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.ShapeFactory;
 
 import java.util.ArrayList;
 import java.util.Queue;
@@ -36,7 +34,7 @@ public class Player {
         setPlacedBlocks(_points);
         setOnline(isOnline);
     }
-
+/*
     public static boolean isPossibleToPlace(Figure figure, int x, int y) {
         ArrayList<Integer> listAxisX = new ArrayList<>();
         ArrayList<Integer> listAxisY = new ArrayList<>();
@@ -54,8 +52,8 @@ public class Player {
         }
         placedBlocks.set(placedBlocks.intValue() + 1);
         return true;
-    }
-
+    }*/
+/*
     private static void getApproxLayoutPlace(Figure figure, int x, int y, ArrayList<Integer> listAxisX, ArrayList<Integer> listAxisY) {
         for (Rectangle rectangle : figure.getRectangleList()) {
             double columns = (x + rectangle.getX() - 2) / (SIZE + 2);
@@ -71,7 +69,7 @@ public class Player {
             listAxisX.add(approxX);
             listAxisY.add(approxY);
         }
-    }
+    }*/
 
     public BooleanProperty onlineProperty() {
         if (online == null) {
@@ -92,11 +90,11 @@ public class Player {
         return currentShape;
     }
 
-    public Figure getNextFigure() {
+   /* public Figure getNextFigure() {
         ShapeFactory shapeFactory = ShapeFactory.getInstance();
         shapeFactory.setCurrentShape(currentShape);
         return new Figure(shapeFactory.getRandomFigure());
-    }
+    }*/
 
     public void setMove(Queue<ShapeType> move) {
         this.move = move;

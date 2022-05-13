@@ -28,8 +28,8 @@ public class ServerMain extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setOnCloseRequest(e -> {
-            Client.onlineClients.removeIf(Client::close);
             Server.closeSocket();
+            Client.onlineClients.removeIf(Client::close);
             System.exit(0);
         });
         scene.setOnMousePressed((event) -> {
@@ -40,6 +40,7 @@ public class ServerMain extends Application {
         scene.setOnMouseDragged((event) -> {
             stage.setX(event.getScreenX() + coordX);
             stage.setY(event.getScreenY() + coordY);
+
         });
         stage.setScene(scene);
         stage.show();

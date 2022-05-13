@@ -18,7 +18,7 @@ class ClientHandler extends Thread {
     public ClientHandler(Socket socket) {
         try {
             bufferReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            printStream = new PrintStream(socket.getOutputStream());
+            printStream = new PrintStream(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }

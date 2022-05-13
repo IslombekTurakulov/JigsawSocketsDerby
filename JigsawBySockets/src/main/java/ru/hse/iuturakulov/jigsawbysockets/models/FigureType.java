@@ -1,44 +1,27 @@
-package ru.hse.iuturakulov.serverjigsawsockets.models.shapes;
+package ru.hse.iuturakulov.jigsawbysockets.models;
 
-import com.google.gson.annotations.SerializedName;
-import ru.hse.iuturakulov.serverjigsawsockets.models.enums.*;
+import ru.hse.iuturakulov.jigsawbysockets.models.enums.*;
 
 import java.util.Objects;
 
-public class FigureType {
-    private final BlockOrientation blockOrientation;
-    private final BlockPosition blockPosition;
-    private final BlockSide blockSide;
-    private final BlockType blockType;
-    private final ShapeType shapeType;
 
-    public FigureType(BlockOrientation blockOrientation, BlockPosition blockPosition, BlockSide blockSide,
-                      BlockType blockType, ShapeType shapeType) {
+public class FigureType {
+    private BlockOrientation blockOrientation;
+    private BlockPosition blockPosition;
+    private BlockSide blockSide;
+    private BlockType blockType;
+    private ShapeType shapeType;
+
+    public FigureType(BlockOrientation blockOrientation,
+                      BlockPosition blockPosition,
+                      BlockSide blockSide,
+                      BlockType blockType,
+                      ShapeType shapeType) {
         this.blockOrientation = blockOrientation;
         this.blockPosition = blockPosition;
         this.blockSide = blockSide;
         this.blockType = blockType;
         this.shapeType = shapeType;
-    }
-
-    public BlockOrientation blockOrientation() {
-        return blockOrientation;
-    }
-
-    public BlockPosition blockPosition() {
-        return blockPosition;
-    }
-
-    public BlockSide blockSide() {
-        return blockSide;
-    }
-
-    public BlockType blockType() {
-        return blockType;
-    }
-
-    public ShapeType shapeType() {
-        return shapeType;
     }
 
     @Override
@@ -67,4 +50,25 @@ public class FigureType {
                "blockType=" + blockType + ", " +
                "shapeType=" + shapeType + ']';
     }
+
+    public BlockOrientation blockOrientation() {
+        return blockOrientation;
+    }
+
+    public BlockPosition blockPosition() {
+        return blockPosition;
+    }
+
+    public BlockSide blockSide() {
+        return blockSide;
+    }
+
+    public BlockType blockType() {
+        return blockType;
+    }
+
+    public ShapeType shapeType() {
+        return shapeType;
+    }
+
 }

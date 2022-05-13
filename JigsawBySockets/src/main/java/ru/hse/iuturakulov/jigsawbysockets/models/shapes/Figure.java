@@ -2,6 +2,7 @@ package ru.hse.iuturakulov.jigsawbysockets.models.shapes;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import ru.hse.iuturakulov.jigsawbysockets.models.FigureType;
 import ru.hse.iuturakulov.jigsawbysockets.models.Game;
 
 import java.util.ArrayList;
@@ -32,7 +33,11 @@ public class Figure extends Pane {
         this.setLayoutX(layoutX);
         FigureType figureType = Game.getNextShape();
         ShapeFactory.getInstance().setCurrentShape(figureType.shapeType());
-        Shape fromServerFigure = ShapeFactory.getInstance().getRandomFigure(figureType.blockOrientation(), figureType.blockSide(), figureType.blockType(), figureType.blockPosition());
+        Shape fromServerFigure = ShapeFactory.getInstance().getRandomFigure(
+                figureType.blockOrientation(),
+                figureType.blockSide(),
+                figureType.blockType(),
+                figureType.blockPosition());
         for (int i = 0; i < fromServerFigure.getSquares().length; i++) {
             int y = fromServerFigure.getSquares()[i].getX();
             int x = fromServerFigure.getSquares()[i].getY();
@@ -51,7 +56,6 @@ public class Figure extends Pane {
             this.setLayoutY(mouseEvent.getY() + this.getLayoutY());
         });
         this.setOnMouseReleased(mouseEvent -> {
-
             if (!Game.isPossibleToPlace(this)) {
                 // If not possible, the figure comes to the initial (original place)
                 this.setLayoutX(layoutX);

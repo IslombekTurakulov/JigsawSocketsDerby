@@ -34,42 +34,6 @@ public class Player {
         setPlacedBlocks(_points);
         setOnline(isOnline);
     }
-/*
-    public static boolean isPossibleToPlace(Figure figure, int x, int y) {
-        ArrayList<Integer> listAxisX = new ArrayList<>();
-        ArrayList<Integer> listAxisY = new ArrayList<>();
-        getApproxLayoutPlace(figure, x, y, listAxisX, listAxisY);
-        int i = 0;
-        while (i < listAxisX.size()) {
-            if (listAxisY.get(i) < 0 || listAxisY.get(i) >= WIDTH_CELL || listAxisX.get(i) < 0 || listAxisX.get(i) >= HEIGHT_CELL || board[listAxisY.get(i)][listAxisX.get(i)].getFill() != Color.WHITE) {
-                return false;
-            }
-            i++;
-        }
-        i = 0;
-        for (; i < listAxisX.size(); i++) {
-            board[listAxisY.get(i)][listAxisX.get(i)].setFill(Color.BLACK);
-        }
-        placedBlocks.set(placedBlocks.intValue() + 1);
-        return true;
-    }*/
-/*
-    private static void getApproxLayoutPlace(Figure figure, int x, int y, ArrayList<Integer> listAxisX, ArrayList<Integer> listAxisY) {
-        for (Rectangle rectangle : figure.getRectangleList()) {
-            double columns = (x + rectangle.getX() - 2) / (SIZE + 2);
-            double rows = (y + rectangle.getY() - 2) / (SIZE + 2);
-            int approxX = (int) Math.round(columns);
-            int approxY = (int) Math.round(rows);
-            if (approxX >= 0 && approxX + 0.5 <= columns) {
-                approxX++;
-            }
-            if (approxY >= 0 && approxY + 0.5 <= rows) {
-                approxY++;
-            }
-            listAxisX.add(approxX);
-            listAxisY.add(approxY);
-        }
-    }*/
 
     public BooleanProperty onlineProperty() {
         if (online == null) {
@@ -89,12 +53,6 @@ public class Player {
     public ShapeType getCurrentShape() {
         return currentShape;
     }
-
-   /* public Figure getNextFigure() {
-        ShapeFactory shapeFactory = ShapeFactory.getInstance();
-        shapeFactory.setCurrentShape(currentShape);
-        return new Figure(shapeFactory.getRandomFigure());
-    }*/
 
     public void setMove(Queue<ShapeType> move) {
         this.move = move;

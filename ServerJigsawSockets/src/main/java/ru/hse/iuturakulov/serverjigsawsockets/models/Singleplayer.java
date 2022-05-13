@@ -1,7 +1,6 @@
 package ru.hse.iuturakulov.serverjigsawsockets.models;
 
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.*;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.FigureType;
 import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 import ru.hse.iuturakulov.serverjigsawsockets.network.JSONSender;
 
@@ -13,12 +12,20 @@ import java.util.logging.Logger;
 public class Singleplayer extends GameLogic {
 
     private final ArrayList<FigureType> generatedShapes = new ArrayList<>();
+    private int placed;
 
     public Singleplayer(Client player) {
         super(player);
         randomStart();
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().singleGameStarted(generatedShapes).toString());
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().singleGameStarted(generatedShapes));
         listOfGames.add(this);
+    }
+
+    public void generateExtraShape() {
+        Logger.getLogger(Singleplayer.class.getName()).log(Level.INFO, "Generating 10 more shapes");
+        generatedShapes.clear();
+        randomStart();
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().getShapesForGame(generatedShapes));
     }
 
     @Override
@@ -42,14 +49,13 @@ public class Singleplayer extends GameLogic {
 
     @Override
     public void finishGame() {
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("win", "").toString());
         getOwnerOfGame().removeGame();
     }
 
     @Override
-    public void play(Player player, int x, int y) {
-        move(player);
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "", player.getPlayerName(), player.getCurrentShape()).toString());
+    public void play(Player player, int placed) {
+        this.placed = placed;
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), placed).toString());
         checkWin(getOwnerOfGame(), true);
     }
 }

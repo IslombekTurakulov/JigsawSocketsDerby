@@ -10,7 +10,7 @@ public class Constants {
     /**
      * The constant SIZE.
      */
-    public static final int SIZE = 35;
+    public static final int SIZE = 42;
     /**
      * The constant WIDTH_CELL.
      */

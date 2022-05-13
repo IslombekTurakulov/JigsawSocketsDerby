@@ -7,6 +7,14 @@
 
 }
 
+.game {
+    -fx-background-image: url(../drawable/night_city.gif);
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-radius: 30px;
+    -fx-border-radius: 50px;
+}
+
 .button {
     font-weight: bold;
     -fx-cursor: hand;

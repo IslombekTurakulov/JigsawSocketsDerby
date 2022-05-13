@@ -1,10 +1,10 @@
 package ru.hse.iuturakulov.jigsawbysockets.contollers;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -18,10 +18,11 @@ import ru.hse.iuturakulov.jigsawbysockets.models.shapes.Figure;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
+import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.DATE_TIME_FORMATTER;
 
 public class GameFormController implements Initializable {
 
+    public static Figure figure;
     @FXML
     private Text maxTimeForGame;
     @FXML
@@ -38,23 +39,28 @@ public class GameFormController implements Initializable {
     private AnchorPane leftGamePaneTimer;
     @FXML
     private Text timeCurrentGame;
-    private TimelineCounter timelineCounter;
-    public static Figure figure;
 
     public void incrementTime() {
-        timelineCounter.setTime(timelineCounter.getTime().plusSeconds(1));
-        timeCurrentGame.setText("Time-left: %s".formatted(timelineCounter.getTime().format(DATE_TIME_FORMATTER)));
+        TimelineCounter.getInstance().incrementTime();
+        timeCurrentGame.setText("Time-left: " + TimelineCounter.getInstance().getTime().format(DATE_TIME_FORMATTER));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         yourNameForGame.setText(Player.getPlayer().getPlayerName());
-        opponentsNameForGame.setText(Game.getCurrentPlayingGame().getOtherPlayingPerson().getPlayerName());
         maxTimeForGame.setText(Game.getCurrentPlayingGame().getCurrentGameTime().toString());
-        timelineCounter = new TimelineCounter();
-        timelineCounter.setTimeline(new Timeline(new KeyFrame(Duration.millis(1000), ae -> incrementTime())));
+        currentGameMode.setText(Game.getGameMode());
+        if (!currentGameMode.getText().equals("Single-player")) {
+            opponentsNameForGame.setVisible(true);
+            opponentsNameForGame.setText(Game.getOtherPlayingPerson().getPlayerName());
+        } else {
+            opponentsNameForGame.setVisible(false);
+        }
+        TimelineCounter.getInstance().initializeTimer();
+        TimelineCounter.getInstance().setTimeline(new Timeline(new KeyFrame(Duration.millis(1000), ae -> incrementTime())));
+        TimelineCounter.getInstance().getTimeline().setCycleCount(Animation.INDEFINITE);
         borderGamePane.setCenter(Game.getGamePane());
-        figure = new Figure(Game.getGamePane().getPrefWidth() * 1.2 / 3, HEIGHT_CELL * (SIZE + 2) + 20);
+        TimelineCounter.getInstance().getTimeline().play();
     }
 
     public Pane getTilesForGame() {

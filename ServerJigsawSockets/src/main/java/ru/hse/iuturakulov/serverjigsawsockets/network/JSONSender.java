@@ -5,9 +5,10 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ru.hse.iuturakulov.serverjigsawsockets.models.ObjJsonSender;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.FigureType;
+import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
 
 import java.util.ArrayList;
 
@@ -105,23 +106,28 @@ public class JSONSender {
         return getRequestInstance();
     }
 
-    public JSONObject singleGameStarted(ArrayList<FigureType> shape) {
-        clearRequests();
-        Gson gson = new Gson();
-        gson.toJson(shape);
-        putRequest("type", "single_player");
-        putRequest("status", "success");
-        request.put("move", shape.toArray());
-        return request;
+    public String singleGameStarted(ArrayList<FigureType> shape) {
+        ObjJsonSender keyValue = new ObjJsonSender();
+        keyValue.Main.add(new ObjJsonSender.Key("single_player", "success"));
+        keyValue.figures.addAll(shape);
+        return new Gson().toJson(keyValue);
     }
 
-    public JSONObject play(Boolean success, String msg, String playerUsername, ShapeType turn) {
+    public String getShapesForGame(ArrayList<FigureType> shape) {
+        clearRequests();
+        ObjJsonSender keyValue = new ObjJsonSender();
+        keyValue.Main.add(new ObjJsonSender.Key("get_shapes", "success"));
+        keyValue.figures.addAll(shape);
+        return new Gson().toJson(keyValue);
+    }
+
+    public JSONObject play(Boolean success, String msg, String playerUsername, int turn) {
         clearRequests();
         putRequest("type", "play");
         putRequest("player", playerUsername);
         putRequest("status", (success ? "success" : "fail"));
         if (success) {
-            putRequest("move", String.valueOf(turn));
+            putRequest("placed", String.valueOf(turn));
         } else {
             putRequest("message", msg);
         }

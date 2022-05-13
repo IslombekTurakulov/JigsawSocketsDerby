@@ -1,6 +1,5 @@
 package ru.hse.iuturakulov.jigsawbysockets.models;
 
-import ru.hse.iuturakulov.jigsawbysockets.network.ServerHandler;
 import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
@@ -10,13 +9,13 @@ import java.util.logging.Level;
 public class Player {
     private static int uniqueId;
     private final String playerName;
-    private int playerPoints;
+    private int placedBlocks;
     private static Player player = null;
     private Boolean isPlayerOnline;
 
-    public Player(String name, int points) {
+    public Player(String name, int placed) {
         playerName = name;
-        playerPoints = points;
+        placedBlocks = placed;
         isPlayerOnline = false;
     }
 
@@ -62,11 +61,11 @@ public class Player {
     }
 
     public void incrementPoints(int point) {
-        playerPoints += point;
+        placedBlocks += point;
     }
 
-    public int getPlayerPoints() {
-        return playerPoints;
+    public int getPlacedBlocks() {
+        return placedBlocks;
     }
 
     public String getPlayerName() {

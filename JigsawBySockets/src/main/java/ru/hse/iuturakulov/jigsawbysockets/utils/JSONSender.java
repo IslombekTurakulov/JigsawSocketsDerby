@@ -1,8 +1,10 @@
 package ru.hse.iuturakulov.jigsawbysockets.utils;
 
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ru.hse.iuturakulov.jigsawbysockets.models.ObjJsonSender;
 
 /**
  *
@@ -49,6 +51,18 @@ public class JSONSender {
             } catch (JSONException ex1) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    public boolean validateGson(String array) {
+        try {
+            if (array == null || array.isEmpty()) {
+                return false;
+            }
+            new Gson().fromJson(array, ObjJsonSender.class);
+        } catch (JSONException ex) {
+            return false;
         }
         return true;
     }

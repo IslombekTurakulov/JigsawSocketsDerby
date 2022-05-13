@@ -1,25 +1,24 @@
 package ru.hse.iuturakulov.jigsawbysockets.models;
 
 import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.util.Duration;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
-import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.DATE_TIME_FORMATTER;
 
 public class TimelineCounter {
     private Timeline timeline;
     private LocalTime time;
 
-    public TimelineCounter() {
-        initializeTimer();
+    public static TimelineCounter getInstance() {
+        return TimelineCounter.SingletonHolder.TIMELINE_COUNTER;
     }
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public void incrementTime() {
+        time = time.plusSeconds(1);
     }
 
     public Timeline getTimeline() {
@@ -30,17 +29,11 @@ public class TimelineCounter {
         this.timeline = timeline;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
     /**
      * Timer initializer
      */
-    private void initializeTimer() {
+    public void initializeTimer() {
         time = LocalTime.parse("00:00:00");
-        timeline = new Timeline();
-        timeline.setCycleCount(Animation.INDEFINITE);
     }
 
     /**
@@ -51,6 +44,10 @@ public class TimelineCounter {
             case PAUSED -> timeline.play();
             case RUNNING -> timeline.pause();
         }
+    }
+
+    public static class SingletonHolder {
+        public static final TimelineCounter TIMELINE_COUNTER = new TimelineCounter();
     }
 
 }

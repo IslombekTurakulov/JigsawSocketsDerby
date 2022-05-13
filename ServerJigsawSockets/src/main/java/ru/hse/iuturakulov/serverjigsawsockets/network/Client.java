@@ -45,13 +45,17 @@ public class Client extends Player {
                     JSONObject jsonObject = new JSONObject(str.trim());
                     String function = (String) jsonObject.get("function");
                     switch (function) {
+                        case "more_shape":
+                            ((Singleplayer) getGame()).generateExtraShape();
                         case "online_players":
                             sendRequest(JSONSender.getInstance().onlinePlayers(getPlayerName()).toString());
                             break;
                         case "single_player":
+                            // TODO: TIMER WINDOW
                             GameLogic.listOfGames.add(new Singleplayer(this));
                             break;
                         case "multi_player":
+                            // TODO: TIMER_WINDOW
                             handleMultiplayerGame(jsonObject.getString("opponent"));
                             break;
                         case "invite_request":
@@ -62,7 +66,7 @@ public class Client extends Player {
                             // ((Multiplayer) getGame()).getOtherOpponent(opponent).sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
                             break;
                         case "play":
-                            // handlePlayMove(jsonObject.getInt("index"));
+                            handlePlayMove(jsonObject.getInt("placed"));
                             break;
                         case "send-message":
                             if (getGame() != null)
@@ -136,18 +140,16 @@ public class Client extends Player {
         // GameLogic.listOfGames.add(new Multiplayer(this, opponentClient, (record.equalsIgnoreCase("yes"))));
     }
 
-
     public void remove() {
         setOnlineOnArrayList(false);
-        onlineClients.remove(this);
         playersList.remove(this);
     }
 
-    private void handlePlayMove(int x, int y) {
+    private void handlePlayMove(int placed) {
         if (getGame() == null) {
-            sendRequest(JSONSender.getInstance().play(false, "No Active game", getPlayerName(), ShapeType.NONE).toString());
+            sendRequest(JSONSender.getInstance().play(false, "No Active game", getPlayerName(), 0).toString());
         } else {
-            getGame().play(this, x, y);
+            getGame().play(this, placed);
         }
     }
 

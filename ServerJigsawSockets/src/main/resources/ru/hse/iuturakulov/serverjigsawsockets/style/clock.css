@@ -1,0 +1,44 @@
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.root {
+    -fx-background-image: url(../drawable/night_server.png);
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-radius: 30px;
+    -fx-border-radius: 50px;
+}
+
+.button:pressed {
+    -fx-background-color: #009383;
+}
+
+.progress-indicator .progress {
+    -fx-background-color: #009383;
+}
+
+.progress-indicator .percentage {
+    -fx-fill: transparent;
+}
+
+.progress-indicator .tick {
+    -fx-background-color: transparent;
+}
+
+.text-area {
+    -fx-text-fill: white;
+    -fx-background-color: black;
+}
+
+.text-area .content {
+    -fx-background-color: black;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: black;
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
+}
+

@@ -9,37 +9,85 @@ import ru.hse.iuturakulov.serverjigsawsockets.models.ObjJsonSender;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
 import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
 import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
+import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * The type Json sender.
+ */
 public class JSONSender {
 
     private final JSONObject request = new JSONObject();
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static JSONSender getInstance() {
         return SingletonHolder.JSON_SENDER;
     }
 
+    /**
+     * Put request.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void putRequest(String key, String value) {
         request.put(key, value);
     }
 
+    /**
+     * Put request.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void putRequest(String key, int value) {
         request.put(key, value);
     }
 
+    /**
+     * Put request.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void putRequest(String key, JSONObject value) {
         request.put(key, value);
     }
 
+    /**
+     * Put request.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void putRequest(String key, JSONArray value) {
         request.put(key, value);
     }
 
+    /**
+     * Put status request.
+     *
+     * @param status the status
+     */
     public void putStatusRequest(String status) {
         request.put("status", status);
     }
 
+    /**
+     * Login json object.
+     *
+     * @param success the success
+     * @param msg     the msg
+     * @param player  the player
+     * @return the json object
+     */
     public JSONObject login(Boolean success, String msg, Player player) {
         clearRequests();
         putRequest("type", "login");
@@ -54,13 +102,25 @@ public class JSONSender {
         return getRequestInstance();
     }
 
-    public JSONObject getCloseRequest(boolean b) {
+    /**
+     * Gets close request.
+     *
+     * @param flag the flag
+     * @return the close request
+     */
+    public JSONObject getCloseRequest(boolean flag) {
         clearRequests();
         putRequest("type", "close_socket");
-        putRequest("status", (b ? "success" : "fail"));
+        putRequest("status", (flag ? "success" : "fail"));
         return getRequestInstance();
     }
 
+    /**
+     * Online players json object.
+     *
+     * @param myUsername the my username
+     * @return the json object
+     */
     public JSONObject onlinePlayers(String myUsername) {
         clearRequests();
         JSONArray jsonResponse = new JSONArray();
@@ -76,13 +136,27 @@ public class JSONSender {
         return getRequestInstance();
     }
 
-    public JSONObject gameFinished(String status, String axis) {
+    /**
+     * Game finished json object.
+     *
+     * @param status the status
+     * @return the json object
+     */
+    public JSONObject gameFinished(String status) {
         clearRequests();
         putRequest("type", "game-finish");
         putRequest("status", status);
+        Logger.getLogger(Client.class.getName()).log(Level.INFO,  getRequestInstance().toString());
         return getRequestInstance();
     }
 
+    /**
+     * Player connected json object.
+     *
+     * @param username the username
+     * @param points   the points
+     * @return the json object
+     */
     public JSONObject playerConnected(String username, int points) {
         clearRequests();
         putRequest("type", "player-connected");
@@ -91,6 +165,13 @@ public class JSONSender {
         return getRequestInstance();
     }
 
+    /**
+     * Play request json object.
+     *
+     * @param success  the success
+     * @param opponent the opponent
+     * @return the json object
+     */
     public JSONObject playRequest(Boolean success, String opponent) {
         clearRequests();
         putRequest("type", "invite_request");
@@ -99,6 +180,12 @@ public class JSONSender {
         return getRequestInstance();
     }
 
+    /**
+     * Invite declined json object.
+     *
+     * @param opponent the opponent
+     * @return the json object
+     */
     public JSONObject inviteDeclined(String opponent) {
         clearRequests();
         putRequest("type", "invite_decline");
@@ -106,13 +193,27 @@ public class JSONSender {
         return getRequestInstance();
     }
 
-    public String singleGameStarted(ArrayList<FigureType> shape) {
+    /**
+     * Single game started string.
+     *
+     * @param shape       the shape
+     * @param timeCounter the time counter
+     * @return the string
+     */
+    public String singleGameStarted(ArrayList<FigureType> shape, String timeCounter) {
         ObjJsonSender keyValue = new ObjJsonSender();
         keyValue.Main.add(new ObjJsonSender.Key("single_player", "success"));
+        keyValue.Main.add(new ObjJsonSender.Key("time", timeCounter));
         keyValue.figures.addAll(shape);
         return new Gson().toJson(keyValue);
     }
 
+    /**
+     * Gets shapes for game.
+     *
+     * @param shape the shape
+     * @return the shapes for game
+     */
     public String getShapesForGame(ArrayList<FigureType> shape) {
         clearRequests();
         ObjJsonSender keyValue = new ObjJsonSender();
@@ -121,6 +222,15 @@ public class JSONSender {
         return new Gson().toJson(keyValue);
     }
 
+    /**
+     * Play json object.
+     *
+     * @param success        the success
+     * @param msg            the msg
+     * @param playerUsername the player username
+     * @param turn           the turn
+     * @return the json object
+     */
     public JSONObject play(Boolean success, String msg, String playerUsername, int turn) {
         clearRequests();
         putRequest("type", "play");
@@ -134,10 +244,18 @@ public class JSONSender {
         return request;
     }
 
+    /**
+     * Gets request instance.
+     *
+     * @return the request instance
+     */
     public JSONObject getRequestInstance() {
         return request;
     }
 
+    /**
+     * Clear requests.
+     */
     public void clearRequests() {
         request.clear();
     }
@@ -145,7 +263,8 @@ public class JSONSender {
     /**
      * Method which checks a given string valid or not
      *
-     * @return boolean
+     * @param json the json
+     * @return boolean boolean
      * @see <a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java">How to check if JSON is valid</a>
      */
     public boolean validateJSON(String json) {
@@ -164,7 +283,29 @@ public class JSONSender {
         return true;
     }
 
+    /**
+     * Play accepted string.
+     *
+     * @param opponent the opponent
+     * @param figure   the figure
+     * @return the string
+     */
+    public static String playAccepted(String opponent, ArrayList<FigureType> figure) {
+        ObjJsonSender keyValue = new ObjJsonSender();
+        keyValue.Main.add(new ObjJsonSender.Key("start_multi_player", "success"));
+        keyValue.Main.add(new ObjJsonSender.Key("opponent", opponent));
+        keyValue.Main.add(new ObjJsonSender.Key("time", Constants.timeCurrent));
+        keyValue.figures.addAll(figure);
+        return new Gson().toJson(keyValue);
+    }
+
+    /**
+     * The type Singleton holder.
+     */
     public static class SingletonHolder {
+        /**
+         * The constant JSON_SENDER.
+         */
         public static final JSONSender JSON_SENDER = new JSONSender();
     }
 }

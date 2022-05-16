@@ -13,28 +13,54 @@ import java.util.Timer;
 
 import static ru.hse.iuturakulov.serverjigsawsockets.utils.Constants.*;
 
+/**
+ * The type Player.
+ */
 public class Player {
 
+    /**
+     * The Players list.
+     */
     public static ObservableList<Player> playersList = FXCollections.observableArrayList();
+    /**
+     * The Board.
+     */
     public static Rectangle[][] board;
     private static IntegerProperty placedBlocks;
-    private Queue<ShapeType> move;
-    private ShapeType currentShape;
+    private ArrayList<FigureType> move;
+    private FigureType currentShape;
     private StringProperty playerName;
     private BooleanProperty online;
     private Timer timer;
 
+    /**
+     * Instantiates a new Player.
+     *
+     * @param _username the username
+     */
     public Player(String _username) {
         setPlayerName(_username);
         setPlacedBlocks(0);
     }
 
+    /**
+     * Instantiates a new Player.
+     *
+     * @param _username the username
+     * @param _points   the points
+     * @param isOnline  the is online
+     */
     public Player(String _username, int _points, boolean isOnline) {
         setPlayerName(_username);
         setPlacedBlocks(_points);
         setOnline(isOnline);
     }
 
+    /**
+     * Online property boolean property.
+     *
+     * @return the boolean property
+     */
     public BooleanProperty onlineProperty() {
         if (online == null) {
             online = new SimpleBooleanProperty(this, "online");
@@ -42,26 +68,57 @@ public class Player {
         return online;
     }
 
-    public Queue<ShapeType> getMove() {
+    /**
+     * Gets move.
+     *
+     * @return the move
+     */
+    public ArrayList<FigureType> getMove() {
         return move;
     }
 
+    /**
+     * Sets next shape.
+     */
     public void setNextShape() {
-        currentShape = move.poll();
+        currentShape = move.get(0);
     }
 
-    public ShapeType getCurrentShape() {
+    /**
+     * Gets current shape.
+     *
+     * @return the current shape
+     */
+    public FigureType getCurrentShape() {
         return currentShape;
     }
 
-    public void setMove(Queue<ShapeType> move) {
+    /**
+     * Sets move.
+     *
+     * @param move the move
+     */
+    public void setMove(ArrayList<FigureType> move) {
         this.move = move;
     }
 
-    public void setCollectionToMove(ArrayList<ShapeType> list) {
+    /**
+     * Sets collection to move.
+     *
+     * @param list the list
+     */
+    public void setCollectionToMove(ArrayList<FigureType> list) {
+        if (move == null) {
+            move = new ArrayList<FigureType>();
+        }
         move.addAll(list);
     }
 
+    /**
+     * Sets online on array list.
+     *
+     * @param status the status
+     */
     public void setOnlineOnArrayList(Boolean status) {
         for (Player player : playersList) {
             if (player.getPlayerName().equalsIgnoreCase(this.getPlayerName())) {
@@ -71,18 +128,38 @@ public class Player {
         }
     }
 
+    /**
+     * Gets online.
+     *
+     * @return the online
+     */
     public Boolean getOnline() {
         return onlineProperty().get();
     }
 
+    /**
+     * Sets online.
+     *
+     * @param value the value
+     */
     public void setOnline(Boolean value) {
         onlineProperty().set(value);
     }
 
+    /**
+     * Gets player name.
+     *
+     * @return the player name
+     */
     public String getPlayerName() {
         return this.playerName.get();
     }
 
+    /**
+     * Sets player name.
+     *
+     * @param playerName the player name
+     */
     public void setPlayerName(String playerName) {
         if (this.playerName == null) {
             this.playerName = new SimpleStringProperty(this, "username");
@@ -90,6 +167,11 @@ public class Player {
         this.playerName.set(playerName);
     }
 
+    /**
+     * Player name property string property.
+     *
+     * @return the string property
+     */
     public StringProperty playerNameProperty() {
         if (this.playerName == null) {
             this.playerName = new SimpleStringProperty(this, "username");
@@ -97,10 +179,20 @@ public class Player {
         return this.playerName;
     }
 
+    /**
+     * Gets placed blocks.
+     *
+     * @return the placed blocks
+     */
     public int getPlacedBlocks() {
         return placedBlocks.get();
     }
 
+    /**
+     * Sets placed blocks.
+     *
+     * @param placedBlocks the placed blocks
+     */
     public void setPlacedBlocks(int placedBlocks) {
         if (Player.placedBlocks == null) {
             Player.placedBlocks = new SimpleIntegerProperty();
@@ -108,10 +200,20 @@ public class Player {
         Player.placedBlocks.set(placedBlocks);
     }
 
+    /**
+     * Increment placed blocks.
+     *
+     * @param times the times
+     */
     public void incrementPlacedBlocks(int times) {
         setPlacedBlocks(getPlacedBlocks() + times);
     }
 
+    /**
+     * Placed blocks property integer property.
+     *
+     * @return the integer property
+     */
     public IntegerProperty placedBlocksProperty() {
         if (placedBlocks == null) {
             placedBlocks = new SimpleIntegerProperty();

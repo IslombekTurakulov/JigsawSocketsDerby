@@ -19,6 +19,8 @@ public class Figure extends Pane {
 
     private final ArrayList<Rectangle> rectangleList = new ArrayList<>();
     private final int sizeOfFigure;
+    private final double initialX;
+    private final double initialY;
 
     /**
      * Instantiates a new Figure.
@@ -31,6 +33,8 @@ public class Figure extends Pane {
         // Set original layouts for figure.
         this.setLayoutY(layoutY);
         this.setLayoutX(layoutX);
+        initialX = layoutX;
+        initialY = layoutY;
         FigureType figureType = Game.getNextShape();
         ShapeFactory.getInstance().setCurrentShape(figureType.shapeType());
         Shape fromServerFigure = ShapeFactory.getInstance().getRandomFigure(
@@ -58,8 +62,8 @@ public class Figure extends Pane {
         this.setOnMouseReleased(mouseEvent -> {
             if (!Game.isPossibleToPlace(this) && !Game.isGameStopped()) {
                 // If not possible, the figure comes to the initial (original place)
-                this.setLayoutX(layoutX);
-                this.setLayoutY(layoutY);
+                this.setLayoutX(getInitialX());
+                this.setLayoutY(getInitialY());
             } else {
                 // Checks if all figures are disabled.
                 Game.checkForNewFigure();
@@ -83,5 +87,13 @@ public class Figure extends Pane {
      */
     public ArrayList<Rectangle> getRectangleList() {
         return rectangleList;
+    }
+
+    public double getInitialX() {
+        return initialX;
+    }
+
+    public double getInitialY() {
+        return initialY;
     }
 }

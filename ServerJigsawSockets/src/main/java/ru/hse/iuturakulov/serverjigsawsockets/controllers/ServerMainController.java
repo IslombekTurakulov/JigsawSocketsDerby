@@ -5,15 +5,26 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import ru.hse.iuturakulov.serverjigsawsockets.ServerMain;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
+import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 import ru.hse.iuturakulov.serverjigsawsockets.network.Server;
+import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+/**
+ * The type Server main controller.
+ */
 public class ServerMainController implements Initializable {
 
+    @FXML
+    private Button exitBtn;
+    @FXML
+    private Button timerServerBtn;
     @FXML
     private TextField portField;
     @FXML
@@ -22,6 +33,8 @@ public class ServerMainController implements Initializable {
     private Button stopServerBtn;
     @FXML
     private Label statusText;
+    @FXML
+    private Text gameTime;
     @FXML
     private TableView<Player> playersTable;
 
@@ -33,14 +46,19 @@ public class ServerMainController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        stopServerBtn.setVisible(false);
         TableColumn<Player, String> usernameCol = new TableColumn<>("Player");
         usernameCol.setCellValueFactory(cellData -> cellData.getValue().playerNameProperty());
-
+        gameTime.setText(Constants.timeCurrent == null || Constants.timeCurrent.equals("00:00:00") ? "Please choose game time" : "Game time: " + Constants.timeCurrent);
         TableColumn<Player, Boolean> onlineCol = new TableColumn<>("Status");
         onlineCol.setCellValueFactory(cellData -> cellData.getValue().onlineProperty());
         playersTable.getColumns().addAll(usernameCol, onlineCol);
+        timerServerBtn.setOnAction(this::timerServer);
     }
 
+    /**
+     * Load table data.
+     */
     public void loadTableData() {
         try {
             playersTable.setItems(Player.playersList);
@@ -56,6 +74,11 @@ public class ServerMainController implements Initializable {
         }
     }
 
+    /**
+     * Start server.
+     *
+     * @param ae the ae
+     */
     public void startServer(ActionEvent ae) {
         if (portField.getText().isEmpty() || !Pattern.matches(
                 "^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$",
@@ -68,10 +91,20 @@ public class ServerMainController implements Initializable {
             a.showAndWait();
             return;
         }
+        if (Constants.timeCurrent == null) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Failed");
+            a.setHeaderText("Incorrect time");
+            a.setResizable(true);
+            a.setContentText("Please, choose time for game");
+            a.showAndWait();
+            return;
+        }
         int port = Integer.parseInt(portField.getText());
         Server.createServer(port);
         stopServerBtn.setVisible(true);
         startServerBtn.setVisible(false);
+        timerServerBtn.setVisible(false);
         statusText.setTextFill(Color.GREEN);
         statusText.setText("Online");
         portField.setDisable(true);
@@ -80,19 +113,40 @@ public class ServerMainController implements Initializable {
 
     private void setServerStopped() {
         Server.stop();
+        Server.closeSocket();
         stopServerBtn.setVisible(false);
         startServerBtn.setVisible(true);
+        timerServerBtn.setVisible(true);
         statusText.setTextFill(Color.RED);
         statusText.setText("Offline");
         portField.setDisable(false);
     }
 
+    /**
+     * Stop server.
+     *
+     * @param ae the ae
+     */
     public void stopServer(ActionEvent ae) {
         setServerStopped();
     }
 
+    /**
+     * Exit.
+     *
+     * @param ae the ae
+     */
     public void exit(ActionEvent ae) {
         setServerStopped();
         System.exit(0);
+    }
+
+    /**
+     * Timer server.
+     *
+     * @param actionEvent the action event
+     */
+    public void timerServer(ActionEvent actionEvent) {
+        ServerMain.setRoot("timer_form");
     }
 }

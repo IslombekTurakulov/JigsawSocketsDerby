@@ -3,9 +3,9 @@ package ru.hse.iuturakulov.serverjigsawsockets.network;
 import org.json.JSONException;
 import org.json.JSONObject;
 import ru.hse.iuturakulov.serverjigsawsockets.models.GameLogic;
+import ru.hse.iuturakulov.serverjigsawsockets.models.Multiplayer;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Singleplayer;
-import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,13 +15,26 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The type Client.
+ */
 public class Client extends Player {
+    /**
+     * The constant onlineClients.
+     */
     public static ArrayList<Client> onlineClients = new ArrayList<>();
 
     private final BufferedReader bufferReader;
     private final PrintStream printStream;
 
 
+    /**
+     * Instantiates a new Client.
+     *
+     * @param _username     the username
+     * @param _bufferReader the buffer reader
+     * @param _printStream  the print stream
+     */
     public Client(String _username, BufferedReader _bufferReader, PrintStream _printStream) {
         super(_username);
         notifyAllPlayers();
@@ -51,27 +64,36 @@ public class Client extends Player {
                             sendRequest(JSONSender.getInstance().onlinePlayers(getPlayerName()).toString());
                             break;
                         case "single_player":
-                            // TODO: TIMER WINDOW
                             GameLogic.listOfGames.add(new Singleplayer(this));
                             break;
-                        case "multi_player":
-                            // TODO: TIMER_WINDOW
+                        case "invite_request":
                             handleMultiplayerGame(jsonObject.getString("opponent"));
                             break;
-                        case "invite_request":
-                            handleAcceptRequest(jsonObject.getString("opponent"), jsonObject.getString("record"));
+                        case "invite_accept":
+                            handleAcceptRequest(jsonObject.getString("opponent"));
                             break;
                         case "invite_decline":
                             String opponent = jsonObject.getString("opponent");
-                            // ((Multiplayer) getGame()).getOtherOpponent(opponent).sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
+                            if (getGame() != null) {
+                                ((Multiplayer) getGame()).getOtherOpponent(opponent).sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
+                            } else {
+                                Client client = getClientByUsername(opponent);
+                                client.sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
+                            }
                             break;
                         case "play":
                             handlePlayMove(jsonObject.getInt("placed"));
                             break;
-                        case "send-message":
-                            if (getGame() != null)
-                                // ((Multiplayer) getGame()).sendMessage(this, jsonObject.getString("message"));
-                                break;
+                        case "multiplayer_finished":
+                            if (getGame() != null) {
+                                if (((Multiplayer) getGame()).getOwnerOfGame().getPlayerName().equals(jsonObject.getString("name"))) {
+                                    ((Multiplayer) getGame()).getOwnerOfGame().setPlacedBlocks(jsonObject.getInt("placed"));
+                                } else {
+                                    ((Multiplayer) getGame()).getOtherOpponent(jsonObject.getString("name")).setPlacedBlocks(jsonObject.getInt("placed"));
+                                }
+                                ((Multiplayer) getGame()).finishGame();
+                            }
+                            break;
                         case "logout":
                             remove();
                             break;
@@ -88,6 +110,11 @@ public class Client extends Player {
         }).start();
     }
 
+    /**
+     * Is playing boolean.
+     *
+     * @return the boolean
+     */
     public Boolean isPlaying() {
         return !(getGame() == null);
     }
@@ -100,6 +127,12 @@ public class Client extends Player {
         }
     }
 
+    /**
+     * Gets client by username.
+     *
+     * @param username the username
+     * @return the client by username
+     */
     public Client getClientByUsername(String username) {
         for (Client client : onlineClients) {
             if (client.getPlayerName().equalsIgnoreCase(username)) {
@@ -110,6 +143,11 @@ public class Client extends Player {
     }
 
 
+    /**
+     * Send request.
+     *
+     * @param content the content
+     */
     public void sendRequest(String content) {
         printStream.println(content);
     }
@@ -117,32 +155,35 @@ public class Client extends Player {
 
     private void handleMultiplayerGame(String opponent) {
         Client opponentClient = getClientByUsername(opponent);
-        if (opponentClient == null) {
+        if (opponentClient != null) {
+            if (!getPlayerName().equalsIgnoreCase(opponent)) {
+                if (opponentClient.isPlaying()) {
+                    printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game").toString());
+                    return;
+                }
+                opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName()).toString());
+            } else {
+                printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!").toString());
+            }
+        } else {
             printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online").toString());
-            return;
         }
-        if (getPlayerName().equalsIgnoreCase(opponent)) {
-            printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!").toString());
-            return;
-        }
-        if (opponentClient.isPlaying()) {
-            printStream.println(JSONSender.getInstance().playRequest(false, "Player is Currently Playing a game").toString());
-            return;
-        }
-        opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName()).toString());
     }
 
-    private void handleAcceptRequest(String opponent, String record) {
+    private void handleAcceptRequest(String opponent) {
         Client opponentClient = getClientByUsername(opponent);
         if (opponentClient == null) {
             printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online").toString());
         }
-        // GameLogic.listOfGames.add(new Multiplayer(this, opponentClient, (record.equalsIgnoreCase("yes"))));
+        GameLogic.listOfGames.add(new Multiplayer(this, opponentClient));
     }
 
+    /**
+     * Remove.
+     */
     public void remove() {
         setOnlineOnArrayList(false);
-        playersList.remove(this);
+        onlineClients.remove(this);
     }
 
     private void handlePlayMove(int placed) {
@@ -153,14 +194,32 @@ public class Client extends Player {
         }
     }
 
+    /**
+     * Remove game.
+     */
     public void removeGame() {
         GameLogic.listOfGames.removeIf(game -> game.hasPlayer(getPlayerName()));
     }
 
+    /**
+     * Gets game.
+     *
+     * @return the game
+     */
     public GameLogic getGame() {
-        return GameLogic.listOfGames.stream().filter(game -> game.hasPlayer(getPlayerName())).findFirst().orElse(null);
+        for (GameLogic game : GameLogic.listOfGames) {
+            if (game.hasPlayer(getPlayerName())) {
+                return game;
+            }
+        }
+        return null;
     }
 
+    /**
+     * Close boolean.
+     *
+     * @return the boolean
+     */
     public boolean close() {
         if (this.getOnline()) {
             printStream.println(JSONSender.getInstance().getCloseRequest(true).toString());

@@ -4,7 +4,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -35,14 +34,14 @@ public class GameFormController implements Initializable {
      * The constant figure.
      */
     public static Figure figure;
-    @FXML
-    public Button playAgainBtn;
-    @FXML
-    public Button exitFromGame;
     /**
      * The Is single player.
      */
     boolean isSinglePlayer;
+    @FXML
+    private Button playAgainBtn;
+    @FXML
+    private Button exitFromGameBtn;
     @FXML
     private Text opponentPlacedBlocks;
     @FXML
@@ -77,22 +76,29 @@ public class GameFormController implements Initializable {
         if (time.equals(Game.getCurrentGameTime())) {
             TimelineCounter.getInstance().getTimeline().stop();
             figure.setDisable(true);
+            figure.setLayoutX(figure.getInitialX());
+            figure.setLayoutY(figure.getInitialY());
             Game.setIsGameStopped(true);
             gameEndInfoPane.setVisible(true);
-            if (isSinglePlayer) {
-                opponentPlacedBlocks.setVisible(false);
-                winnerCurrentGame.setVisible(false);
-                yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
-            } else {
-                Game.finishGame(Game.getPlacedBlocks());
-                opponentPlacedBlocks.setVisible(false);
-                winnerCurrentGame.setVisible(true);
-                winnerCurrentGame.setText("Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW"));
-                yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
-                opponentPlacedBlocks.setText("Opponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced()));
-            }
+            playAgainBtn.setVisible(true);
+            findTheWinner();
         }
         timeCurrentGame.setText("Current time: %s".formatted(time));
+    }
+
+    private void findTheWinner() {
+        if (isSinglePlayer) {
+            opponentPlacedBlocks.setVisible(false);
+            winnerCurrentGame.setVisible(false);
+            yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
+        } else {
+            Game.finishGame(Game.getPlacedBlocks());
+            opponentPlacedBlocks.setVisible(false);
+            winnerCurrentGame.setVisible(true);
+            winnerCurrentGame.setText("Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW"));
+            yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
+            opponentPlacedBlocks.setText("Opponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced()));
+        }
     }
 
     @Override
@@ -101,6 +107,15 @@ public class GameFormController implements Initializable {
         yourNameForGame.setText("You: " + Player.getPlayer().getUsername());
         maxTimeForGame.setText("Max time: " + Game.getCurrentGameTime());
         currentGameMode.setText(Game.getGameMode());
+        initializeCurrentGameMode();
+        borderGamePane.setCenter(Game.getGamePane());
+        initializeTimer();
+        exitFromGameBtn.setOnAction(event -> exitGameSession());
+        playAgainBtn.setOnAction(event -> playAgainSession());
+        playAgainBtn.setVisible(false);
+    }
+
+    private void initializeCurrentGameMode() {
         if (!currentGameMode.getText().equals("Single-player")) {
             opponentsNameForGame.setVisible(true);
             isSinglePlayer = false;
@@ -109,23 +124,23 @@ public class GameFormController implements Initializable {
             isSinglePlayer = true;
             opponentsNameForGame.setVisible(false);
         }
+    }
+
+    private void initializeTimer() {
         TimelineCounter.getInstance().initializeTimer();
         TimelineCounter.getInstance().setTimeline(new Timeline(new KeyFrame(Duration.millis(1000), ae -> incrementTime())));
         TimelineCounter.getInstance().getTimeline().setCycleCount(Animation.INDEFINITE);
-        borderGamePane.setCenter(Game.getGamePane());
         TimelineCounter.getInstance().getTimeline().play();
-        exitFromGame.setOnAction(this::exitGameSession);
-        playAgainBtn.setOnAction(this::playAgainSession);
     }
 
-    public void exitGameSession(ActionEvent actionEvent) {
-        Constants.LOGGER.log(Level.INFO, actionEvent.getEventType().getName());
+    private void exitGameSession() {
+        Constants.LOGGER.log(Level.INFO, "Exit from game session");
         Game.leave();
         App.setRoot("main_form");
         Game.setCurrentIndexShape(0);
     }
 
-    public void playAgainSession(ActionEvent actionEvent) {
+    private void playAgainSession() {
         if (isSinglePlayer) {
             Game.setCurrentPlayingGame(new Game());
             Game.setCurrentGameTime(maxTimeForGame.getText());

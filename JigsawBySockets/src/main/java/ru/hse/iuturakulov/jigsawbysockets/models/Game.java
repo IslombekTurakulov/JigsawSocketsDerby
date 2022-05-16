@@ -211,9 +211,9 @@ public class Game {
      */
     private static void createPane() {
         gamePane = new Pane();
-        int width = WIDTH_CELL * (SIZE + 2);
-        int height = HEIGHT_CELL * (SIZE + 2);
-        gamePane.setPrefSize(width + 2, height + 200);
+        int width = 392;
+        int height = 551;
+        gamePane.setPrefSize(width + 2, height + 100);
         gamePane.setTranslateY(50);
         gamePane.setVisible(true);
     }

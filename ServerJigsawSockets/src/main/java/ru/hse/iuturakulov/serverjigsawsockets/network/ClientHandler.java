@@ -10,11 +10,25 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 
+/**
+ * The type Client handler.
+ */
 class ClientHandler extends Thread {
 
+    /**
+     * The Buffer reader.
+     */
     BufferedReader bufferReader;
+    /**
+     * The Print stream.
+     */
     PrintStream printStream;
 
+    /**
+     * Instantiates a new Client handler.
+     *
+     * @param socket the socket
+     */
     public ClientHandler(Socket socket) {
         try {
             bufferReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -51,10 +65,6 @@ class ClientHandler extends Thread {
                 return true;
         }
         return false;
-    }
-
-    private void removeClientByUsername(String username) {
-        Client.onlineClients.removeIf(c -> c.playerNameProperty().getValue().equalsIgnoreCase(username));
     }
 
     private void handleLoginRequest(String username) {

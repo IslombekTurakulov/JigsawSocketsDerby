@@ -4,7 +4,9 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
 
 import java.io.IOException;
@@ -45,8 +47,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("login_form"), 800, 600);
-
+        scene = new Scene(loadFXML("login_form"), 800, 600, Color.TRANSPARENT);
         scene.setOnMousePressed((event) -> {
                     xOffset = stage.getX() - event.getScreenX();
                     yOffset = stage.getY() - event.getScreenY();

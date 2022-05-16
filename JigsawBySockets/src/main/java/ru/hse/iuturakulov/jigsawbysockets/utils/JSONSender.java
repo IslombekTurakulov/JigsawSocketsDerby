@@ -7,28 +7,53 @@ import org.json.JSONObject;
 import ru.hse.iuturakulov.jigsawbysockets.models.ObjJsonSender;
 
 /**
- *
+ * The type Json sender.
  */
 public class JSONSender {
 
     private final JSONObject request = new JSONObject();
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static JSONSender getInstance() {
         return SingletonHolder.JSON_SENDER;
     }
 
+    /**
+     * Put request.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void putRequest(String key, String value) {
         request.put(key, value);
     }
 
+    /**
+     * Put request.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void putRequest(String key, int value) {
         request.put(key, value);
     }
 
+    /**
+     * Gets request instance.
+     *
+     * @return the request instance
+     */
     public JSONObject getRequestInstance() {
         return request;
     }
 
+    /**
+     * Clear requests.
+     */
     public void clearRequests() {
         request.clear();
     }
@@ -36,8 +61,9 @@ public class JSONSender {
     /**
      * Method which checks a given string valid or not
      *
+     * @param json the json
+     * @return boolean
      * @see <a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java">How to check if JSON is valid</a>
-     * @return
      */
     public boolean validateJSON(String json) {
         try {
@@ -55,6 +81,12 @@ public class JSONSender {
         return true;
     }
 
+    /**
+     * Validate gson boolean.
+     *
+     * @param array the array
+     * @return the boolean
+     */
     public boolean validateGson(String array) {
         try {
             if (array == null || array.isEmpty()) {
@@ -67,7 +99,13 @@ public class JSONSender {
         return true;
     }
 
+    /**
+     * The type Singleton holder.
+     */
     public static class SingletonHolder {
+        /**
+         * The constant JSON_SENDER.
+         */
         public static final JSONSender JSON_SENDER = new JSONSender();
     }
 }

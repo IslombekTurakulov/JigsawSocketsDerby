@@ -11,7 +11,7 @@
             minWidth="-Infinity"
             prefHeight="600.0" prefWidth="800.0" styleClass="container"
             stylesheets="@../style/main_home.css" xmlns="http://javafx.com/javafx/17"
-            fx:controller="ru.hse.iuturakulov.jigsawbysockets.contollers.MainFormController">
+            fx:controller="ru.hse.iuturakulov.jigsawbysockets.controllers.MainFormController">
 
     <HBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0"
           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

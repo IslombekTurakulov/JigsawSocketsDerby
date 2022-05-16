@@ -6,23 +6,57 @@ import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
 import java.util.logging.Level;
 
+/**
+ * The type Player.
+ */
 public class Player {
-    private static int uniqueId;
-    private final String playerName;
-    private int placedBlocks;
     private static Player player = null;
-    private Boolean isPlayerOnline;
+    private String username;
+    private int placed;
 
+    /**
+     * Sets username.
+     *
+     * @param username the username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Instantiates a new Player.
+     *
+     * @param name   the name
+     * @param placed the placed
+     */
     public Player(String name, int placed) {
-        playerName = name;
-        placedBlocks = placed;
-        isPlayerOnline = false;
+        username = name;
+        this.placed = placed;
     }
 
+    /**
+     * Instantiates a new Player.
+     *
+     * @param name the name
+     */
     public Player(String name) {
-        playerName = name;
+        username = name;
     }
 
+    /**
+     * Gets online list.
+     */
+    public static void getOnlineList() {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.putRequest("function", "online_players");
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
+
+    /**
+     * Login.
+     *
+     * @param name the name
+     */
     public static void login(String name) {
         Constants.LOGGER.log(Level.INFO, "Sending login request..");
         JSONSender jsonSender = JSONSender.getInstance();
@@ -30,9 +64,11 @@ public class Player {
         jsonSender.putRequest("function", "login");
         jsonSender.putRequest("username", name);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
-        uniqueId = Constants.uniqueId.incrementAndGet();
     }
 
+    /**
+     * Logout.
+     */
     public static void logout() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -40,6 +76,11 @@ public class Player {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Register.
+     *
+     * @param playerName the player name
+     */
     public static void register(String playerName) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -48,35 +89,57 @@ public class Player {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
-    public static int getUniqueId() {
-        return uniqueId;
-    }
-
+    /**
+     * Gets player.
+     *
+     * @return the player
+     */
     public static Player getPlayer() {
         return player;
     }
 
+    /**
+     * Sets player.
+     *
+     * @param player the player
+     */
     public static void setPlayer(Player player) {
         Player.player = player;
     }
 
-    public void incrementPoints(int point) {
-        placedBlocks += point;
+    /**
+     * Increment placed blocks.
+     *
+     * @param point the point
+     */
+    public void incrementPlacedBlocks(int point) {
+        placed += point;
     }
 
-    public int getPlacedBlocks() {
-        return placedBlocks;
+    /**
+     * Gets placed.
+     *
+     * @return the placed
+     */
+    public int getPlaced() {
+        return placed;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    /**
+     * Gets username.
+     *
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
     }
 
-    public Boolean getPlayerOnline() {
-        return isPlayerOnline;
-    }
-
-    public void setPlayerOnline(Boolean playerOnline) {
-        isPlayerOnline = playerOnline;
+    /**
+     * Sets placed blocks.
+     *
+     * @param placed the placed
+     */
+    public void setPlacedBlocks(int placed) {
+        this.placed = placed;
     }
 }

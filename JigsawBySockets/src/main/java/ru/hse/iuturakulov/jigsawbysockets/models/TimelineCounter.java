@@ -5,26 +5,52 @@ import javafx.animation.Timeline;
 
 import java.time.LocalTime;
 
+/**
+ * The type Timeline counter.
+ */
 public class TimelineCounter {
     private Timeline timeline;
     private LocalTime time;
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static TimelineCounter getInstance() {
         return TimelineCounter.SingletonHolder.TIMELINE_COUNTER;
     }
 
+    /**
+     * Gets time.
+     *
+     * @return the time
+     */
     public LocalTime getTime() {
         return time;
     }
 
+    /**
+     * Increment time.
+     */
     public void incrementTime() {
         time = time.plusSeconds(1);
     }
 
+    /**
+     * Gets timeline.
+     *
+     * @return the timeline
+     */
     public Timeline getTimeline() {
         return timeline;
     }
 
+    /**
+     * Sets timeline.
+     *
+     * @param timeline the timeline
+     */
     public void setTimeline(Timeline timeline) {
         this.timeline = timeline;
     }
@@ -46,7 +72,13 @@ public class TimelineCounter {
         }
     }
 
+    /**
+     * The type Singleton holder.
+     */
     public static class SingletonHolder {
+        /**
+         * The constant TIMELINE_COUNTER.
+         */
         public static final TimelineCounter TIMELINE_COUNTER = new TimelineCounter();
     }
 

@@ -4,15 +4,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import ru.hse.iuturakulov.jigsawbysockets.contollers.GameFormController;
+import ru.hse.iuturakulov.jigsawbysockets.controllers.GameFormController;
 import ru.hse.iuturakulov.jigsawbysockets.models.shapes.Figure;
 import ru.hse.iuturakulov.jigsawbysockets.models.shapes.Tiles;
+import ru.hse.iuturakulov.jigsawbysockets.network.ServerHandler;
 import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
@@ -27,19 +28,30 @@ public class Game {
     private static int currentIndexShape;
     private static Player playingPerson;
     private static Player otherPlayingPerson;
+    private static boolean isGameStopped;
+    private static String currentGameTime;
+    public static String winner;
     private int id;
-    private Timer currentGameTime;
+
+    public static int getCurrentIndexShape() {
+        return currentIndexShape;
+    }
+
+    public static void setCurrentIndexShape(int currentIndexShape) {
+        Game.currentIndexShape = currentIndexShape;
+    }
 
     public Game(int id, List<Player> players) {
         this.id = id;
         playingPerson = players.get(0);
         otherPlayingPerson = players.get(1);
-        currentGameTime = new Timer();
+        placedBlocks = 0;
         createBoard();
     }
 
     public Game() {
-        currentGameTime = new Timer();
+        placedBlocks = 0;
+        playingPerson = new Player(Player.getPlayer().getUsername(), 0);
         createBoard();
     }
 
@@ -47,21 +59,26 @@ public class Game {
         setOtherPlayingPerson(players);
     }
 
+    public static int getPlacedBlocks() {
+        return placedBlocks;
+    }
+
     public static Pane getGamePane() {
         return gamePane;
     }
 
     public static void checkForNewFigure() {
-        if (currentIndexShape + 1 >= array.size()) {
-            currentIndexShape = 0;
-            LOGGER.log(Level.INFO, "Creating a request for another 10 shapes..");
-            currentPlayingGame.sendMoreShape();
-        }
-        if (GameFormController.figure.isDisable()) {
-            // TODO: make a method play request to place points
-            play(placedBlocks);
-            GameFormController.figure = new Figure(Game.getGamePane().getPrefWidth() / 3, HEIGHT_CELL * (SIZE + 2) + 20);
-            gamePane.getChildren().add(GameFormController.figure);
+        if (!isGameStopped) {
+            if (currentIndexShape+ 1 >= array.size()) {
+                currentIndexShape = 0;
+                LOGGER.log(Level.INFO, "Creating a request for another 10 shapes..");
+                currentPlayingGame.sendMoreShape();
+            }
+            if (GameFormController.figure.isDisable()) {
+                play(placedBlocks);
+                GameFormController.figure = new Figure(Game.getGamePane().getPrefWidth() / 3, HEIGHT_CELL * (SIZE + 2) + 20);
+                gamePane.getChildren().add(GameFormController.figure);
+            }
         }
     }
 
@@ -70,15 +87,11 @@ public class Game {
     }
 
     public static Game getCurrentPlayingGame() {
-        return currentPlayingGame;
+        return Game.currentPlayingGame;
     }
 
     public static void setCurrentPlayingGame(Game currentPlayingGame) {
         Game.currentPlayingGame = currentPlayingGame;
-    }
-
-    public static Rectangle[][] getBoard() {
-        return board;
     }
 
     public static boolean isPossibleToPlace(Figure figure) {
@@ -87,7 +100,9 @@ public class Game {
         getApproxLayoutPlace(figure, listAxisX, listAxisY);
         int i = 0;
         while (i < listAxisX.size()) {
-            if (listAxisY.get(i) < 0 || listAxisY.get(i) >= WIDTH_CELL || listAxisX.get(i) < 0 || listAxisX.get(i) >= HEIGHT_CELL || board[listAxisY.get(i)][listAxisX.get(i)].getFill() != Color.TRANSPARENT) {
+            if (listAxisY.get(i) < 0 || listAxisY.get(i) >= WIDTH_CELL || listAxisX.get(i) < 0) {
+                return false;
+            } else if (listAxisX.get(i) >= HEIGHT_CELL || board[listAxisY.get(i)][listAxisX.get(i)].getFill() != Color.TRANSPARENT) {
                 return false;
             }
             i++;
@@ -127,18 +142,6 @@ public class Game {
         Game.gameMode = gameMode;
     }
 
-    /**
-     * Create right pane.
-     */
-    private void createPane() {
-        gamePane = new Pane();
-        int width = WIDTH_CELL * (SIZE + 2);
-        int height = HEIGHT_CELL * (SIZE + 2);
-        gamePane.setPrefSize(width + 2, height + 200);
-        gamePane.setTranslateY(50);
-        gamePane.setVisible(true);
-    }
-
     public static void play(int index) {
         // Game.currentGame.play(index - 1);
         JSONSender jsonSender = JSONSender.getInstance();
@@ -148,6 +151,73 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+
+    public static void finishGame(int index) {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.clearRequests();
+        jsonSender.putRequest("function", "multiplayer_finished");
+        jsonSender.putRequest("name", Game.getOtherPlayingPerson().getUsername());
+        jsonSender.putRequest("placed", index);
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
+
+    public static Player getOtherPlayingPerson() {
+        return otherPlayingPerson;
+    }
+
+    public static boolean isGameStopped() {
+        return isGameStopped;
+    }
+
+    public void setOtherPlayingPerson(Player otherPlayingPerson) {
+        Game.otherPlayingPerson = otherPlayingPerson;
+    }
+
+    public static void rejectGameInvite() {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.putRequest("function", "invite_decline");
+        jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
+
+    public static void acceptGameInvite() {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.putRequest("function", "invite_accept");
+        jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
+
+    public static void setIsGameStopped(boolean isGameStopped) {
+        Game.isGameStopped = isGameStopped;
+    }
+
+    public static void leave() {
+    }
+
+    public static Player getPlayingPerson() {
+        return playingPerson;
+    }
+
+    public static String getCurrentGameTime() {
+        return currentGameTime;
+    }
+
+    public static void setCurrentGameTime(String currentGameTime) {
+        Game.currentGameTime = currentGameTime;
+    }
+
+    /**
+     * Create right pane.
+     */
+    private static void createPane() {
+        gamePane = new Pane();
+        int width = WIDTH_CELL * (SIZE + 2);
+        int height = HEIGHT_CELL * (SIZE + 2);
+        gamePane.setPrefSize(width + 2, height + 200);
+        gamePane.setTranslateY(50);
+        gamePane.setVisible(true);
+    }
+
     public void sendMoreShape() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -155,51 +225,15 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
-    public void sendChatMessage(String message) {
-        JSONSender jsonSender = JSONSender.getInstance();
-        jsonSender.clearRequests();
-        jsonSender.putRequest("function", "msg_chat");
-        jsonSender.putRequest("message", message);
-    }
-
     public void sendGameRequest() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
-        jsonSender.putRequest("function", "play_invitation");
-        jsonSender.putRequest("opponent", getOtherPlayingPerson().getPlayerName());
-        ServerSocket.sendRequest(jsonSender.toString());
+        jsonSender.putRequest("function", "invite_request");
+        jsonSender.putRequest("opponent", getOtherPlayingPerson().getUsername());
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
-    public static Player getOtherPlayingPerson() {
-        return otherPlayingPerson;
-    }
-
-    public void setOtherPlayingPerson(Player otherPlayingPerson) {
-        Game.otherPlayingPerson = otherPlayingPerson;
-    }
-
-    public Timer getCurrentGameTime() {
-        return currentGameTime;
-    }
-
-    public void setCurrentGameTime(Timer currentGameTime) {
-        this.currentGameTime = currentGameTime;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public static Player getPlayingPerson() {
-        return playingPerson;
-    }
-
-
-    private void createBoard() {
+    public static void createBoard() {
         createPane();
         board = new Rectangle[HEIGHT_CELL][WIDTH_CELL];
         for (int rows = 0; rows < HEIGHT_CELL; rows++) {
@@ -212,5 +246,12 @@ public class Game {
         }
         GameFormController.figure = new Figure(Game.getGamePane().getPrefWidth() / 3, HEIGHT_CELL * (SIZE + 2) + 20);
         Game.getGamePane().getChildren().add(GameFormController.figure);
+    }
+
+    public void sendFinishedGameRequest() {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.clearRequests();
+        jsonSender.putRequest("function", "multiplayer_finished");
+        ServerSocket.sendRequest(jsonSender.toString());
     }
 }

@@ -11,7 +11,7 @@
 <HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="600.0" prefWidth="800.0" style="-fx-border-radius: 30; -fx-background-radius: 30;"
       stylesheets="@../style/login_form.css" xmlns="http://javafx.com/javafx/17"
-      fx:controller="ru.hse.iuturakulov.jigsawbysockets.contollers.LauncherController">
+      fx:controller="ru.hse.iuturakulov.jigsawbysockets.controllers.LauncherController">
 
     <ImageView accessibleHelp="NEVER GONNA GIVE YOU UP" accessibleText="PEOPLE ARE WAITING FOR YOUR AUTH!"
                fitHeight="600.0" fitWidth="389.0" nodeOrientation="INHERIT" pickOnBounds="true">

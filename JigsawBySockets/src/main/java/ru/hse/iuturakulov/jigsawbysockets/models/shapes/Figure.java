@@ -56,7 +56,7 @@ public class Figure extends Pane {
             this.setLayoutY(mouseEvent.getY() + this.getLayoutY());
         });
         this.setOnMouseReleased(mouseEvent -> {
-            if (!Game.isPossibleToPlace(this)) {
+            if (!Game.isPossibleToPlace(this) && !Game.isGameStopped()) {
                 // If not possible, the figure comes to the initial (original place)
                 this.setLayoutX(layoutX);
                 this.setLayoutY(layoutY);

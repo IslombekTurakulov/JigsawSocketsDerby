@@ -12,13 +12,25 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 
+/**
+ * The type Server socket.
+ */
 public abstract class ServerSocket {
 
+    /**
+     * The constant serverSocket.
+     */
     public static Socket serverSocket;
+    /**
+     * The constant thread.
+     */
     public static Thread thread;
     private static BufferedReader bufferedReader;
     private static PrintStream printStream;
 
+    /**
+     * Attach to client.
+     */
     public static void attachToClient() {
         thread = new Thread(() -> {
             try {
@@ -26,12 +38,8 @@ public abstract class ServerSocket {
                     ServerHandler.initializeResponses(bufferedReader.readLine());
                 }
                 Constants.LOGGER.log(Level.WARNING, "Server is closing...");
-                if (printStream != null) {
-                    printStream.close();
-                }
-                if (serverSocket != null) {
-                    serverSocket.close();
-                }
+                printStream.close();
+                serverSocket.close();
             } catch (NullPointerException | IOException exception) {
                 Constants.LOGGER.log(Level.SEVERE, ("%s: %s").formatted(ServerSocket.class.getName(), exception));
             }
@@ -39,6 +47,12 @@ public abstract class ServerSocket {
         thread.start();
     }
 
+    /**
+     * Connect.
+     *
+     * @param address the address
+     * @param port    the port
+     */
     public static void connect(String address, int port) {
         Constants.LOGGER.log(Level.INFO, "Start connection");
         try {
@@ -52,8 +66,14 @@ public abstract class ServerSocket {
         attachToClient();
     }
 
+    /**
+     * Send request.
+     *
+     * @param line the line
+     */
     public static void sendRequest(String line) {
-        Constants.LOGGER.log(Level.INFO, line);
-        printStream.println(line);
+        if (line != null) {
+            printStream.println(line);
+        }
     }
 }

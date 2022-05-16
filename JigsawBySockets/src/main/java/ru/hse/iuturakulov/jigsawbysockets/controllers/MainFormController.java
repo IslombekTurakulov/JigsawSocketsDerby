@@ -1,4 +1,4 @@
-package ru.hse.iuturakulov.jigsawbysockets.contollers;
+package ru.hse.iuturakulov.jigsawbysockets.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,13 +13,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * The type Main form controller.
+ */
 public class MainFormController implements Initializable {
     @FXML
     private Label playerNameField;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        playerNameField.setText(Player.getPlayer().getPlayerName());
+        playerNameField.setText(Player.getPlayer().getUsername());
     }
 
     @FXML
@@ -32,8 +35,8 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void multiPlay(ActionEvent ae) throws IOException {
-        //Player.getOnlinePlayers();
-        App.setRoot("players_form");
+        Player.getOnlineList();
+        App.setRoot("games_form");
     }
 
     @FXML

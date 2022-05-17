@@ -6,10 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
+import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 /**
  * The type App.
@@ -53,9 +54,11 @@ public class App extends Application {
                     yOffset = stage.getY() - event.getScreenY();
                 }
         );
+        stage.setTitle("Client - Jigsaw");
         stage.setOnHidden((e) -> {
             if (Player.getPlayer() != null)
                 Player.logout();
+            Constants.LOGGER.log(Level.WARNING, "Closing client...");
             System.exit(0);
         });
         stage.setResizable(false);

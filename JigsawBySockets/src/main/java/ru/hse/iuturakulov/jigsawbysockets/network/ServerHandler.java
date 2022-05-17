@@ -25,10 +25,6 @@ import static ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket.serverSock
 public class ServerHandler {
 
     /**
-     * The constant gameSet.
-     */
-    public static ArrayList<Player> gameSet = new ArrayList<>();
-    /**
      * The constant playerSet.
      */
     public static ArrayList<Player> playerSet = new ArrayList<>();
@@ -68,10 +64,12 @@ public class ServerHandler {
         if (JSONSender.getInstance().validateGson(response)) {
             if ((response.contains("keys") && response.contains("single_player"))) {
                 ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
-                Game.array.addAll(obj.figures);
+                Game.array.clear();
+                Game.setCurrentIndexShape(0);
+                Game.array.addAll(obj.moves);
                 Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is " + Game.array.size());
                 Game.setCurrentPlayingGame(new Game());
-                Game.setCurrentGameTime(obj.Main.get(1).code);
+                Game.setCurrentGameTime(obj.keys.get(1).getCode());
                 Game.setGameMode("Single-player");
                 Platform.runLater(() ->
                         App.setRoot("game_form")
@@ -82,22 +80,22 @@ public class ServerHandler {
         if (JSONSender.getInstance().validateGson(response)) {
             if (response.contains("keys") && response.contains("start_multi_player")) {
                 ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
-                Game.array.addAll(obj.figures);
+                Game.array.clear();
+                Game.setCurrentIndexShape(0);
+                Game.array.addAll(obj.moves);
                 Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is " + Game.array.size());
-                Player opponent = new Player(obj.Main.get(1).code);
+                Player opponent = new Player(obj.keys.get(1).getCode());
                 Game.setCurrentPlayingGame(new Game(opponent));
-                Game.setCurrentGameTime(obj.Main.get(2).code);
+                Game.setCurrentGameTime(obj.keys.get(2).getCode());
                 Game.setGameMode("Multi-player");
-                Platform.runLater(() -> {
-                    App.setRoot("game_form");
-                });
+                Platform.runLater(() -> App.setRoot("game_form"));
                 return;
             }
         }
         if (JSONSender.getInstance().validateGson(response)) {
             if ((response.contains("keys") && response.contains("get_shapes"))) {
                 Game.array.clear();
-                Game.array.addAll(new Gson().fromJson(response, ObjJsonSender.class).figures);
+                Game.array.addAll(new Gson().fromJson(response, ObjJsonSender.class).moves);
                 Constants.LOGGER.log(Level.INFO, "New figures got. Total decoded size is " + Game.array.size());
                 return;
             }
@@ -162,10 +160,10 @@ public class ServerHandler {
         if (Game.getCurrentPlayingGame() != null) {
             Game.setCurrentPlayingGame(null);
         }
-        DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Canceled", "Player Request Has been canceled", false);
-        Platform.runLater(() -> {
-            App.setRoot("main_form");
-        });
+        if (Game.getGameMode() == null) {
+            DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Canceled", "Player Request has been canceled", false);
+            Platform.runLater(() -> App.setRoot("main_form"));
+        }
     }
 
     private static void multiplayerGame(JSONObject parsedResponse) {

@@ -60,7 +60,7 @@ public abstract class ServerSocket {
             printStream = new PrintStream(serverSocket.getOutputStream(), true);
             bufferedReader = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         } catch (IOException e) {
-            DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Error", "Failed to connect to server", true);
+            DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Error", "Failed to connect to server", false);
         }
         Constants.LOGGER.log(Level.INFO, "Connecting...");
         attachToClient();

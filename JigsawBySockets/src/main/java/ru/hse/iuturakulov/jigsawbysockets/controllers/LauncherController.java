@@ -14,6 +14,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.MAX_LENGTH_LOGIN;
+import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.MIN_LENGTH_LOGIN;
+
 public class LauncherController implements Initializable {
     @FXML
     private TextField usernameField;
@@ -21,17 +24,22 @@ public class LauncherController implements Initializable {
     @FXML
     private void login(ActionEvent actionEvent) {
         Constants.LOGGER.log(Level.INFO, actionEvent.toString());
-        if (usernameField.getText().trim().length() < 4) {
-            DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Incorrect name", "Please type the correct name", false);
+        if (usernameField.getText().trim().length() < MIN_LENGTH_LOGIN) {
+            DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Incorrect name", "The length of your login is less than %d".formatted(MIN_LENGTH_LOGIN), false);
         } else {
+            ServerSocket.connect("127.0.0.1", 5000);
             Player.login(usernameField.getText());
         }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // TODO: server connection
         Constants.LOGGER.log(Level.WARNING, "Launch connection...");
-        ServerSocket.connect("127.0.0.1", 5000);
+        // Limit the text length for auth
+        usernameField.textProperty().addListener((ov, oldValue, newValue) -> {
+            if (usernameField.getText().length() > MAX_LENGTH_LOGIN) {
+                usernameField.setText(usernameField.getText().substring(0, MAX_LENGTH_LOGIN));
+            }
+        });
     }
 }

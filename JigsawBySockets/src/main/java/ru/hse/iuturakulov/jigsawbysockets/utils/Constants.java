@@ -19,5 +19,7 @@ public class Constants {
      * The constant HEIGHT_CELL.
      */
     public static final int HEIGHT_CELL = 9;
+    public static final int MAX_LENGTH_LOGIN = 10;
+    public static final int MIN_LENGTH_LOGIN = 4;
     public static AtomicInteger uniqueId = new AtomicInteger();
 }

@@ -29,12 +29,11 @@ public class MainFormController implements Initializable {
     private void singlePlay(ActionEvent ae) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "single_player");
-        jsonSender.putRequest("record", "no");
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
     @FXML
-    private void multiPlay(ActionEvent ae) throws IOException {
+    private void multiplayer(ActionEvent ae) {
         Player.getOnlineList();
         App.setRoot("games_form");
     }

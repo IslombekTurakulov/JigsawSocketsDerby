@@ -25,6 +25,8 @@ public class GameRequestAcceptFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playerLabel.setText(ServerHandler.otherPlayingPlayer);
+        rejectBtn.setOnAction(this::reject);
+        acceptBtn.setOnAction(this::accept);
     }
 
     /**

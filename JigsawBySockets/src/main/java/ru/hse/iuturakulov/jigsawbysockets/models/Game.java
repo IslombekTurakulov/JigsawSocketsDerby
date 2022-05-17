@@ -13,13 +13,13 @@ import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
 
 public class Game {
-    public static ArrayList<FigureType> array = new ArrayList<>();
+    public final static ArrayList<FigureType> array = new ArrayList<>();
+    public static String winner;
     private static Game currentPlayingGame;
     private static Rectangle[][] board = new Rectangle[WIDTH_CELL][HEIGHT_CELL];
     private static Pane gamePane;
@@ -30,33 +30,28 @@ public class Game {
     private static Player otherPlayingPerson;
     private static boolean isGameStopped;
     private static String currentGameTime;
-    public static String winner;
     private int id;
-
-    public static int getCurrentIndexShape() {
-        return currentIndexShape;
-    }
-
-    public static void setCurrentIndexShape(int currentIndexShape) {
-        Game.currentIndexShape = currentIndexShape;
-    }
 
     public Game(int id, List<Player> players) {
         this.id = id;
         playingPerson = players.get(0);
         otherPlayingPerson = players.get(1);
         placedBlocks = 0;
-        createBoard();
+        Game.createBoard();
     }
 
     public Game() {
         placedBlocks = 0;
         playingPerson = new Player(Player.getPlayer().getUsername(), 0);
-        createBoard();
+        Game.createBoard();
     }
 
     public Game(Player players) {
         setOtherPlayingPerson(players);
+    }
+
+    public static void setCurrentIndexShape(int currentIndexShape) {
+        Game.currentIndexShape = currentIndexShape;
     }
 
     public static int getPlacedBlocks() {
@@ -69,16 +64,20 @@ public class Game {
 
     public static void checkForNewFigure() {
         if (!isGameStopped) {
-            if (currentIndexShape+ 1 >= array.size()) {
-                currentIndexShape = 0;
-                LOGGER.log(Level.INFO, "Creating a request for another 10 shapes..");
-                currentPlayingGame.sendMoreShape();
-            }
+            checkExtraShapes();
             if (GameFormController.figure.isDisable()) {
                 play(placedBlocks);
                 GameFormController.figure = new Figure(Game.getGamePane().getPrefWidth() / 3, HEIGHT_CELL * (SIZE + 2) + 20);
                 gamePane.getChildren().add(GameFormController.figure);
             }
+        }
+    }
+
+    public static void checkExtraShapes() {
+        if (currentIndexShape + 1 >= array.size()) {
+            currentIndexShape = 0;
+            LOGGER.log(Level.INFO, "Creating a request for another 10 shapes..");
+            currentPlayingGame.sendMoreShape();
         }
     }
 
@@ -165,12 +164,12 @@ public class Game {
         return otherPlayingPerson;
     }
 
-    public static boolean isGameStopped() {
-        return isGameStopped;
-    }
-
     public void setOtherPlayingPerson(Player otherPlayingPerson) {
         Game.otherPlayingPerson = otherPlayingPerson;
+    }
+
+    public static boolean isGameStopped() {
+        return isGameStopped;
     }
 
     public static void rejectGameInvite() {
@@ -192,6 +191,10 @@ public class Game {
     }
 
     public static void leave() {
+        if (Game.currentPlayingGame != null) {
+            Game.currentPlayingGame = null;
+        }
+        ServerHandler.otherPlayingPlayer = null;
     }
 
     public static Player getPlayingPerson() {
@@ -218,6 +221,36 @@ public class Game {
         gamePane.setVisible(true);
     }
 
+    public static void createBoard() {
+        createPane();
+        board = new Rectangle[HEIGHT_CELL][WIDTH_CELL];
+        for (int rows = 0; rows < HEIGHT_CELL; rows++) {
+            for (int columns = 0; columns < WIDTH_CELL; columns++) {
+                Tiles tilePane = new Tiles(columns, rows, new Rectangle(SIZE, SIZE));
+                board[rows][columns] = tilePane.tileCreation(Color.TRANSPARENT);
+                board[rows][columns].setStroke(Paint.valueOf("#FFFFFF"));
+                gamePane.getChildren().add(board[rows][columns]);
+            }
+        }
+        try {
+            checkExtraShapes();
+            GameFormController.figure = new Figure(Game.getGamePane().getPrefWidth() / 3, HEIGHT_CELL * (SIZE + 2) + 20);
+            Game.getGamePane().getChildren().add(GameFormController.figure);
+        } catch (IndexOutOfBoundsException | NullPointerException exception) {
+            LOGGER.log(Level.SEVERE, exception.getMessage());
+        }
+    }
+
+    public static void showGameInfo() {
+        System.out.println("==============================================");
+        System.out.printf("Game-mode - %s%n", getGameMode());
+        System.out.printf("Length of array figures - %d%n", array.size());
+        System.out.printf("Current playing player - %s%n", Player.getPlayer().getUsername());
+        System.out.printf("Other opponent player - %s%n", Game.getOtherPlayingPerson() != null ? Game.getOtherPlayingPerson().getUsername() : "NULL");
+        System.out.printf("Max time - %s%n", getCurrentGameTime());
+        System.out.println("==============================================");
+    }
+
     public void sendMoreShape() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -231,21 +264,6 @@ public class Game {
         jsonSender.putRequest("function", "invite_request");
         jsonSender.putRequest("opponent", getOtherPlayingPerson().getUsername());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
-    }
-
-    public static void createBoard() {
-        createPane();
-        board = new Rectangle[HEIGHT_CELL][WIDTH_CELL];
-        for (int rows = 0; rows < HEIGHT_CELL; rows++) {
-            for (int columns = 0; columns < WIDTH_CELL; columns++) {
-                Tiles tilePane = new Tiles(columns, rows, new Rectangle(SIZE, SIZE));
-                board[rows][columns] = tilePane.tileCreation(Color.TRANSPARENT);
-                board[rows][columns].setStroke(Paint.valueOf("#FFFFFF"));
-                gamePane.getChildren().add(board[rows][columns]);
-            }
-        }
-        GameFormController.figure = new Figure(Game.getGamePane().getPrefWidth() / 3, HEIGHT_CELL * (SIZE + 2) + 20);
-        Game.getGamePane().getChildren().add(GameFormController.figure);
     }
 
     public void sendFinishedGameRequest() {

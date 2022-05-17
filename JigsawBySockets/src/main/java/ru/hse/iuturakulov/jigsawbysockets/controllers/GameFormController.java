@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -15,11 +16,13 @@ import javafx.util.Duration;
 import ru.hse.iuturakulov.jigsawbysockets.App;
 import ru.hse.iuturakulov.jigsawbysockets.models.Game;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
-import ru.hse.iuturakulov.jigsawbysockets.models.TimelineCounter;
 import ru.hse.iuturakulov.jigsawbysockets.models.shapes.Figure;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
+import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 
 import java.net.URL;
+import java.text.MessageFormat;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
@@ -38,6 +41,8 @@ public class GameFormController implements Initializable {
      * The Is single player.
      */
     boolean isSinglePlayer;
+    private Timeline timeline;
+    private LocalTime localTime;
     @FXML
     private Button playAgainBtn;
     @FXML
@@ -71,13 +76,11 @@ public class GameFormController implements Initializable {
      * Increment time.
      */
     public void incrementTime() {
-        TimelineCounter.getInstance().incrementTime();
-        String time = TimelineCounter.getInstance().getTime().format(DATE_TIME_FORMATTER);
+        localTime = localTime.plusSeconds(1);
+        String time = localTime.format(DATE_TIME_FORMATTER);
         if (time.equals(Game.getCurrentGameTime())) {
-            TimelineCounter.getInstance().getTimeline().stop();
-            figure.setDisable(true);
-            figure.setLayoutX(figure.getInitialX());
-            figure.setLayoutY(figure.getInitialY());
+            Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
+            timeline.pause();
             Game.setIsGameStopped(true);
             gameEndInfoPane.setVisible(true);
             playAgainBtn.setVisible(true);
@@ -103,13 +106,16 @@ public class GameFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Game.checkExtraShapes();
         Game.createBoard();
-        yourNameForGame.setText("You: " + Player.getPlayer().getUsername());
-        maxTimeForGame.setText("Max time: " + Game.getCurrentGameTime());
+        Game.showGameInfo();
+        yourNameForGame.setText(MessageFormat.format("You: {0}", Player.getPlayer().getUsername()));
+        maxTimeForGame.setText(MessageFormat.format("Max time: {0}", Game.getCurrentGameTime()));
         currentGameMode.setText(Game.getGameMode());
         initializeCurrentGameMode();
         borderGamePane.setCenter(Game.getGamePane());
         initializeTimer();
+        timeline.playFromStart();
         exitFromGameBtn.setOnAction(event -> exitGameSession());
         playAgainBtn.setOnAction(event -> playAgainSession());
         playAgainBtn.setVisible(false);
@@ -126,31 +132,50 @@ public class GameFormController implements Initializable {
         }
     }
 
+
     private void initializeTimer() {
-        TimelineCounter.getInstance().initializeTimer();
-        TimelineCounter.getInstance().setTimeline(new Timeline(new KeyFrame(Duration.millis(1000), ae -> incrementTime())));
-        TimelineCounter.getInstance().getTimeline().setCycleCount(Animation.INDEFINITE);
-        TimelineCounter.getInstance().getTimeline().play();
+        localTime = LocalTime.parse("00:00:00");
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), ae -> incrementTime()));
+        timeline.setCycleCount(Animation.INDEFINITE);
     }
 
     private void exitGameSession() {
+        if (!Game.isGameStopped()) {
+            String temp;
+            if (!isSinglePlayer) {
+                temp = "Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW");
+                temp += "\nYour blocks: %d".formatted(Game.getPlacedBlocks());
+                temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
+                DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
+            } else {
+                temp = "Your blocks: %d".formatted(Game.getPlacedBlocks());
+                DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Single player", temp, false);
+            }
+        }
         Constants.LOGGER.log(Level.INFO, "Exit from game session");
+        recoverGameStatus();
         Game.leave();
-        App.setRoot("main_form");
-        Game.setCurrentIndexShape(0);
+        Game.setCurrentPlayingGame(null);
+        Platform.runLater(() -> App.setRoot("main_form")
+        );
     }
 
     private void playAgainSession() {
+        recoverGameStatus();
         if (isSinglePlayer) {
             Game.setCurrentPlayingGame(new Game());
-            Game.setCurrentGameTime(maxTimeForGame.getText());
             Game.setGameMode("Single-player");
-            Platform.runLater(() ->
-                    App.setRoot("game_form")
+            Platform.runLater(() -> App.setRoot("game_form")
             );
         } else {
             Game.setCurrentPlayingGame(new Game(Game.getOtherPlayingPerson()));
             Game.getCurrentPlayingGame().sendGameRequest();
         }
+    }
+
+    private void recoverGameStatus() {
+        Game.array.clear();
+        timeline.stop();
+        Game.setIsGameStopped(false);
     }
 }

@@ -64,14 +64,6 @@ public class CustomPoint {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof CustomPoint) {
-            return x == ((CustomPoint) obj).x && y == ((CustomPoint) obj).y;
-        }
-        return false;
-    }
-
-    @Override
     public String toString() {
         return "Point X: %d Y: %d".formatted(x, y);
     }

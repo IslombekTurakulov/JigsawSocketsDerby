@@ -9,41 +9,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="game" stylesheets="@../style/main_home.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.hse.iuturakulov.jigsawbysockets.controllers.GameFormController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="container" stylesheets="@../style/game_form.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.hse.iuturakulov.jigsawbysockets.controllers.GameFormController">
     <children>
         <BorderPane fx:id="borderGamePane" layoutX="10.0" layoutY="10.0" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <left>
-                <AnchorPane fx:id="leftGamePaneTimer" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="200.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <children>
-                        <Pane prefHeight="114.0" prefWidth="200.0" style="-fx-background-color: #344e41; -fx-background-radius: 5; -fx-border-color: black; -fx-border-radius: 5;">
-                           <children>
-                                      <Text fx:id="yourNameForGame" accessibleText="Your name" fill="WHITE" layoutX="5.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your name" wrappingWidth="191.79998779296875">
-                                          <font>
-                                              <Font name="Arial Bold" size="18.0" />
-                                          </font>
-                                      </Text>
-                                      <Text fx:id="currentGameMode" accessibleText="Game mode that you are playing" fill="WHITE" layoutX="3.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game mode" wrappingWidth="195.0">
-                                          <font>
-                                              <Font name="Arial Italic" size="18.0" />
-                                          </font>
-                                      </Text>
-                                      <Text fx:id="opponentsNameForGame" fill="WHITE" layoutX="3.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opponents name" wrappingWidth="195.0">
-                                          <font>
-                                              <Font name="Arial Bold" size="18.0" />
-                                          </font>
-                                      </Text>
-                           </children>
-                        </Pane>
-                            </children>
-                            <padding>
-                                <Insets top="50.0" />
-                            </padding>
-                        </VBox>
-                    </children>
-                </AnchorPane>
-            </left>
             <right>
                 <AnchorPane disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="200.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -51,53 +19,39 @@
                             <Insets top="50.0" />
                         </padding>
                         <children>
-                     <Pane prefHeight="114.0" prefWidth="200.0" style="-fx-background-color: #344e41; -fx-background-radius: 15; -fx-border-color: black; -fx-border-radius: 15;">
-                        <children>
-                                  <Text fx:id="timeCurrentGame" fill="WHITE" layoutX="7.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time-left: " wrappingWidth="187.79998779296875">
-                                      <font>
-                                          <Font name="Arial Bold Italic" size="18.0" />
-                                      </font>
-                                  </Text>
-                                  <Text fx:id="maxTimeForGame" fill="WHITE" layoutX="7.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max time" wrappingWidth="187.79998779296875">
-                                      <font>
-                                          <Font name="Arial Bold" size="18.0" />
-                                      </font>
-                                  </Text>
-                        </children>
-                     </Pane>
-                     <Pane fx:id="gameEndInfoPane" prefHeight="114.0" prefWidth="200.0" style="-fx-background-color: #344e41; -fx-background-radius: 15; -fx-border-color: black; -fx-border-radius: 15;" visible="false">
-                        <children>
-                           <Text fx:id="winnerCurrentGame" fill="WHITE" layoutX="7.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Winner: " wrappingWidth="187.79998779296875">
-                              <font>
-                                 <Font name="Arial Bold Italic" size="16.0" />
-                              </font>
-                           </Text>
-                           <Text fx:id="yourPlacedBlocks" fill="WHITE" layoutX="7.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your blocks:" wrappingWidth="187.79998779296875">
-                              <font>
-                                 <Font name="Arial Bold" size="16.0" />
-                              </font>
-                           </Text>
-                           <Text fx:id="opponentPlacedBlocks" fill="WHITE" layoutX="7.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opponent blocks:" wrappingWidth="187.79998779296875">
-                              <font>
-                                 <Font name="Arial Bold" size="16.0" />
-                              </font>
-                           </Text>
-                        </children>
-                     </Pane>
-                     <VBox alignment="BOTTOM_CENTER" prefHeight="281.0" prefWidth="200.0" spacing="10.0">
-                        <children>
-                           <Button fx:id="playAgainBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="164.0" style="-fx-border-color: white;" text="Play again" textAlignment="CENTER" textFill="WHITE">
-                              <font>
-                                 <Font name="System Bold" size="18.0" />
-                              </font>
-                           </Button>
-                           <Button fx:id="exitFromGameBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="164.0" style="-fx-border-color: white;" text="Exit from game" textAlignment="CENTER" textFill="WHITE">
-                              <font>
-                                 <Font name="System Bold" size="18.0" />
-                              </font>
-                           </Button>
-                        </children>
-                     </VBox>
+                            <Pane prefHeight="114.0" prefWidth="200.0" style="-fx-background-color: #344e41; -fx-background-radius: 15; -fx-border-color: black; -fx-border-radius: 15;">
+                                <children>
+                                    <Text fx:id="timeCurrentGame" fill="WHITE" layoutX="7.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time-left: " textAlignment="CENTER" wrappingWidth="187.79998779296875">
+                                        <font>
+                                            <Font name="Arial Bold Italic" size="18.0" />
+                                        </font>
+                                    </Text>
+                                    <Text fx:id="maxTimeForGame" fill="WHITE" layoutX="7.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max time" textAlignment="CENTER" wrappingWidth="187.79998779296875">
+                                        <font>
+                                            <Font name="Arial Bold" size="18.0" />
+                                        </font>
+                                    </Text>
+                                </children>
+                            </Pane>
+                            <Pane fx:id="gameEndInfoPane" prefHeight="114.0" prefWidth="200.0" style="-fx-background-color: #344e41; -fx-background-radius: 15; -fx-border-color: black; -fx-border-radius: 15;" visible="false">
+                                <children>
+                                    <Text fx:id="winnerCurrentGame" fill="WHITE" layoutX="7.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Winner: " wrappingWidth="187.79998779296875">
+                                        <font>
+                                            <Font name="Arial Bold Italic" size="16.0" />
+                                        </font>
+                                    </Text>
+                                    <Text fx:id="yourPlacedBlocks" fill="WHITE" layoutX="7.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your blocks:" wrappingWidth="187.79998779296875">
+                                        <font>
+                                            <Font name="Arial Bold" size="16.0" />
+                                        </font>
+                                    </Text>
+                                    <Text fx:id="opponentPlacedBlocks" fill="WHITE" layoutX="7.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opponent blocks:" wrappingWidth="187.79998779296875">
+                                        <font>
+                                            <Font name="Arial Bold" size="16.0" />
+                                        </font>
+                                    </Text>
+                                </children>
+                            </Pane>
                         </children>
                     </VBox>
                 </AnchorPane>
@@ -105,6 +59,52 @@
             <center>
                 <Pane fx:id="tilesForGame" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="392.0" BorderPane.alignment="CENTER" />
             </center>
+         <padding>
+            <Insets left="195.0" />
+         </padding>
         </BorderPane>
+            <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="195.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="605.0" AnchorPane.topAnchor="0.0">
+                <children>
+                    <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="114.0" prefWidth="192.0" style="-fx-background-color: #344e41; -fx-background-radius: 5; -fx-border-color: black; -fx-border-radius: 5;">
+                        <children>
+                            <Text fx:id="yourNameForGame" accessibleText="Your name" fill="WHITE" layoutX="5.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your name" textAlignment="CENTER" wrappingWidth="191.79998779296875">
+                                <font>
+                                    <Font name="Arial Bold" size="18.0" />
+                                </font>
+                            </Text>
+                            <Text fx:id="currentGameMode" accessibleText="Game mode that you are playing" fill="WHITE" layoutX="3.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game mode" textAlignment="CENTER" wrappingWidth="195.0">
+                                <font>
+                                    <Font name="Arial Italic" size="18.0" />
+                                </font>
+                            </Text>
+                            <Text fx:id="opponentsNameForGame" fill="WHITE" layoutX="3.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opponents name" textAlignment="CENTER" wrappingWidth="195.0">
+                                <font>
+                                    <Font name="Arial Bold" size="18.0" />
+                                </font>
+                            </Text>
+                        </children>
+                    </Pane>
+            <VBox alignment="BOTTOM_LEFT" prefHeight="415.0" prefWidth="195.0" spacing="20.0">
+               <children>
+                           <Button fx:id="playAgainBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="38.0" prefWidth="164.0" style="-fx-border-color: white;" text="Play again" textAlignment="CENTER" textFill="WHITE">
+                               <font>
+                                   <Font name="System Bold" size="18.0" />
+                               </font>
+                           </Button>
+                           <Button fx:id="exitFromGameBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="164.0" style="-fx-border-color: white;" text="Exit from game" textAlignment="CENTER" textFill="WHITE">
+                               <font>
+                                   <Font name="System Bold" size="18.0" />
+                               </font>
+                           </Button>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </VBox>
+                </children>
+                <padding>
+                    <Insets top="50.0" />
+                </padding>
+            </VBox>
     </children>
 </AnchorPane>

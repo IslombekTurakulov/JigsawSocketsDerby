@@ -15,15 +15,6 @@ public class Player {
     private int placed;
 
     /**
-     * Sets username.
-     *
-     * @param username the username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
      * Instantiates a new Player.
      *
      * @param name   the name
@@ -58,12 +49,14 @@ public class Player {
      * @param name the name
      */
     public static void login(String name) {
-        Constants.LOGGER.log(Level.INFO, "Sending login request..");
-        JSONSender jsonSender = JSONSender.getInstance();
-        jsonSender.clearRequests();
-        jsonSender.putRequest("function", "login");
-        jsonSender.putRequest("username", name);
-        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+        if (ServerSocket.serverSocket != null) {
+            Constants.LOGGER.log(Level.INFO, "Sending login request..");
+            JSONSender jsonSender = JSONSender.getInstance();
+            jsonSender.clearRequests();
+            jsonSender.putRequest("function", "login");
+            jsonSender.putRequest("username", name);
+            ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+        }
     }
 
     /**
@@ -132,6 +125,15 @@ public class Player {
      */
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * Sets username.
+     *
+     * @param username the username
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

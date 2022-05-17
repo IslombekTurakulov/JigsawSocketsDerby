@@ -10,228 +10,204 @@
             xmlns="http://javafx.com/javafx/17"
             fx:controller="ru.hse.iuturakulov.serverjigsawsockets.controllers.TimeFormController">
     <VBox prefHeight="600.0" prefWidth="116.0">
-        <children>
-            <Button mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="40.0" prefWidth="40.0">
-                <graphic>
-                    <ImageView fitHeight="33.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@../drawable/back.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-        </children>
+        <Button mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="40.0" prefWidth="40.0">
+            <graphic>
+                <ImageView fitHeight="33.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../drawable/back.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
     </VBox>
     <VBox alignment="CENTER" layoutX="170.0" layoutY="24.0" prefHeight="600.0" prefWidth="485.0"
           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="145.0"
           AnchorPane.topAnchor="0.0">
-        <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-                <children>
-                    <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="98.0" spacing="20.0">
-                        <children>
-                            <Button id="H2U" mnemonicParsing="false" onAction="#changeHours" prefHeight="28.0"
-                                    prefWidth="36.0">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/up.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button id="H1U" mnemonicParsing="false" onAction="#changeHours" prefHeight="28.0"
-                                    prefWidth="36.0">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" layoutX="93.0" layoutY="251.0"
-                                               pickOnBounds="true" preserveRatio="true">
-                                        <Image url="@../drawable/up.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        </children>
-                        <HBox.margin>
-                            <Insets/>
-                        </HBox.margin>
-                    </HBox>
-                    <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="110.0" spacing="20.0">
-                        <children>
-                            <Button id="M2U" mnemonicParsing="false" onAction="#changeMinutes" prefHeight="28.0"
-                                    prefWidth="36.0">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/up.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button id="M1U" mnemonicParsing="false" onAction="#changeMinutes" prefHeight="28.0"
-                                    prefWidth="36.0">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/up.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        </children>
-                        <HBox.margin>
-                            <Insets left="30.0"/>
-                        </HBox.margin>
-                    </HBox>
-                    <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="106.0" spacing="25.0">
-                        <children>
-                            <Button id="S2U" mnemonicParsing="false" onAction="#changeSeconds" prefHeight="28.0"
-                                    prefWidth="36.0">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/up.png"/>
-                                    </ImageView>
-                                </graphic>
-                                <HBox.margin>
-                                    <Insets/>
-                                </HBox.margin>
-                            </Button>
-                            <Button id="S1U" mnemonicParsing="false" onAction="#changeSeconds" prefHeight="28.0"
-                                    prefWidth="36.0">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/up.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        </children>
-                        <HBox.margin>
-                            <Insets left="25.0"/>
-                        </HBox.margin>
-                    </HBox>
-                </children>
-                <VBox.margin>
-                    <Insets left="20.0"/>
-                </VBox.margin>
+        <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+            <VBox.margin>
+                <Insets left="20.0"/>
+            </VBox.margin>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="98.0" spacing="20.0">
+                <HBox.margin>
+                    <Insets/>
+                </HBox.margin>
+                <Button id="H2U" mnemonicParsing="false" onAction="#changeHours" prefHeight="28.0"
+                        prefWidth="36.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/up.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button id="H1U" mnemonicParsing="false" onAction="#changeHours" prefHeight="28.0"
+                        prefWidth="36.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" layoutX="93.0" layoutY="251.0"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../drawable/up.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0">
-                <children>
-                    <Label fx:id="labelHours" alignment="CENTER" prefHeight="96.0" prefWidth="143.0" text="00"
-                           textFill="WHITE">
-                        <font>
-                            <Font name="Arial" size="96.0"/>
-                        </font>
-                    </Label>
-                    <Label fx:id="dot_separator" alignment="CENTER" prefHeight="112.0" prefWidth="28.0" text=":"
-                           textFill="WHITE">
-                        <font>
-                            <Font name="System Bold" size="49.0"/>
-                        </font>
-                    </Label>
-                    <Label fx:id="labelMinutes" alignment="CENTER" text="00" textFill="WHITE">
-                        <font>
-                            <Font name="Arial" size="96.0"/>
-                        </font>
-                    </Label>
-                    <Label fx:id="dot_separatorsec" alignment="CENTER" prefHeight="112.0" prefWidth="28.0" text=":"
-                           textFill="WHITE">
-                        <font>
-                            <Font name="System Bold" size="49.0"/>
-                        </font>
-                    </Label>
-                    <Label fx:id="labelSeconds" alignment="CENTER" prefHeight="112.0" prefWidth="143.0" text="00"
-                           textFill="WHITE">
-                        <font>
-                            <Font name="Arial" size="96.0"/>
-                        </font>
-                    </Label>
-                </children>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="110.0" spacing="20.0">
+                <HBox.margin>
+                    <Insets left="30.0"/>
+                </HBox.margin>
+                <Button id="M2U" mnemonicParsing="false" onAction="#changeMinutes" prefHeight="28.0"
+                        prefWidth="36.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/up.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button id="M1U" mnemonicParsing="false" onAction="#changeMinutes" prefHeight="28.0"
+                        prefWidth="36.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/up.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-                <children>
-                    <HBox prefHeight="100.0" prefWidth="98.0" spacing="20.0">
-                        <children>
-                            <Button id="H2D" mnemonicParsing="false" onAction="#changeHours">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/down.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button id="H1D" lineSpacing="15.0" mnemonicParsing="false" onAction="#changeHours">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/down.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        </children>
-                    </HBox>
-                    <HBox prefHeight="100.0" prefWidth="110.0" spacing="20.0">
-                        <children>
-                            <Button id="M2D" mnemonicParsing="false" onAction="#changeMinutes">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/down.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button id="M1D" mnemonicParsing="false" onAction="#changeMinutes">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/down.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        </children>
-                        <HBox.margin>
-                            <Insets left="40.0"/>
-                        </HBox.margin>
-                    </HBox>
-                    <HBox prefHeight="100.0" prefWidth="106.0" spacing="5.0">
-                        <children>
-                            <Button id="S2D" mnemonicParsing="false" onAction="#changeSeconds">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/down.png"/>
-                                    </ImageView>
-                                </graphic>
-                                <HBox.margin>
-                                    <Insets left="20.0"/>
-                                </HBox.margin>
-                            </Button>
-                            <Button id="S1D" mnemonicParsing="false" onAction="#changeSeconds">
-                                <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../drawable/down.png"/>
-                                    </ImageView>
-                                </graphic>
-                                <HBox.margin>
-                                    <Insets left="20.0"/>
-                                </HBox.margin>
-                            </Button>
-                        </children>
-                        <HBox.margin>
-                            <Insets/>
-                        </HBox.margin>
-                    </HBox>
-                </children>
-                <VBox.margin>
-                    <Insets left="20.0"/>
-                </VBox.margin>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="106.0" spacing="25.0">
+                <HBox.margin>
+                    <Insets left="25.0"/>
+                </HBox.margin>
+                <Button id="S2U" mnemonicParsing="false" onAction="#changeSeconds" prefHeight="28.0"
+                        prefWidth="36.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/up.png"/>
+                        </ImageView>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+                <Button id="S1U" mnemonicParsing="false" onAction="#changeSeconds" prefHeight="28.0"
+                        prefWidth="36.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/up.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </HBox>
-        </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <Label fx:id="labelHours" alignment="CENTER" prefHeight="96.0" prefWidth="143.0" text="00"
+                   textFill="WHITE">
+                <font>
+                    <Font name="Arial" size="96.0"/>
+                </font>
+            </Label>
+            <Label fx:id="dot_separator" alignment="CENTER" prefHeight="112.0" prefWidth="28.0" text=":"
+                   textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="49.0"/>
+                </font>
+            </Label>
+            <Label fx:id="labelMinutes" alignment="CENTER" text="00" textFill="WHITE">
+                <font>
+                    <Font name="Arial" size="96.0"/>
+                </font>
+            </Label>
+            <Label fx:id="dot_separatorsec" alignment="CENTER" prefHeight="112.0" prefWidth="28.0" text=":"
+                   textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="49.0"/>
+                </font>
+            </Label>
+            <Label fx:id="labelSeconds" alignment="CENTER" prefHeight="112.0" prefWidth="143.0" text="00"
+                   textFill="WHITE">
+                <font>
+                    <Font name="Arial" size="96.0"/>
+                </font>
+            </Label>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+            <VBox.margin>
+                <Insets left="20.0"/>
+            </VBox.margin>
+            <HBox prefHeight="100.0" prefWidth="98.0" spacing="20.0">
+                <Button id="H2D" mnemonicParsing="false" onAction="#changeHours">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/down.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button id="H1D" lineSpacing="15.0" mnemonicParsing="false" onAction="#changeHours">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/down.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="110.0" spacing="20.0">
+                <HBox.margin>
+                    <Insets left="40.0"/>
+                </HBox.margin>
+                <Button id="M2D" mnemonicParsing="false" onAction="#changeMinutes">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/down.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button id="M1D" mnemonicParsing="false" onAction="#changeMinutes">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/down.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="106.0" spacing="5.0">
+                <HBox.margin>
+                    <Insets/>
+                </HBox.margin>
+                <Button id="S2D" mnemonicParsing="false" onAction="#changeSeconds">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/down.png"/>
+                        </ImageView>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets left="20.0"/>
+                    </HBox.margin>
+                </Button>
+                <Button id="S1D" mnemonicParsing="false" onAction="#changeSeconds">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <Image url="@../drawable/down.png"/>
+                        </ImageView>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets left="20.0"/>
+                    </HBox.margin>
+                </Button>
+            </HBox>
+        </HBox>
     </VBox>
     <VBox alignment="CENTER" layoutX="625.0" layoutY="2.0" prefHeight="583.0" prefWidth="171.0">
-        <children>
-            <Button id="downButton" mnemonicParsing="false" onAction="#reset" prefHeight="40.0" prefWidth="40.0">
-                <graphic>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@../drawable/reset.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-        </children>
+        <Button id="downButton" mnemonicParsing="false" onAction="#reset" prefHeight="40.0" prefWidth="40.0">
+            <graphic>
+                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../drawable/reset.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
     </VBox>
 </AnchorPane>

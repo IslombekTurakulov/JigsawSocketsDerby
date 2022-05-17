@@ -56,17 +56,24 @@ public class Figure extends Pane {
 
     private void handleEventsOnFigure(double layoutX, double layoutY) {
         this.setOnMouseDragged(mouseEvent -> {
-            this.setLayoutX(mouseEvent.getX() + this.getLayoutX());
-            this.setLayoutY(mouseEvent.getY() + this.getLayoutY());
+            if (!Game.isGameStopped()) {
+                this.setLayoutX(mouseEvent.getX() + this.getLayoutX());
+                this.setLayoutY(mouseEvent.getY() + this.getLayoutY());
+            } else {
+                this.setLayoutX(layoutX);
+                this.setLayoutY(layoutY);
+            }
         });
         this.setOnMouseReleased(mouseEvent -> {
-            if (!Game.isPossibleToPlace(this) && !Game.isGameStopped()) {
-                // If not possible, the figure comes to the initial (original place)
-                this.setLayoutX(getInitialX());
-                this.setLayoutY(getInitialY());
-            } else {
-                // Checks if all figures are disabled.
-                Game.checkForNewFigure();
+            if (!Game.isGameStopped()) {
+                if (!Game.isPossibleToPlace(this)) {
+                    // If not possible, the figure comes to the initial (original place)
+                    this.setLayoutX(layoutX);
+                    this.setLayoutY(layoutY);
+                } else {
+                    // Checks if all figures are disabled.
+                    Game.checkForNewFigure();
+                }
             }
         });
     }

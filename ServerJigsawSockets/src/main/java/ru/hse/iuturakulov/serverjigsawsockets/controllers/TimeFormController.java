@@ -3,14 +3,8 @@ package ru.hse.iuturakulov.serverjigsawsockets.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import ru.hse.iuturakulov.serverjigsawsockets.ServerMain;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
@@ -89,11 +83,11 @@ public class TimeFormController implements Initializable {
     @FXML
     protected void reset() {
         flag = false;
+        duration = 0D;
+        Constants.timeCurrent = null;
         preview_minutes = "00";
         preview_seconds = "00";
         preview_hours = "00";
-        duration = 0D;
-        Constants.timeCurrent = null;
         labelSeconds.setText(preview_seconds);
         labelMinutes.setText(preview_minutes);
         labelHours.setText(preview_hours);
@@ -144,11 +138,11 @@ public class TimeFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        duration = 0D;
         String tempTime = null;
         if (Constants.timeCurrent != null) {
             tempTime = Constants.timeCurrent;
         }
-        duration = 0D;
         String[] arr = tempTime != null ? tempTime.split(":") : null;
         preview_hours = tempTime == null ? labelHours.getText() : arr[0];
         preview_minutes = tempTime == null ? labelMinutes.getText() : arr[1];

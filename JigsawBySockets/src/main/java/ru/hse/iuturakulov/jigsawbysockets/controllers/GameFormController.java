@@ -3,7 +3,6 @@ package ru.hse.iuturakulov.jigsawbysockets.controllers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -78,7 +77,7 @@ public class GameFormController implements Initializable {
     public void incrementTime() {
         localTime = localTime.plusSeconds(1);
         String time = localTime.format(DATE_TIME_FORMATTER);
-        if (time.equals(Game.getCurrentGameTime())) {
+        if (Game.isGameStopped() || time.equals(Game.getCurrentGameTime())) {
             Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
             timeline.pause();
             Game.setIsGameStopped(true);
@@ -95,7 +94,7 @@ public class GameFormController implements Initializable {
             winnerCurrentGame.setVisible(false);
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
         } else {
-            Game.finishGame(Game.getPlacedBlocks());
+            Game.finishMultiplayerGame(Game.getPlacedBlocks());
             opponentPlacedBlocks.setVisible(false);
             winnerCurrentGame.setVisible(true);
             winnerCurrentGame.setText("Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW"));
@@ -106,6 +105,7 @@ public class GameFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Game.setIsPlayingGame(true);
         Game.checkExtraShapes();
         Game.createBoard();
         Game.showGameInfo();
@@ -141,8 +141,11 @@ public class GameFormController implements Initializable {
 
     private void exitGameSession() {
         if (!Game.isGameStopped()) {
+            Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
+            timeline.pause();
             String temp;
             if (!isSinglePlayer) {
+                Game.finishMultiplayerGame(Game.getPlacedBlocks());
                 temp = "Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW");
                 temp += "\nYour blocks: %d".formatted(Game.getPlacedBlocks());
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
@@ -152,12 +155,13 @@ public class GameFormController implements Initializable {
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Single player", temp, false);
             }
         }
+        Game.finishSingleGame();
+        Game.setIsPlayingGame(false);
         Constants.LOGGER.log(Level.INFO, "Exit from game session");
         recoverGameStatus();
         Game.leave();
         Game.setCurrentPlayingGame(null);
-        Platform.runLater(() -> App.setRoot("main_form")
-        );
+        App.setRoot("main_form");
     }
 
     private void playAgainSession() {
@@ -165,8 +169,7 @@ public class GameFormController implements Initializable {
         if (isSinglePlayer) {
             Game.setCurrentPlayingGame(new Game());
             Game.setGameMode("Single-player");
-            Platform.runLater(() -> App.setRoot("game_form")
-            );
+            App.setRoot("game_form");
         } else {
             Game.setCurrentPlayingGame(new Game(Game.getOtherPlayingPerson()));
             Game.getCurrentPlayingGame().sendGameRequest();
@@ -174,6 +177,7 @@ public class GameFormController implements Initializable {
     }
 
     private void recoverGameStatus() {
+        Game.checkExtraShapes();
         Game.array.clear();
         timeline.stop();
         Game.setIsGameStopped(false);

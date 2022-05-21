@@ -64,12 +64,12 @@ public class ServerMainController implements Initializable {
             playersTable.setItems(Player.playersList);
         } catch (Exception ex) {
             ex.printStackTrace();
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Failed");
-            a.setHeaderText("Connection Failed");
-            a.setResizable(true);
-            a.setContentText("Connection Failed");
-            a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Failed");
+            alert.setHeaderText("Connection Failed");
+            alert.setResizable(true);
+            alert.setContentText("Connection Failed");
+            alert.showAndWait();
             System.exit(0);
         }
     }
@@ -83,21 +83,21 @@ public class ServerMainController implements Initializable {
         if (portField.getText().isEmpty() || !Pattern.matches(
                 "^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$",
                 portField.getText())) {
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Failed");
-            a.setHeaderText("Server Failed to start");
-            a.setResizable(true);
-            a.setContentText("The port number is not valid");
-            a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Failed");
+            alert.setHeaderText("Server Failed to start");
+            alert.setResizable(true);
+            alert.setContentText("The port number is not valid");
+            alert.showAndWait();
             return;
         }
         if (Constants.timeCurrent == null) {
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Failed");
-            a.setHeaderText("Incorrect time");
-            a.setResizable(true);
-            a.setContentText("Please, choose time for game");
-            a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Failed");
+            alert.setHeaderText("Incorrect time");
+            alert.setResizable(true);
+            alert.setContentText("Please, choose time for game");
+            alert.showAndWait();
             return;
         }
         int port = Integer.parseInt(portField.getText());

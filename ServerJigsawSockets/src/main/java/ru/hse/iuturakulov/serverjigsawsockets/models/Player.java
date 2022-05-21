@@ -22,16 +22,9 @@ public class Player {
      * The Players list.
      */
     public static ObservableList<Player> playersList = FXCollections.observableArrayList();
-    /**
-     * The Board.
-     */
-    public static Rectangle[][] board;
     private static IntegerProperty placedBlocks;
-    private ArrayList<FigureType> move;
-    private FigureType currentShape;
     private StringProperty playerName;
     private BooleanProperty online;
-    private Timer timer;
 
     /**
      * Instantiates a new Player.
@@ -66,52 +59,6 @@ public class Player {
             online = new SimpleBooleanProperty(this, "online");
         }
         return online;
-    }
-
-    /**
-     * Gets move.
-     *
-     * @return the move
-     */
-    public ArrayList<FigureType> getMove() {
-        return move;
-    }
-
-    /**
-     * Sets next shape.
-     */
-    public void setNextShape() {
-        currentShape = move.get(0);
-    }
-
-    /**
-     * Gets current shape.
-     *
-     * @return the current shape
-     */
-    public FigureType getCurrentShape() {
-        return currentShape;
-    }
-
-    /**
-     * Sets move.
-     *
-     * @param move the move
-     */
-    public void setMove(ArrayList<FigureType> move) {
-        this.move = move;
-    }
-
-    /**
-     * Sets collection to move.
-     *
-     * @param list the list
-     */
-    public void setCollectionToMove(ArrayList<FigureType> list) {
-        if (move == null) {
-            move = new ArrayList<FigureType>();
-        }
-        move.addAll(list);
     }
 
     /**
@@ -198,26 +145,5 @@ public class Player {
             Player.placedBlocks = new SimpleIntegerProperty();
         }
         Player.placedBlocks.set(placedBlocks);
-    }
-
-    /**
-     * Increment placed blocks.
-     *
-     * @param times the times
-     */
-    public void incrementPlacedBlocks(int times) {
-        setPlacedBlocks(getPlacedBlocks() + times);
-    }
-
-    /**
-     * Placed blocks property integer property.
-     *
-     * @return the integer property
-     */
-    public IntegerProperty placedBlocksProperty() {
-        if (placedBlocks == null) {
-            placedBlocks = new SimpleIntegerProperty();
-        }
-        return placedBlocks;
     }
 }

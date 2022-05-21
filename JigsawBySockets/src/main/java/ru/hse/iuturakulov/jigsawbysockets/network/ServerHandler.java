@@ -134,10 +134,9 @@ public class ServerHandler {
         } else if (isIt(parsedResponse, function, "get-online-players")) {
             handlePlayersList(response);
         } else if (isIt(parsedResponse, function, "game-finish")) {
-            if (parsedResponse.getString("status").equals("draw")) {
-                Game.winner = "DRAW";
-            } else {
-                Game.winner = Objects.equals(parsedResponse.getString("status"), "win") ? "YOU" : Game.getOtherPlayingPerson().getUsername();
+            if (isIt(parsedResponse, "status", "success")) {
+                Constants.LOGGER.log(Level.WARNING, "Force finish game");
+                Game.setIsGameStopped(true);
             }
         }
     }
@@ -178,8 +177,12 @@ public class ServerHandler {
     private static void handlePlayResponse(JSONObject response) {
         String status = response.getString("status");
         if (status.equals("success")) {
-            otherPlayingPlayer = response.getString("opponent");
-            App.setRoot("game_request_accept_form");
+            if (!Game.getIsPlayingGame()) {
+                otherPlayingPlayer = response.getString("opponent");
+                App.setRoot("game_request_accept_form");
+            } else {
+                Game.rejectMultiplayerGameInvite();
+            }
         } else {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Failed", response.getString("opponent"), false);
         }

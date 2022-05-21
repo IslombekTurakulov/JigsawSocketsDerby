@@ -19,7 +19,6 @@ import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
 
 public class Game {
     public final static ArrayList<FigureType> array = new ArrayList<>();
-    public static String winner;
     private static Game currentPlayingGame;
     private static Rectangle[][] board = new Rectangle[WIDTH_CELL][HEIGHT_CELL];
     private static Pane gamePane;
@@ -30,6 +29,16 @@ public class Game {
     private static Player otherPlayingPerson;
     private static boolean isGameStopped;
     private static String currentGameTime;
+
+    public static Boolean getIsPlayingGame() {
+        return isPlayingGame;
+    }
+
+    public static void setIsPlayingGame(Boolean isPlayingGame) {
+        Game.isPlayingGame = isPlayingGame;
+    }
+
+    private static Boolean isPlayingGame;
     private int id;
 
     public Game(int id, List<Player> players) {
@@ -146,12 +155,21 @@ public class Game {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "play");
+        jsonSender.putRequest("player", Player.getPlayer().getUsername());
         jsonSender.putRequest("placed", index);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    public static void finishSingleGame() {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.clearRequests();
+        jsonSender.putRequest("function", "single_player_finished");
+        jsonSender.putRequest("name", Game.getOtherPlayingPerson().getUsername());
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
 
-    public static void finishGame(int index) {
+
+    public static void finishMultiplayerGame(int index) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "multiplayer_finished");
@@ -176,6 +194,14 @@ public class Game {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_decline");
         jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
+
+    public static void rejectMultiplayerGameInvite() {
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.putRequest("function", "invite_decline_for_game");
+        jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
+        jsonSender.putRequest("cause", ServerHandler.otherPlayingPlayer);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 

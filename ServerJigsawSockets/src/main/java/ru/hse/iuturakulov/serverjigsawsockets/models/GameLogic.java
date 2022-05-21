@@ -1,7 +1,5 @@
 package ru.hse.iuturakulov.serverjigsawsockets.models;
 
-import javafx.scene.shape.Rectangle;
-import ru.hse.iuturakulov.serverjigsawsockets.models.shapes.Shape;
 import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 
 import java.util.ArrayList;
@@ -10,7 +8,6 @@ public abstract class GameLogic {
     public static ArrayList<GameLogic> listOfGames = new ArrayList<GameLogic>();
     protected int gameID;
     protected Boolean gameOver;
-    private String state;
     private Client ownerOfGame;
 
     public GameLogic(Client client) {
@@ -37,19 +34,7 @@ public abstract class GameLogic {
         }
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public Client getOwnerOfGame() {
         return ownerOfGame;
-    }
-
-    public void setOwnerOfGame(Client ownerOfGame) {
-        this.ownerOfGame = ownerOfGame;
     }
 }

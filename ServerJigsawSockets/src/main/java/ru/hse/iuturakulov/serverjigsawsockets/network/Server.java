@@ -16,15 +16,14 @@ import java.util.logging.Logger;
  * The type Server.
  */
 public class Server implements Runnable {
-
     private static final Set<Server> SERVERS = new HashSet<>();
     private static Thread serverThread;
     private static ServerSocket serverSocket;
     private static int port;
     private static Boolean isRunning = true;
 
-    private Server(int _port) {
-        port = _port;
+    private Server(int port) {
+        this.port = port;
     }
 
     /**

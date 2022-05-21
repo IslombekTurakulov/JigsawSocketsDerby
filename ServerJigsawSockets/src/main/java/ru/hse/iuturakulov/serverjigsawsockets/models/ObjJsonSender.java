@@ -14,12 +14,12 @@ public class ObjJsonSender implements Serializable {
      * The Main.
      */
     @SerializedName("keys")
-    public List<Key> Main = new ArrayList<>();
+    public List<Key> keys = new ArrayList<>();
     /**
      * The Figures.
      */
     @SerializedName("moves")
-    public List<FigureType> figures = new ArrayList<>();
+    public List<FigureType> moves = new ArrayList<>();
 
     /**
      * The type Key.
@@ -29,13 +29,13 @@ public class ObjJsonSender implements Serializable {
          * The Key.
          */
         @SerializedName("type")
-        public String key;
+        private String type;
 
         /**
          * The Code.
          */
         @SerializedName("status")
-        public String code;
+        private String value;
 
         /**
          * Instantiates a new Key.
@@ -44,8 +44,16 @@ public class ObjJsonSender implements Serializable {
          * @param value the value
          */
         public Key(String key, String value) {
-            this.key = key;
-            this.code = value;
+            this.type = key;
+            this.value = value;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 }

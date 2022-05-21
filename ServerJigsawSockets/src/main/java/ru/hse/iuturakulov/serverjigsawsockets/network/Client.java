@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,8 +21,7 @@ public class Client extends Player {
     /**
      * The constant onlineClients.
      */
-    public static ArrayList<Client> onlineClients = new ArrayList<>();
-
+    public final static ArrayList<Client> onlineClients = new ArrayList<>();
     private final BufferedReader bufferReader;
     private final PrintStream printStream;
 
@@ -31,22 +29,18 @@ public class Client extends Player {
     /**
      * Instantiates a new Client.
      *
-     * @param _username     the username
-     * @param _bufferReader the buffer reader
-     * @param _printStream  the print stream
+     * @param name   the username
+     * @param reader the buffer reader
+     * @param stream the print stream
      */
-    public Client(String _username, BufferedReader _bufferReader, PrintStream _printStream) {
-        super(_username);
+    public Client(String name, BufferedReader reader, PrintStream stream) {
+        super(name);
         notifyAllPlayers();
         setOnline(true);
-        bufferReader = _bufferReader;
-        printStream = _printStream;
+        this.bufferReader = reader;
+        this.printStream = stream;
         startListener();
         onlineClients.add(this);
-    }
-
-    private static boolean isIt(JSONObject parsedResponse, String key, String value) {
-        return Objects.equals(parsedResponse.getString(key), key);
     }
 
     private void startListener() {
@@ -57,6 +51,7 @@ public class Client extends Player {
                     System.out.println(str);
                     JSONObject jsonObject = new JSONObject(str.trim());
                     String function = (String) jsonObject.get("function");
+                    String opponent_request = jsonObject.getString("opponent");
                     switch (function) {
                         case "more_shape":
                             ((Singleplayer) getGame()).generateExtraShape();
@@ -66,18 +61,29 @@ public class Client extends Player {
                         case "single_player":
                             GameLogic.listOfGames.add(new Singleplayer(this));
                             break;
+                        case "single_player_finished":
+                            if (getGame() != null) {
+                                getClientByUsername(jsonObject.getString("name")).getGame().finishGame();
+                                ((Singleplayer) getGame()).finishGame();
+                            }
                         case "invite_request":
-                            handleMultiplayerGame(jsonObject.getString("opponent"));
+                            handleMultiplayerGame(opponent_request);
                             break;
+                        case "invite_decline_for_game":
+                            Client opponentClient = getClientByUsername(opponent_request);
+                            if (opponentClient != null) {
+                                if (!getPlayerName().equalsIgnoreCase(opponent_request)) {
+                                    printStream.println(JSONSender.getInstance().playRequest(false, jsonObject.getString("cause")).toString());
+                                }
+                            }
                         case "invite_accept":
-                            handleAcceptRequest(jsonObject.getString("opponent"));
+                            handleAcceptRequest(opponent_request);
                             break;
                         case "invite_decline":
-                            String opponent = jsonObject.getString("opponent");
                             if (getGame() != null) {
-                                ((Multiplayer) getGame()).getOtherOpponent(opponent).sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
+                                ((Multiplayer) getGame()).getOtherOpponent(opponent_request).sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
                             } else {
-                                Client client = getClientByUsername(opponent);
+                                Client client = getClientByUsername(opponent_request);
                                 client.sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
                             }
                             break;
@@ -86,11 +92,6 @@ public class Client extends Player {
                             break;
                         case "multiplayer_finished":
                             if (getGame() != null) {
-                                if (((Multiplayer) getGame()).getOwnerOfGame().getPlayerName().equals(jsonObject.getString("name"))) {
-                                    ((Multiplayer) getGame()).getOwnerOfGame().setPlacedBlocks(jsonObject.getInt("placed"));
-                                } else {
-                                    ((Multiplayer) getGame()).getOtherOpponent(jsonObject.getString("name")).setPlacedBlocks(jsonObject.getInt("placed"));
-                                }
                                 ((Multiplayer) getGame()).finishGame();
                             }
                             break;
@@ -110,14 +111,6 @@ public class Client extends Player {
         }).start();
     }
 
-    /**
-     * Is playing boolean.
-     *
-     * @return the boolean
-     */
-    public Boolean isPlaying() {
-        return !(getGame() == null);
-    }
 
     private void notifyAllPlayers() {
         for (Client c : Client.onlineClients) {
@@ -157,10 +150,10 @@ public class Client extends Player {
         Client opponentClient = getClientByUsername(opponent);
         if (opponentClient != null) {
             if (!getPlayerName().equalsIgnoreCase(opponent)) {
-                if (opponentClient.isPlaying()) {
+              /*  if (opponentClient.getGame() != null) {
                     printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game").toString());
                     return;
-                }
+                }*/
                 opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName()).toString());
             } else {
                 printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!").toString());

@@ -61,24 +61,8 @@ public class Multiplayer extends GameLogic {
     }
 
     public void finishGame() {
-        if (getOwnerOfGame().isPlaying() && !opponent.isPlaying()) {
-            getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("win").toString());
-            opponent.sendRequest(JSONSender.getInstance().gameFinished("lose").toString());
-        } else if (!getOwnerOfGame().isPlaying() && opponent.isPlaying()) {
-            getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("lose").toString());
-            opponent.sendRequest(JSONSender.getInstance().gameFinished("win").toString());
-        } else if (!getOwnerOfGame().isPlaying() && !opponent.isPlaying()) {
-            getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("draw").toString());
-            opponent.sendRequest(JSONSender.getInstance().gameFinished("draw").toString());
-        } else {
-            if (getOwnerOfGame().getPlacedBlocks() > opponent.getPlacedBlocks()) {
-                getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("win").toString());
-                opponent.sendRequest(JSONSender.getInstance().gameFinished("lose").toString());
-            } else {
-                getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("lose").toString());
-                opponent.sendRequest(JSONSender.getInstance().gameFinished("win").toString());
-            }
-        }
+        opponent.sendRequest(JSONSender.getInstance().gameFinished("success").toString());
+        opponent.sendRequest(JSONSender.getInstance().gameFinished("success").toString());
         getOwnerOfGame().removeGame();
     }
 

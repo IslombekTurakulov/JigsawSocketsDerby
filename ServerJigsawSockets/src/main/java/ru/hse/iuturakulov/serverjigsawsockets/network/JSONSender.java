@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import ru.hse.iuturakulov.serverjigsawsockets.models.ObjJsonSender;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
-import ru.hse.iuturakulov.serverjigsawsockets.models.enums.ShapeType;
 import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
@@ -202,9 +201,9 @@ public class JSONSender {
      */
     public String singleGameStarted(ArrayList<FigureType> shape, String timeCounter) {
         ObjJsonSender keyValue = new ObjJsonSender();
-        keyValue.Main.add(new ObjJsonSender.Key("single_player", "success"));
-        keyValue.Main.add(new ObjJsonSender.Key("time", timeCounter));
-        keyValue.figures.addAll(shape);
+        keyValue.keys.add(new ObjJsonSender.Key("single_player", "success"));
+        keyValue.keys.add(new ObjJsonSender.Key("time", timeCounter));
+        keyValue.moves.addAll(shape);
         return new Gson().toJson(keyValue);
     }
 
@@ -217,8 +216,8 @@ public class JSONSender {
     public String getShapesForGame(ArrayList<FigureType> shape) {
         clearRequests();
         ObjJsonSender keyValue = new ObjJsonSender();
-        keyValue.Main.add(new ObjJsonSender.Key("get_shapes", "success"));
-        keyValue.figures.addAll(shape);
+        keyValue.keys.add(new ObjJsonSender.Key("get_shapes", "success"));
+        keyValue.moves.addAll(shape);
         return new Gson().toJson(keyValue);
     }
 
@@ -292,10 +291,10 @@ public class JSONSender {
      */
     public static String playAccepted(String opponent, ArrayList<FigureType> figure) {
         ObjJsonSender keyValue = new ObjJsonSender();
-        keyValue.Main.add(new ObjJsonSender.Key("start_multi_player", "success"));
-        keyValue.Main.add(new ObjJsonSender.Key("opponent", opponent));
-        keyValue.Main.add(new ObjJsonSender.Key("time", Constants.timeCurrent));
-        keyValue.figures.addAll(figure);
+        keyValue.keys.add(new ObjJsonSender.Key("start_multi_player", "success"));
+        keyValue.keys.add(new ObjJsonSender.Key("opponent", opponent));
+        keyValue.keys.add(new ObjJsonSender.Key("time", Constants.timeCurrent));
+        keyValue.moves.addAll(figure);
         return new Gson().toJson(keyValue);
     }
 

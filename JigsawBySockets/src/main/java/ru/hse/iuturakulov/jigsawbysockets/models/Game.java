@@ -29,15 +29,6 @@ public class Game {
     private static Player otherPlayingPerson;
     private static boolean isGameStopped;
     private static String currentGameTime;
-
-    public static Boolean getIsPlayingGame() {
-        return isPlayingGame;
-    }
-
-    public static void setIsPlayingGame(Boolean isPlayingGame) {
-        Game.isPlayingGame = isPlayingGame;
-    }
-
     private static Boolean isPlayingGame;
     private int id;
 
@@ -48,7 +39,6 @@ public class Game {
         placedBlocks = 0;
         Game.createBoard();
     }
-
     public Game() {
         placedBlocks = 0;
         playingPerson = new Player(Player.getPlayer().getUsername(), 0);
@@ -59,12 +49,24 @@ public class Game {
         setOtherPlayingPerson(players);
     }
 
+    public static Boolean getIsPlayingGame() {
+        return isPlayingGame;
+    }
+
+    public static void setIsPlayingGame(Boolean isPlayingGame) {
+        Game.isPlayingGame = isPlayingGame;
+    }
+
     public static void setCurrentIndexShape(int currentIndexShape) {
         Game.currentIndexShape = currentIndexShape;
     }
 
     public static int getPlacedBlocks() {
         return placedBlocks;
+    }
+
+    public static void setPlacedBlocks(int index) {
+        placedBlocks = index;
     }
 
     public static Pane getGamePane() {
@@ -164,7 +166,7 @@ public class Game {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "single_player_finished");
-        jsonSender.putRequest("name", Game.getOtherPlayingPerson().getUsername());
+        jsonSender.putRequest("name", Player.getPlayer().getUsername());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -197,11 +199,11 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
-    public static void rejectMultiplayerGameInvite() {
+    public static void rejectMultiplayerGameInvite(String name) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_decline_for_game");
-        jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
-        jsonSender.putRequest("cause", ServerHandler.otherPlayingPlayer);
+        jsonSender.putRequest("opponent", name);
+        jsonSender.putRequest("cause", "This player is playing another game");
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -275,6 +277,9 @@ public class Game {
         System.out.printf("Other opponent player - %s%n", Game.getOtherPlayingPerson() != null ? Game.getOtherPlayingPerson().getUsername() : "NULL");
         System.out.printf("Max time - %s%n", getCurrentGameTime());
         System.out.println("==============================================");
+        if (array.isEmpty()) {
+            checkExtraShapes();
+        }
     }
 
     public void sendMoreShape() {
@@ -289,6 +294,7 @@ public class Game {
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "invite_request");
         jsonSender.putRequest("opponent", getOtherPlayingPerson().getUsername());
+        jsonSender.putRequest("inviter", Player.getPlayer().getUsername());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 

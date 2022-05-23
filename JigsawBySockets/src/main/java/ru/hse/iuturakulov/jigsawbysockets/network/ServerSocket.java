@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -59,6 +60,8 @@ public abstract class ServerSocket {
             serverSocket = new Socket(InetAddress.getByName(address), port);
             printStream = new PrintStream(serverSocket.getOutputStream(), true);
             bufferedReader = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Error", "Failed to connect to server", false);
         }
@@ -72,7 +75,7 @@ public abstract class ServerSocket {
      * @param line the line
      */
     public static void sendRequest(String line) {
-        if (line != null) {
+        if (line != null && printStream != null) {
             printStream.println(line);
         }
     }

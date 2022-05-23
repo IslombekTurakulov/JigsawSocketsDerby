@@ -49,14 +49,13 @@ public class Player {
      * @param name the name
      */
     public static void login(String name) {
-        if (ServerSocket.serverSocket != null) {
-            Constants.LOGGER.log(Level.INFO, "Sending login request..");
-            JSONSender jsonSender = JSONSender.getInstance();
-            jsonSender.clearRequests();
-            jsonSender.putRequest("function", "login");
-            jsonSender.putRequest("username", name);
-            ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
-        }
+        Constants.LOGGER.log(Level.INFO, "Sending login request..");
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.clearRequests();
+        jsonSender.putRequest("function", "login");
+        jsonSender.putRequest("username", name);
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+        //  if (ServerSocket.serverSocket != null)
     }
 
     /**

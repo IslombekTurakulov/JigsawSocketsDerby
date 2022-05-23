@@ -3,6 +3,7 @@ package ru.hse.iuturakulov.jigsawbysockets.controllers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -16,8 +17,10 @@ import ru.hse.iuturakulov.jigsawbysockets.App;
 import ru.hse.iuturakulov.jigsawbysockets.models.Game;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
 import ru.hse.iuturakulov.jigsawbysockets.models.shapes.Figure;
+import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
+import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
 import java.net.URL;
 import java.text.MessageFormat;
@@ -90,12 +93,12 @@ public class GameFormController implements Initializable {
 
     private void findTheWinner() {
         if (isSinglePlayer) {
+            Game.finishSingleGame();
             opponentPlacedBlocks.setVisible(false);
             winnerCurrentGame.setVisible(false);
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
         } else {
             Game.finishMultiplayerGame(Game.getPlacedBlocks());
-            opponentPlacedBlocks.setVisible(false);
             winnerCurrentGame.setVisible(true);
             winnerCurrentGame.setText("Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW"));
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
@@ -105,8 +108,6 @@ public class GameFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Game.setIsPlayingGame(true);
-        Game.checkExtraShapes();
         Game.createBoard();
         Game.showGameInfo();
         yourNameForGame.setText(MessageFormat.format("You: {0}", Player.getPlayer().getUsername()));
@@ -144,40 +145,40 @@ public class GameFormController implements Initializable {
             Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
             timeline.pause();
             String temp;
-            if (!isSinglePlayer) {
+            if (isSinglePlayer) {
+                Game.finishSingleGame();
+                temp = "Your blocks: %d".formatted(Game.getPlacedBlocks());
+                DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Single player", temp, false);
+            } else {
                 Game.finishMultiplayerGame(Game.getPlacedBlocks());
                 temp = "Winner: %s".formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU" : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername() : "DRAW");
                 temp += "\nYour blocks: %d".formatted(Game.getPlacedBlocks());
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
-            } else {
-                temp = "Your blocks: %d".formatted(Game.getPlacedBlocks());
-                DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Single player", temp, false);
             }
         }
-        Game.finishSingleGame();
         Game.setIsPlayingGame(false);
         Constants.LOGGER.log(Level.INFO, "Exit from game session");
         recoverGameStatus();
         Game.leave();
-        Game.setCurrentPlayingGame(null);
         App.setRoot("main_form");
     }
 
     private void playAgainSession() {
         recoverGameStatus();
         if (isSinglePlayer) {
-            Game.setCurrentPlayingGame(new Game());
-            Game.setGameMode("Single-player");
-            App.setRoot("game_form");
+            JSONSender jsonSender = JSONSender.getInstance();
+            jsonSender.putRequest("function", "single_player");
+            ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
         } else {
             Game.setCurrentPlayingGame(new Game(Game.getOtherPlayingPerson()));
             Game.getCurrentPlayingGame().sendGameRequest();
+            Game.setCurrentIndexShape(0);
+            Game.setPlacedBlocks(0);
         }
     }
 
     private void recoverGameStatus() {
-        Game.checkExtraShapes();
         Game.array.clear();
         timeline.stop();
         Game.setIsGameStopped(false);

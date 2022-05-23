@@ -28,7 +28,7 @@
                     <Font name="System Bold" size="34.0"/>
                 </font>
             </Label>
-            <Button mnemonicParsing="false" onAction="#singlePlay"
+            <Button fx:id="singlePLayerBtn" mnemonicParsing="false" onAction="#singlePlay"
                     prefHeight="43.0" prefWidth="237.0" styleClass="button" text="Singleplayer">
                 <font>
                     <Font name="System Bold" size="18.0"/>
@@ -45,7 +45,7 @@
                     <Insets bottom="15.0" top="15.0"/>
                 </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#multiplayer"
+            <Button fx:id="multiPlayerBtn" mnemonicParsing="false" onAction="#multiplayer"
                     prefHeight="43.0" prefWidth="238.0" styleClass="button" text="Multiplayer">
                 <font>
                     <Font name="System Bold" size="18.0"/>
@@ -62,7 +62,7 @@
                     <Insets bottom="15.0" top="15.0"/>
                 </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#exit" prefHeight="43.0"
+            <Button fx:id="exitBtn" mnemonicParsing="false" onAction="#exit" prefHeight="43.0"
                     prefWidth="238.0" styleClass="button" text="Exit">
                 <font>
                     <Font name="System Bold" size="18.0"/>

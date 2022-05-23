@@ -171,11 +171,12 @@ public class JSONSender {
      * @param opponent the opponent
      * @return the json object
      */
-    public JSONObject playRequest(Boolean success, String opponent) {
+    public JSONObject playRequest(Boolean success, String opponent, String inviter) {
         clearRequests();
         putRequest("type", "invite_request");
         putRequest("status", (success ? "success" : "fail"));
         putRequest("opponent", opponent);
+        putRequest("inviter", inviter);
         return getRequestInstance();
     }
 

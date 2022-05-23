@@ -64,10 +64,14 @@ public class ServerHandler {
         if (JSONSender.getInstance().validateGson(response)) {
             if ((response.contains("keys") && response.contains("single_player"))) {
                 ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
-                Game.array.clear();
-                Game.setCurrentIndexShape(0);
+                Game.setIsPlayingGame(false);
+                if (!Game.array.isEmpty()) {
+                    Game.array.clear();
+                    Game.setCurrentIndexShape(0);
+                    Game.setPlacedBlocks(0);
+                }
                 Game.array.addAll(obj.moves);
-                Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is " + Game.array.size());
+                Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is %d".formatted(Game.array.size()));
                 Game.setCurrentPlayingGame(new Game());
                 Game.setCurrentGameTime(obj.keys.get(1).getCode());
                 Game.setGameMode("Single-player");
@@ -80,8 +84,10 @@ public class ServerHandler {
         if (JSONSender.getInstance().validateGson(response)) {
             if (response.contains("keys") && response.contains("start_multi_player")) {
                 ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
+                Game.setIsGameStopped(false);
                 Game.array.clear();
                 Game.setCurrentIndexShape(0);
+                Game.setPlacedBlocks(0);
                 Game.array.addAll(obj.moves);
                 Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is " + Game.array.size());
                 Player opponent = new Player(obj.keys.get(1).getCode());
@@ -96,7 +102,7 @@ public class ServerHandler {
             if ((response.contains("keys") && response.contains("get_shapes"))) {
                 Game.array.clear();
                 Game.array.addAll(new Gson().fromJson(response, ObjJsonSender.class).moves);
-                Constants.LOGGER.log(Level.INFO, "New figures got. Total decoded size is " + Game.array.size());
+                Constants.LOGGER.log(Level.INFO, "New figures got. Total decoded size is %d".formatted(Game.array.size()));
                 return;
             }
         }
@@ -130,7 +136,7 @@ public class ServerHandler {
         } else if (isIt(parsedResponse, function, "invite_accept")) {
             handlePlayResponse(parsedResponse);
         } else if (isIt(parsedResponse, function, "invite_decline")) {
-            declinedInvite();
+            declinedInvite(parsedResponse);
         } else if (isIt(parsedResponse, function, "get-online-players")) {
             handlePlayersList(response);
         } else if (isIt(parsedResponse, function, "game-finish")) {
@@ -145,6 +151,7 @@ public class ServerHandler {
         if (isIt(parsedResponse, "status", "success")) {
             Constants.LOGGER.log(Level.WARNING, "Server was closed");
             Constants.LOGGER.log(Level.INFO, response);
+            Player.setPlayer(null);
             serverSocket.close();
             App.setRoot("login_form");
         }
@@ -155,14 +162,12 @@ public class ServerHandler {
         Constants.LOGGER.log(Level.INFO, "Player %s connected".formatted(player));
     }
 
-    private static void declinedInvite() {
+    private static void declinedInvite(JSONObject parsedResponse) {
         if (Game.getCurrentPlayingGame() != null) {
             Game.setCurrentPlayingGame(null);
         }
-        if (Game.getGameMode() == null) {
-            DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Canceled", "Player Request has been canceled", false);
-            Platform.runLater(() -> App.setRoot("main_form"));
-        }
+        DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Canceled", "Player Request has been canceled", false);
+        Platform.runLater(() -> App.setRoot("main_form"));
     }
 
     private static void multiplayerGame(JSONObject parsedResponse) {
@@ -177,14 +182,15 @@ public class ServerHandler {
     private static void handlePlayResponse(JSONObject response) {
         String status = response.getString("status");
         if (status.equals("success")) {
-            if (!Game.getIsPlayingGame()) {
+            if (Game.getPlayingPerson() == null || (Game.getIsPlayingGame() != null && !Game.getIsPlayingGame())) {
                 otherPlayingPlayer = response.getString("opponent");
                 App.setRoot("game_request_accept_form");
             } else {
-                Game.rejectMultiplayerGameInvite();
+                Game.rejectMultiplayerGameInvite(response.getString("inviter"));
             }
         } else {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Failed", response.getString("opponent"), false);
+            Platform.runLater(() -> App.setRoot("main_form"));
         }
     }
 

@@ -17,6 +17,7 @@ public class FigureType {
                       BlockSide blockSide,
                       BlockType blockType,
                       ShapeType shapeType) {
+
         this.blockOrientation = blockOrientation;
         this.blockPosition = blockPosition;
         this.blockSide = blockSide;

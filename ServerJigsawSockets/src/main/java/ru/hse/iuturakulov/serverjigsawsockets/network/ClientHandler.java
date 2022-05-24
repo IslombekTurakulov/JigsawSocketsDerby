@@ -47,7 +47,7 @@ class ClientHandler extends Thread {
                 JSONObject parsedRequest = new JSONObject(inputLine.trim());
                 String action = (String) parsedRequest.get("function");
                 if (action.equals("login")) {
-                    handleLoginRequest(parsedRequest.getString("username"));
+                    handleLoginRequest(parsedRequest.getString("username"), parsedRequest.getString("uuidPlayer"));
                 } else {
                     JSONSender.getInstance().putStatusRequest("Unknown request");
                     printStream.println(JSONSender.getInstance().getRequestInstance());
@@ -61,20 +61,21 @@ class ClientHandler extends Thread {
 
     private Boolean checkAlreadyLoggedIn(String username) {
         for (Client client : Client.onlineClients) {
-            if (client.playerNameProperty().getValue().equalsIgnoreCase(username))
+            if (client.playerNameProperty().getValue().equalsIgnoreCase(username)) {
                 return true;
+            }
         }
         return false;
     }
 
-    private void handleLoginRequest(String username) {
-        if (checkAlreadyLoggedIn(username)) {
+    private void handleLoginRequest(String username, String uuidPlayer) {
+       /* if (checkAlreadyLoggedIn(username)) {
             printStream.println(JSONSender.getInstance().login(false, "This username is already logged in from other client", null));
             return;
-        }
-        Player _player = new Player(username, 0, true);
+        }*/
+        Player _player = new Player(username, uuidPlayer, 0, true);
         this.interrupt();
-        new Client(_player.playerNameProperty().getValue(), bufferReader, printStream);
+        new Client(_player.playerNameProperty().getValue(), uuidPlayer, bufferReader, printStream);
         printStream.println(JSONSender.getInstance().login(true, "Logged In", _player));
         Player.playersList.add(_player);
     }

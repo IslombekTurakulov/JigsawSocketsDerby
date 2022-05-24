@@ -33,8 +33,8 @@ public class Client extends Player {
      * @param reader the buffer reader
      * @param stream the print stream
      */
-    public Client(String name, BufferedReader reader, PrintStream stream) {
-        super(name);
+    public Client(String name, String uuid, BufferedReader reader, PrintStream stream) {
+        super(name, uuid);
         notifyAllPlayers();
         setOnline(true);
         this.bufferReader = reader;
@@ -55,31 +55,31 @@ public class Client extends Player {
                         case "more_shape":
                             ((Singleplayer) getGame()).generateExtraShape();
                         case "online_players":
-                            sendRequest(JSONSender.getInstance().onlinePlayers(getPlayerName()).toString());
+                            sendRequest(JSONSender.getInstance().onlinePlayers(getPlayerName(), String.valueOf(getuuidPlayer())).toString());
                             break;
                         case "single_player":
                             GameLogic.listOfGames.add(new Singleplayer(this));
                             break;
                         case "single_player_finished":
-                            getClientByUsername(jsonObject.getString("name")).getGame().finishGame();
+                            getClientByUsername(jsonObject.getString("name"), jsonObject.getString("uuidPlayer")).getGame().finishGame();
                             // ((Singleplayer) getGame()).finishGame();
                             break;
                         case "invite_request":
-                            handleMultiplayerGame(jsonObject.getString("opponent"), jsonObject.getString("inviter"));
+                            handleMultiplayerGame(jsonObject.getString("opponent"), jsonObject.getString("opponentUUID"), jsonObject.getString("inviter"), jsonObject.getString("uuidInviter"));
                             break;
                         case "invite_decline_for_game":
                             if (getGame() != null) {
-                                Client client = getClientByUsername(jsonObject.getString("opponent"));
+                                Client client = getClientByUsername(jsonObject.getString("opponent"), jsonObject.getString("opponentUUID"));
                                 client.sendRequest(JSONSender.getInstance().inviteDeclined(jsonObject.getString("cause")).toString());
                             }
                         case "invite_accept":
-                            handleAcceptRequest(jsonObject.getString("opponent"));
+                            handleAcceptRequest(jsonObject.getString("opponent"), jsonObject.getString("opponentUUID"));
                             break;
                         case "invite_decline":
                             if (getGame() != null) {
                                 ((Multiplayer) getGame()).getOtherOpponent(jsonObject.getString("opponent")).sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
                             } else {
-                                Client client = getClientByUsername(jsonObject.getString("opponent"));
+                                Client client = getClientByUsername(jsonObject.getString("opponent"), jsonObject.getString("uuidPlayer"));
                                 client.sendRequest(JSONSender.getInstance().inviteDeclined(getPlayerName()).toString());
                             }
                             break;
@@ -92,7 +92,7 @@ public class Client extends Player {
                             }
                             break;
                         case "logout":
-                            remove();
+                            remove(jsonObject.getString("name"), jsonObject.getString("uuidPlayer"));
                             break;
                         default:
                             JSONSender jsonSender = JSONSender.getInstance();
@@ -101,7 +101,7 @@ public class Client extends Player {
                     }
                 }
 
-            } catch (NullPointerException | IOException | JSONException e) {
+            } catch (ClassCastException | NullPointerException | IOException | JSONException e) {
                 Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, e.getMessage());
             }
         }).start();
@@ -110,7 +110,7 @@ public class Client extends Player {
 
     private void notifyAllPlayers() {
         for (Client c : Client.onlineClients) {
-            if (!c.getPlayerName().equalsIgnoreCase(getPlayerName())) {
+            if (!c.getuuidPlayer().equalsIgnoreCase(getuuidPlayer())) {
                 c.sendRequest(JSONSender.getInstance().playerConnected(getPlayerName(), getPlacedBlocks()).toString());
             }
         }
@@ -122,9 +122,9 @@ public class Client extends Player {
      * @param username the username
      * @return the client by username
      */
-    public Client getClientByUsername(String username) {
+    public Client getClientByUsername(String username, String uuid) {
         for (Client client : onlineClients) {
-            if (client.getPlayerName().equalsIgnoreCase(username)) {
+            if (client.getuuidPlayer().equalsIgnoreCase(uuid)) {
                 return client;
             }
         }
@@ -142,27 +142,27 @@ public class Client extends Player {
     }
 
 
-    private void handleMultiplayerGame(String opponent, String inviter) {
-        Client opponentClient = getClientByUsername(opponent);
+    private void handleMultiplayerGame(String opponent, String uuid, String inviter, String uuidPlayer) {
+        Client opponentClient = getClientByUsername(opponent, uuid);
         if (opponentClient != null) {
-            if (!getPlayerName().equalsIgnoreCase(opponent)) {
-                if (opponentClient.getGame() != null) {
-                    printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game", inviter).toString());
-                    return;
-                }
-                opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName(), inviter).toString());
-            } else {
-                printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!", inviter).toString());
+            //if (!opponentClient.getPlayerName().equalsIgnoreCase(inviter) && !opponentClient.getuuidPlayer().equalsIgnoreCase(uuidPlayer)) {
+            if (opponentClient.getGame() != null) {
+                printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game", uuid, inviter, uuidPlayer).toString());
+                return;
             }
+            opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName(), getuuidPlayer(), inviter, uuidPlayer).toString());
+         /*   } else {
+                printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!", uuid, inviter, uuidPlayer).toString());
+            }*/
         } else {
-            printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online", inviter).toString());
+            printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online", uuid, inviter, uuidPlayer).toString());
         }
     }
 
-    private void handleAcceptRequest(String opponent) {
-        Client opponentClient = getClientByUsername(opponent);
+    private void handleAcceptRequest(String opponent, String uuid) {
+        Client opponentClient = getClientByUsername(opponent, uuid);
         if (opponentClient == null) {
-            printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online", "").toString());
+            printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online", uuid, "", "").toString());
         }
         GameLogic.listOfGames.add(new Multiplayer(this, opponentClient));
     }
@@ -170,14 +170,14 @@ public class Client extends Player {
     /**
      * Remove.
      */
-    public void remove() {
+    public void remove(String name, String uuid) {
         setOnlineOnArrayList(false);
         onlineClients.remove(this);
     }
 
     private void handlePlayMove(int placed) {
         if (getGame() == null) {
-            sendRequest(JSONSender.getInstance().play(false, "No Active game", getPlayerName(), 0).toString());
+            sendRequest(JSONSender.getInstance().play(false, "No Active game", getPlayerName(), getuuidPlayer(), 0).toString());
         } else {
             getGame().play(this, placed);
         }

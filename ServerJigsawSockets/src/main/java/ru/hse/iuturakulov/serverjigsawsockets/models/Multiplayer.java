@@ -32,8 +32,8 @@ public class Multiplayer extends GameLogic {
     }
 
     private void notifyGameStart() {
-        getOwnerOfGame().sendRequest(JSONSender.playAccepted(opponent.getPlayerName(), generatedShapes));
-        opponent.sendRequest(JSONSender.playAccepted(getOwnerOfGame().getPlayerName(), generatedShapes));
+        getOwnerOfGame().sendRequest(JSONSender.playAccepted(opponent.getPlayerName(), opponent.getuuidPlayer(), generatedShapes));
+        opponent.sendRequest(JSONSender.playAccepted(getOwnerOfGame().getPlayerName(), getOwnerOfGame().getuuidPlayer(), generatedShapes));
     }
 
     @Override
@@ -51,8 +51,8 @@ public class Multiplayer extends GameLogic {
     }
 
     public void play(Player player, int index) {
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), index).toString());
-        opponent.sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), index).toString());
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getuuidPlayer(), index).toString());
+        opponent.sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getuuidPlayer(), index).toString());
     }
 
 

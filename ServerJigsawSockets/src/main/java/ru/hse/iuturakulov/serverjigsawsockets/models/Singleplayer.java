@@ -65,6 +65,6 @@ public class Singleplayer extends GameLogic {
 
     @Override
     public void play(Player player, int placed) {
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), placed).toString());
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getuuidPlayer(), placed).toString());
     }
 }

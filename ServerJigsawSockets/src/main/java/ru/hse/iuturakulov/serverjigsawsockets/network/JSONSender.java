@@ -5,9 +5,9 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
 import ru.hse.iuturakulov.serverjigsawsockets.models.ObjJsonSender;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
-import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
 import java.util.ArrayList;
@@ -28,6 +28,23 @@ public class JSONSender {
      */
     public static JSONSender getInstance() {
         return SingletonHolder.JSON_SENDER;
+    }
+
+    /**
+     * Play accepted string.
+     *
+     * @param opponent the opponent
+     * @param figure   the figure
+     * @return the string
+     */
+    public static String playAccepted(String opponent, String uuid, ArrayList<FigureType> figure) {
+        ObjJsonSender keyValue = new ObjJsonSender();
+        keyValue.keys.add(new ObjJsonSender.Key("start_multi_player", "success"));
+        keyValue.keys.add(new ObjJsonSender.Key("opponent", opponent));
+        keyValue.keys.add(new ObjJsonSender.Key("time", Constants.timeCurrent));
+        keyValue.keys.add(new ObjJsonSender.Key("uuidPlayer", uuid));
+        keyValue.moves.addAll(figure);
+        return new Gson().toJson(keyValue);
     }
 
     /**
@@ -94,6 +111,7 @@ public class JSONSender {
         if (player != null) {
             JSONObject playerJson = new JSONObject();
             playerJson.put("username", player.getPlayerName());
+            playerJson.put("uuidPlayer", player.getuuidPlayer());
             playerJson.put("placed", player.getPlacedBlocks());
             putRequest("player", playerJson);
         }
@@ -120,13 +138,15 @@ public class JSONSender {
      * @param myUsername the my username
      * @return the json object
      */
-    public JSONObject onlinePlayers(String myUsername) {
+    public JSONObject onlinePlayers(String myUsername, String uuid) {
         clearRequests();
         JSONArray jsonResponse = new JSONArray();
         for (Client client : Client.onlineClients) {
-            if (client.getPlayerName().equalsIgnoreCase(myUsername)) continue;
+            if (client.getPlayerName().equalsIgnoreCase(myUsername) && client.getuuidPlayer().equals(uuid))
+                continue;
             JSONObject playerJSON = new JSONObject();
             playerJSON.put("username", client.getPlayerName());
+            playerJSON.put("uuidPlayer", client.getuuidPlayer());
             playerJSON.put("placed", client.getPlacedBlocks());
             jsonResponse.put(playerJSON);
         }
@@ -145,7 +165,7 @@ public class JSONSender {
         clearRequests();
         putRequest("type", "game-finish");
         putRequest("status", status);
-        Logger.getLogger(Client.class.getName()).log(Level.INFO,  getRequestInstance().toString());
+        Logger.getLogger(Client.class.getName()).log(Level.INFO, getRequestInstance().toString());
         return getRequestInstance();
     }
 
@@ -171,12 +191,14 @@ public class JSONSender {
      * @param opponent the opponent
      * @return the json object
      */
-    public JSONObject playRequest(Boolean success, String opponent, String inviter) {
+    public JSONObject playRequest(Boolean success, String opponent, String uuidOpponent, String inviter, String uuidInviter) {
         clearRequests();
         putRequest("type", "invite_request");
         putRequest("status", (success ? "success" : "fail"));
         putRequest("opponent", opponent);
+        putRequest("uuidPlayer", uuidOpponent);
         putRequest("inviter", inviter);
+        putRequest("uuidInviter", uuidInviter);
         return getRequestInstance();
     }
 
@@ -231,10 +253,11 @@ public class JSONSender {
      * @param turn           the turn
      * @return the json object
      */
-    public JSONObject play(Boolean success, String msg, String playerUsername, int turn) {
+    public JSONObject play(Boolean success, String msg, String playerUsername, String uuid, int turn) {
         clearRequests();
         putRequest("type", "play");
         putRequest("player", playerUsername);
+        putRequest("uuid", uuid);
         putRequest("status", (success ? "success" : "fail"));
         if (success) {
             putRequest("placed", String.valueOf(turn));
@@ -281,22 +304,6 @@ public class JSONSender {
             }
         }
         return true;
-    }
-
-    /**
-     * Play accepted string.
-     *
-     * @param opponent the opponent
-     * @param figure   the figure
-     * @return the string
-     */
-    public static String playAccepted(String opponent, ArrayList<FigureType> figure) {
-        ObjJsonSender keyValue = new ObjJsonSender();
-        keyValue.keys.add(new ObjJsonSender.Key("start_multi_player", "success"));
-        keyValue.keys.add(new ObjJsonSender.Key("opponent", opponent));
-        keyValue.keys.add(new ObjJsonSender.Key("time", Constants.timeCurrent));
-        keyValue.moves.addAll(figure);
-        return new Gson().toJson(keyValue);
     }
 
     /**

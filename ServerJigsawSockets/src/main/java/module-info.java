@@ -3,9 +3,10 @@ module ru.hse.iuturakulov.serverjigsawsockets {
     requires javafx.fxml;
     requires java.logging;
     requires org.json;
-    requires java.sql;
     requires com.google.gson;
-
+    requires java.sql;
+    requires org.apache.derby.engine;
+    requires org.apache.derby.commons;
 
     opens ru.hse.iuturakulov.serverjigsawsockets to javafx.fxml;
     exports ru.hse.iuturakulov.serverjigsawsockets;

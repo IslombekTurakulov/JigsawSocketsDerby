@@ -8,7 +8,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import ru.hse.iuturakulov.serverjigsawsockets.ServerMain;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
-import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 import ru.hse.iuturakulov.serverjigsawsockets.network.Server;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
@@ -47,12 +46,14 @@ public class ServerMainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         stopServerBtn.setVisible(false);
+        TableColumn<Player, String> uuidCol = new TableColumn<>("UUID");
+        uuidCol.setCellValueFactory(cellData -> cellData.getValue().getUuidPlayerProperty());
         TableColumn<Player, String> usernameCol = new TableColumn<>("Player");
         usernameCol.setCellValueFactory(cellData -> cellData.getValue().playerNameProperty());
         gameTime.setText(Constants.timeCurrent == null || Constants.timeCurrent.equals("00:00:00") ? "Please choose game time" : "Game time: " + Constants.timeCurrent);
         TableColumn<Player, Boolean> onlineCol = new TableColumn<>("Status");
         onlineCol.setCellValueFactory(cellData -> cellData.getValue().onlineProperty());
-        playersTable.getColumns().addAll(usernameCol, onlineCol);
+        playersTable.getColumns().addAll(uuidCol, usernameCol, onlineCol);
         timerServerBtn.setOnAction(this::timerServer);
     }
 

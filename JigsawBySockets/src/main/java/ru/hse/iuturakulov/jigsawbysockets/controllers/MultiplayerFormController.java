@@ -47,9 +47,10 @@ public class MultiplayerFormController implements Initializable {
             App.setRoot("game_request_form");
             Player player = (Player) table.getSelectionModel().getSelectedItem();
             ServerHandler.otherPlayingPlayer = player.getUsername();
-            if (Objects.equals(player.getUsername(), Player.getPlayer().getUsername())) {
+            ServerHandler.otherPlayingPlayerUUID = player.getUuid();
+        /*    if (Objects.equals(player.getUsername(), Player.getPlayer().getUsername())) {
                 DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Failed", "You can't play with yourself!", false);
-            }
+            }*/
             Game.setCurrentPlayingGame(new Game(player));
             Game.getCurrentPlayingGame().sendGameRequest();
         } else {

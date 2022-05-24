@@ -41,7 +41,7 @@ public class Game {
     }
     public Game() {
         placedBlocks = 0;
-        playingPerson = new Player(Player.getPlayer().getUsername(), 0);
+        playingPerson = new Player(Player.getPlayer().getUsername(), Player.getPlayer().getUuid(), 0);
         Game.createBoard();
     }
 
@@ -159,6 +159,7 @@ public class Game {
         jsonSender.putRequest("function", "play");
         jsonSender.putRequest("player", Player.getPlayer().getUsername());
         jsonSender.putRequest("placed", index);
+        jsonSender.putRequest("playerUuid", Player.getPlayer().getUuid());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -167,6 +168,7 @@ public class Game {
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "single_player_finished");
         jsonSender.putRequest("name", Player.getPlayer().getUsername());
+        jsonSender.putRequest("uuidPlayer", Player.getPlayer().getUuid());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -176,6 +178,7 @@ public class Game {
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "multiplayer_finished");
         jsonSender.putRequest("name", Game.getOtherPlayingPerson().getUsername());
+        jsonSender.putRequest("uuidPlayer", Game.getOtherPlayingPerson().getUuid());
         jsonSender.putRequest("placed", index);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
@@ -196,13 +199,15 @@ public class Game {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_decline");
         jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
+        jsonSender.putRequest("uuidPlayer", ServerHandler.otherPlayingPlayerUUID);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
-    public static void rejectMultiplayerGameInvite(String name) {
+    public static void rejectMultiplayerGameInvite(String name, String uuid) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_decline_for_game");
         jsonSender.putRequest("opponent", name);
+        jsonSender.putRequest("opponentUUID", uuid);
         jsonSender.putRequest("cause", "This player is playing another game");
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
@@ -211,6 +216,9 @@ public class Game {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_accept");
         jsonSender.putRequest("opponent", ServerHandler.otherPlayingPlayer);
+        jsonSender.putRequest("opponentUUID", ServerHandler.otherPlayingPlayerUUID);
+        jsonSender.putRequest("acceptedPlayer", Player.getPlayer().getUsername());
+        jsonSender.putRequest("acceptedPlayerUUID", Player.getPlayer().getUuid());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -223,6 +231,7 @@ public class Game {
             Game.currentPlayingGame = null;
         }
         ServerHandler.otherPlayingPlayer = null;
+        ServerHandler.otherPlayingPlayerUUID = null;
     }
 
     public static Player getPlayingPerson() {
@@ -283,10 +292,12 @@ public class Game {
     }
 
     public void sendMoreShape() {
-        JSONSender jsonSender = JSONSender.getInstance();
-        jsonSender.clearRequests();
-        jsonSender.putRequest("function", "more_shape");
-        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+        if (currentPlayingGame != null) {
+            JSONSender jsonSender = JSONSender.getInstance();
+            jsonSender.clearRequests();
+            jsonSender.putRequest("function", "more_shape");
+            ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+        }
     }
 
     public void sendGameRequest() {
@@ -294,7 +305,9 @@ public class Game {
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "invite_request");
         jsonSender.putRequest("opponent", getOtherPlayingPerson().getUsername());
+        jsonSender.putRequest("opponentUUID", getOtherPlayingPerson().getUuid());
         jsonSender.putRequest("inviter", Player.getPlayer().getUsername());
+        jsonSender.putRequest("uuidInviter", Player.getPlayer().getUuid());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 

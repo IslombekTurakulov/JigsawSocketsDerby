@@ -39,6 +39,11 @@ public class MainFormController implements Initializable {
     }
 
     @FXML
+    private void ratingList(ActionEvent ae) {
+
+    }
+
+    @FXML
     private void multiplayer(ActionEvent ae) {
         Player.getOnlineList();
         App.setRoot("games_form");

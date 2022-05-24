@@ -32,6 +32,7 @@ public class ServerHandler {
      * The constant otherPlayingPlayer.
      */
     public static String otherPlayingPlayer;
+    public static String otherPlayingPlayerUUID;
 
     /**
      * Handle auth or register.
@@ -42,7 +43,7 @@ public class ServerHandler {
         if (isIt(jsonResponse, "status", "success")) {
             if (isIt(jsonResponse, "type", "login")) {
                 JSONObject parsed = jsonResponse.getJSONObject("player");
-                Player.setPlayer(new Player(parsed.getString("username"), parsed.getInt("placed")));
+                Player.setPlayer(new Player(parsed.getString("username"), parsed.getString("uuidPlayer"), parsed.getInt("placed")));
                 App.setRoot("main_form");
                 Constants.LOGGER.log(Level.INFO, "Connected.. Opening Main home form");
             } else {
@@ -60,53 +61,16 @@ public class ServerHandler {
      * @throws IOException the io exception
      */
     public static void initializeResponses(String response) throws IOException {
-        Constants.LOGGER.log(Level.INFO, response);
-        if (JSONSender.getInstance().validateGson(response)) {
-            if ((response.contains("keys") && response.contains("single_player"))) {
-                ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
-                Game.setIsPlayingGame(false);
-                if (!Game.array.isEmpty()) {
-                    Game.array.clear();
-                    Game.setCurrentIndexShape(0);
-                    Game.setPlacedBlocks(0);
-                }
-                Game.array.addAll(obj.moves);
-                Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is %d".formatted(Game.array.size()));
-                Game.setCurrentPlayingGame(new Game());
-                Game.setCurrentGameTime(obj.keys.get(1).getCode());
-                Game.setGameMode("Single-player");
-                Platform.runLater(() ->
-                        App.setRoot("game_form")
-                );
-                return;
-            }
+        System.out.println(response);
+        if (checkTheGameSinglePlayer(response)) {
+            return;
         }
-        if (JSONSender.getInstance().validateGson(response)) {
-            if (response.contains("keys") && response.contains("start_multi_player")) {
-                ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
-                Game.setIsGameStopped(false);
-                Game.array.clear();
-                Game.setCurrentIndexShape(0);
-                Game.setPlacedBlocks(0);
-                Game.array.addAll(obj.moves);
-                Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is " + Game.array.size());
-                Player opponent = new Player(obj.keys.get(1).getCode());
-                Game.setCurrentPlayingGame(new Game(opponent));
-                Game.setCurrentGameTime(obj.keys.get(2).getCode());
-                Game.setGameMode("Multi-player");
-                Platform.runLater(() -> App.setRoot("game_form"));
-                return;
-            }
+        if (checkTheGameMultiPlayer(response)) {
+            return;
         }
-        if (JSONSender.getInstance().validateGson(response)) {
-            if ((response.contains("keys") && response.contains("get_shapes"))) {
-                Game.array.clear();
-                Game.array.addAll(new Gson().fromJson(response, ObjJsonSender.class).moves);
-                Constants.LOGGER.log(Level.INFO, "New figures got. Total decoded size is %d".formatted(Game.array.size()));
-                return;
-            }
+        if (checkTheFigureShapes(response)) {
+            return;
         }
-
         if (!JSONSender.getInstance().validateJSON(response)) {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "JSON is invalid!", "Try again", false);
             Constants.LOGGER.log(Level.WARNING, "JSON -> %s  is invalid".formatted(response));
@@ -115,7 +79,7 @@ public class ServerHandler {
         JSONObject parsedResponse = new JSONObject(response);
         String function = "type";
         if (isIt(parsedResponse, function, "play")) {
-            if (Game.getOtherPlayingPerson() != null && Objects.equals(parsedResponse.getString("player"), Game.getOtherPlayingPerson().getUsername())) {
+            if (Game.getOtherPlayingPerson() != null && Objects.equals(parsedResponse.getString("uuid"), Game.getOtherPlayingPerson().getUuid())) {
                 Game.getOtherPlayingPerson().setPlacedBlocks(parsedResponse.getInt("placed"));
             } else {
                 Player.getPlayer().setPlacedBlocks(parsedResponse.getInt("placed"));
@@ -124,7 +88,7 @@ public class ServerHandler {
         if (Player.getPlayer() == null && (isIt(parsedResponse, function, "login"))) {
             handleAuthOrRegister(parsedResponse);
         } else if (isIt(parsedResponse, function, "logout")) {
-            Player.setPlayer(new Player(parsedResponse.getString("playerName"), parsedResponse.getInt("playerPoints")));
+            Player.setPlayer(new Player(parsedResponse.getString("playerName"), parsedResponse.getString("uuidPlayer"), parsedResponse.getInt("playerPoints")));
         } else if (isIt(parsedResponse, function, "multiplayer_game")) {
             multiplayerGame(parsedResponse);
         } else if (isIt(parsedResponse, function, "close_socket")) {
@@ -145,6 +109,64 @@ public class ServerHandler {
                 Game.setIsGameStopped(true);
             }
         }
+    }
+
+    private static boolean checkTheFigureShapes(String response) {
+        if (JSONSender.getInstance().validateGson(response)) {
+            if ((response.contains("keys") && response.contains("get_shapes"))) {
+                Game.array.clear();
+                Game.array.addAll(new Gson().fromJson(response, ObjJsonSender.class).moves);
+                Constants.LOGGER.log(Level.INFO, "New figures got. Total decoded size is %d".formatted(Game.array.size()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkTheGameMultiPlayer(String response) {
+        if (JSONSender.getInstance().validateGson(response)) {
+            if (response.contains("keys") && response.contains("start_multi_player")) {
+                ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
+                Game.setIsGameStopped(false);
+                Game.array.clear();
+                Game.setCurrentIndexShape(0);
+                Game.setPlacedBlocks(0);
+                Game.array.addAll(obj.moves);
+                Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is " + Game.array.size());
+                Player opponent = new Player(obj.keys.get(1).getCode(), obj.keys.get(3).getCode());
+                Game.setCurrentPlayingGame(new Game(opponent));
+                Game.setCurrentGameTime(obj.keys.get(2).getCode());
+                Game.setGameMode("Multi-player");
+                Platform.runLater(() -> App.setRoot("game_form"));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkTheGameSinglePlayer(String response) {
+        if (JSONSender.getInstance().validateGson(response)) {
+            if ((response.contains("keys") && response.contains("single_player"))) {
+                Game.leave();
+                ObjJsonSender obj = new Gson().fromJson(response, ObjJsonSender.class);
+                Game.setIsPlayingGame(false);
+                if (!Game.array.isEmpty()) {
+                    Game.array.clear();
+                    Game.setCurrentIndexShape(0);
+                    Game.setPlacedBlocks(0);
+                }
+                Game.array.addAll(obj.moves);
+                Constants.LOGGER.log(Level.INFO, "Figures got. Total decoded size is %d".formatted(Game.array.size()));
+                Game.setCurrentPlayingGame(new Game());
+                Game.setCurrentGameTime(obj.keys.get(1).getCode());
+                Game.setGameMode("Single-player");
+                Platform.runLater(() ->
+                        App.setRoot("game_form")
+                );
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void closeSocket(String response, JSONObject parsedResponse) throws IOException {
@@ -173,6 +195,7 @@ public class ServerHandler {
     private static void multiplayerGame(JSONObject parsedResponse) {
         if (isIt(parsedResponse, "value", "success")) {
             otherPlayingPlayer = parsedResponse.getString("opponent");
+            otherPlayingPlayerUUID = parsedResponse.getString("uuidPlayer");
             App.setRoot("game_request_accept_form");
         } else {
             Constants.LOGGER.log(Level.INFO, "Failed playing with opponent %s".formatted(parsedResponse.getString("opponent")));
@@ -184,9 +207,10 @@ public class ServerHandler {
         if (status.equals("success")) {
             if (Game.getPlayingPerson() == null || (Game.getIsPlayingGame() != null && !Game.getIsPlayingGame())) {
                 otherPlayingPlayer = response.getString("opponent");
-                App.setRoot("game_request_accept_form");
+                otherPlayingPlayerUUID = response.getString("uuidPlayer");
+                Platform.runLater(() -> App.setRoot("game_request_accept_form"));
             } else {
-                Game.rejectMultiplayerGameInvite(response.getString("inviter"));
+                Game.rejectMultiplayerGameInvite(response.getString("inviter"), response.getString("uuidInviter"));
             }
         } else {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Failed", response.getString("opponent"), false);
@@ -198,7 +222,7 @@ public class ServerHandler {
         playerSet.clear();
         JSONObject JsonObj = new JSONObject(resp);
         for (Object object : JsonObj.getJSONArray("players")) {
-            playerSet.add(new Player(((JSONObject) object).getString("username"), ((JSONObject) object).getInt("placed")));
+            playerSet.add(new Player(((JSONObject) object).getString("username"), ((JSONObject) object).getString("uuidPlayer"), ((JSONObject) object).getInt("placed")));
         }
     }
 

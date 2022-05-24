@@ -12,6 +12,7 @@ import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.MAX_LENGTH_LOGIN;
@@ -28,7 +29,7 @@ public class LauncherController implements Initializable {
             DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Incorrect name", "The length of your login is less than %d".formatted(MIN_LENGTH_LOGIN), false);
         } else {
             ServerSocket.connect("127.0.0.1", 5000);
-            Player.login(usernameField.getText());
+            Player.login(usernameField.getText(), UUID.randomUUID().toString());
         }
     }
 

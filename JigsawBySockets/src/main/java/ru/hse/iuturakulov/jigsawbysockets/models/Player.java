@@ -4,6 +4,7 @@ import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 /**
@@ -11,17 +12,22 @@ import java.util.logging.Level;
  */
 public class Player {
     private static Player player = null;
-    private String username;
+    private final String username;
+    private final UUID uuidPlayer;
     private int placed;
 
+    public String getUuid() {
+        return String.valueOf(uuidPlayer);
+    }
     /**
      * Instantiates a new Player.
      *
      * @param name   the name
      * @param placed the placed
      */
-    public Player(String name, int placed) {
+    public Player(String name, String uuidPlayer, int placed) {
         username = name;
+        this.uuidPlayer = UUID.fromString(uuidPlayer);
         this.placed = placed;
     }
 
@@ -30,8 +36,9 @@ public class Player {
      *
      * @param name the name
      */
-    public Player(String name) {
+    public Player(String name, String uuidPlayer) {
         username = name;
+        this.uuidPlayer = UUID.fromString(uuidPlayer);
     }
 
     /**
@@ -48,12 +55,13 @@ public class Player {
      *
      * @param name the name
      */
-    public static void login(String name) {
+    public static void login(String name, String uuidPlayer) {
         Constants.LOGGER.log(Level.INFO, "Sending login request..");
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "login");
         jsonSender.putRequest("username", name);
+        jsonSender.putRequest("uuidPlayer", uuidPlayer);
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
         //  if (ServerSocket.serverSocket != null)
     }
@@ -65,6 +73,8 @@ public class Player {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "logout");
+        jsonSender.putRequest("name", getPlayer().getUsername());
+        jsonSender.putRequest("uuidPlayer", getPlayer().getUuid());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -126,14 +136,6 @@ public class Player {
         return username;
     }
 
-    /**
-     * Sets username.
-     *
-     * @param username the username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     /**
      * Sets placed blocks.

@@ -16,7 +16,10 @@ public class RatingPlayers {
     public JSONArray getTopPlayers() {
         JSONArray gamesArray = new JSONArray();
         DatabaseDerbyAccess derbyAccess = new DatabaseDerbyAccess();
-        try (PreparedStatement statement = derbyAccess.getConnection().prepareStatement("SELECT GAME_ID, LOGIN_PLAYER, END_GAME_DATE, PLACED_BLOCKS, TIME_GAME FROM RATING_LIST")) {
+        String sql = "SELECT GAME_ID, LOGIN_PLAYER, END_GAME_DATE, PLACED_BLOCKS, TIME_GAME " +
+                     "FROM RATING_LIST ORDER BY END_GAME_DATE desc, TIME_GAME desc, PLACED_BLOCKS desc" +
+                     " fetch first 10 rows only";
+        try (PreparedStatement statement = derbyAccess.getConnection().prepareStatement(sql)) {
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 JSONObject gameJSON = new JSONObject();
@@ -44,5 +47,4 @@ public class RatingPlayers {
          */
         public static final RatingPlayers RATING_PLAYERS = new RatingPlayers();
     }
-
 }

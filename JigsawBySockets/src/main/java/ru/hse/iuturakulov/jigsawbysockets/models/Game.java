@@ -36,14 +36,6 @@ public class Game {
     private static Boolean isPlayingGame;
     private int id;
 
-    public static String getGameTimeLeft() {
-        return gameTimeLeft;
-    }
-
-    public static void setGameTimeLeft(String gameTimeLeft) {
-        Game.gameTimeLeft = gameTimeLeft;
-    }
-
     public Game(int id, List<Player> players) {
         this.id = id;
         playingPerson = players.get(0);
@@ -60,6 +52,14 @@ public class Game {
 
     public Game(Player players) {
         setOtherPlayingPerson(players);
+    }
+
+    public static String getGameTimeLeft() {
+        return gameTimeLeft;
+    }
+
+    public static void setGameTimeLeft(String gameTimeLeft) {
+        Game.gameTimeLeft = gameTimeLeft;
     }
 
     public static Boolean getIsPlayingGame() {

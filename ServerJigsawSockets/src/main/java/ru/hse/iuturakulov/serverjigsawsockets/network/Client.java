@@ -117,7 +117,7 @@ public class Client extends Player {
     }
 
     public void saveGame(String loginPlayer, String endGameDate, int placedBlocks, String timeGame) {
-        // game_id,login_player,end_game_date,placed_blocks,time_game
+        // game_id, login_player, end_game_date, placed_blocks, time_game
         DatabaseDerbyAccess da = new DatabaseDerbyAccess();
         try (PreparedStatement st = da.getConnection().prepareStatement("INSERT INTO RATING_LIST (LOGIN_PLAYER, PLACED_BLOCKS, TIME_GAME) VALUES (?, ?, ?)")) {
             st.setString(1, loginPlayer);
@@ -168,19 +168,20 @@ public class Client extends Player {
     private void handleMultiplayerGame(String opponent, String uuid, String inviter, String uuidPlayer) {
         Client opponentClient = getClientByUsername(opponent, uuid);
         if (opponentClient != null) {
-            //if (!opponentClient.getPlayerName().equalsIgnoreCase(inviter) && !opponentClient.getuuidPlayer().equalsIgnoreCase(uuidPlayer)) {
-            if (opponentClient.getGame() != null) {
-                printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game", uuid, inviter, uuidPlayer).toString());
-                return;
-            }
-            opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName(), getuuidPlayer(), inviter, uuidPlayer).toString());
-         /*   } else {
+            if (!opponentClient.getuuidPlayer().equalsIgnoreCase(uuidPlayer)) {
+                if (opponentClient.getGame() != null) {
+                    printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game", uuid, inviter, uuidPlayer).toString());
+                    return;
+                }
+                opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName(), getuuidPlayer(), inviter, uuidPlayer).toString());
+            } else {
                 printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!", uuid, inviter, uuidPlayer).toString());
-            }*/
+            }
         } else {
             printStream.println(JSONSender.getInstance().playRequest(false, "Player is not online", uuid, inviter, uuidPlayer).toString());
         }
     }
+
 
     private void handleAcceptRequest(String opponent, String uuid) {
         Client opponentClient = getClientByUsername(opponent, uuid);

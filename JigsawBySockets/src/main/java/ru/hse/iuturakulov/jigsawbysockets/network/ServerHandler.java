@@ -106,7 +106,9 @@ public class ServerHandler {
             handlePlayersList(response);
         } else if (isIt(parsedResponse, function, "top_rating")) {
             RatingPlayers.parseTopRatings(parsedResponse);
-            App.setRoot("rating_list");
+            Platform.runLater(() -> {
+                App.setRoot("rating_list");
+            });
         } else if (isIt(parsedResponse, function, "game-finish")) {
             if (isIt(parsedResponse, "status", "success")) {
                 Constants.LOGGER.log(Level.WARNING, "Force finish game");

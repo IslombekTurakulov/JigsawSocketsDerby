@@ -101,6 +101,11 @@ public class GameFormController implements Initializable {
 
     private void findTheWinner() {
         if (isSinglePlayer) {
+            Game.finishSingleGame();
+        } else {
+            Game.finishMultiplayerGame(Game.getPlacedBlocks());
+        }
+        if (isSinglePlayer) {
             opponentPlacedBlocks.setVisible(false);
             winnerCurrentGame.setVisible(false);
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
@@ -185,12 +190,6 @@ public class GameFormController implements Initializable {
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
             }
-        } else {
-            if (isSinglePlayer) {
-                Game.finishSingleGame();
-            } else {
-                Game.finishMultiplayerGame(Game.getPlacedBlocks());
-            }
         }
         Game.setIsPlayingGame(false);
         Constants.LOGGER.log(Level.INFO, "Exit from game session");
@@ -208,8 +207,6 @@ public class GameFormController implements Initializable {
         } else {
             Game.setCurrentPlayingGame(new Game(Game.getOtherPlayingPerson()));
             Game.getCurrentPlayingGame().sendGameRequest();
-/*            Game.setCurrentIndexShape(0);
-            Game.setPlacedBlocks(0);*/
         }
     }
 

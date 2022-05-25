@@ -11,8 +11,11 @@ import ru.hse.iuturakulov.jigsawbysockets.network.ServerHandler;
 import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
@@ -29,8 +32,17 @@ public class Game {
     private static Player otherPlayingPerson;
     private static boolean isGameStopped;
     private static String currentGameTime;
+    private static String gameTimeLeft;
     private static Boolean isPlayingGame;
     private int id;
+
+    public static String getGameTimeLeft() {
+        return gameTimeLeft;
+    }
+
+    public static void setGameTimeLeft(String gameTimeLeft) {
+        Game.gameTimeLeft = gameTimeLeft;
+    }
 
     public Game(int id, List<Player> players) {
         this.id = id;
@@ -39,6 +51,7 @@ public class Game {
         placedBlocks = 0;
         Game.createBoard();
     }
+
     public Game() {
         placedBlocks = 0;
         playingPerson = new Player(Player.getPlayer().getUsername(), Player.getPlayer().getUuid(), 0);
@@ -172,6 +185,20 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    public static void saveGame(Player player, int index) {
+        // game_id,login_player,end_game_date,placed_blocks,time_game
+        JSONSender jsonSender = JSONSender.getInstance();
+        jsonSender.clearRequests();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss.");
+        format.setTimeZone(TimeZone.getDefault());
+        jsonSender.putRequest("function", "save_game");
+        jsonSender.putRequest("login_player", player.getUsername());
+        jsonSender.putRequest("end_game_date", format.format(timestamp) + String.format("%09d", timestamp.getNanos()));
+        jsonSender.putRequest("placed_blocks", index);
+        jsonSender.putRequest("time_game", getGameTimeLeft());
+        ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
+    }
 
     public static void finishMultiplayerGame(int index) {
         JSONSender jsonSender = JSONSender.getInstance();

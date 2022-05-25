@@ -10,6 +10,8 @@ import ru.hse.iuturakulov.serverjigsawsockets.models.Singleplayer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.PreparedStatement;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,8 +93,15 @@ public class Client extends Player {
                                 getGame().finishGame();
                             }
                             break;
+                        case "save_game":
+                            // game_id,login_player,end_game_date,placed_blocks,time_game
+                            saveGame(jsonObject.getString("login_player"), jsonObject.getString("end_game_date"), jsonObject.getInt("placed_blocks"), jsonObject.getString("time_game"));
+                            break;
+                        case "top_rating":
+                            sendRequest(JSONSender.ratingPlayers().toString());
+                            break;
                         case "logout":
-                            remove(jsonObject.getString("name"), jsonObject.getString("uuidPlayer"));
+                            remove();
                             break;
                         default:
                             JSONSender jsonSender = JSONSender.getInstance();
@@ -107,6 +116,20 @@ public class Client extends Player {
         }).start();
     }
 
+    public void saveGame(String loginPlayer, String endGameDate, int placedBlocks, String timeGame) {
+        // game_id,login_player,end_game_date,placed_blocks,time_game
+        DatabaseDerbyAccess da = new DatabaseDerbyAccess();
+        try (PreparedStatement st = da.getConnection().prepareStatement("INSERT INTO RATING_LIST (LOGIN_PLAYER, PLACED_BLOCKS, TIME_GAME) VALUES (?, ?, ?)")) {
+            st.setString(1, loginPlayer);
+            st.setInt(2, placedBlocks);
+            st.setTime(3, Time.valueOf(timeGame));
+            st.executeUpdate();
+            // ResultSet resultSet = da.getConnection().createStatement().executeQuery("select max(rowid) from games");
+            da.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void notifyAllPlayers() {
         for (Client c : Client.onlineClients) {
@@ -170,7 +193,7 @@ public class Client extends Player {
     /**
      * Remove.
      */
-    public void remove(String name, String uuid) {
+    public void remove() {
         setOnlineOnArrayList(false);
         onlineClients.remove(this);
     }

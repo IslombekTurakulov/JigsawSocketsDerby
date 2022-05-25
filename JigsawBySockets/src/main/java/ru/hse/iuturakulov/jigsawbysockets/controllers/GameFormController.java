@@ -27,6 +27,7 @@ import java.time.LocalTime;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import static ru.hse.iuturakulov.jigsawbysockets.models.Game.saveGame;
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.DATE_TIME_FORMATTER;
 
 /**
@@ -46,8 +47,6 @@ public class GameFormController implements Initializable {
     private LocalTime localTime;
     @FXML
     private Button playAgainBtn;
-    @FXML
-    private Button ratingBtn;
     @FXML
     private Button exitFromGameBtn;
     @FXML
@@ -82,6 +81,7 @@ public class GameFormController implements Initializable {
         localTime = localTime.plusSeconds(1);
         String time = localTime.format(DATE_TIME_FORMATTER);
         if (Game.isGameStopped() || time.equals(Game.getCurrentGameTime())) {
+            Game.setGameTimeLeft(localTime.format(DATE_TIME_FORMATTER));
             findTheWinner();
             Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
             timeline.pause();
@@ -101,17 +101,22 @@ public class GameFormController implements Initializable {
 
     private void findTheWinner() {
         if (isSinglePlayer) {
-            Game.finishSingleGame();
             opponentPlacedBlocks.setVisible(false);
             winnerCurrentGame.setVisible(false);
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
+            saveGame(Player.getPlayer(), Player.getPlayer().getPlaced());
         } else {
-            Game.finishMultiplayerGame(Game.getPlacedBlocks());
             winnerCurrentGame.setVisible(true);
-            winnerCurrentGame.setText("Winner: %s"
-                    .formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU"
-                            : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername()
-                            : "DRAW"));
+            if (Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced()) {
+                winnerCurrentGame.setText("Winner: %s".formatted("YOU"));
+                saveGame(Player.getPlayer(), Player.getPlayer().getPlaced());
+            } else {
+                if (Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced()) {
+                    winnerCurrentGame.setText("Winner: %s".formatted(Game.getOtherPlayingPerson().getUsername()));
+                } else {
+                    winnerCurrentGame.setText("Winner: %s".formatted("DRAW"));
+                }
+            }
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
             opponentPlacedBlocks.setText("Opponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced()));
         }
@@ -130,7 +135,6 @@ public class GameFormController implements Initializable {
         timeline.playFromStart();
         exitFromGameBtn.setOnAction(event -> exitGameSession());
         playAgainBtn.setOnAction(event -> playAgainSession());
-        // ratingBtn.setOnAction(event -> ratingList());
         playAgainBtn.setVisible(false);
     }
 
@@ -155,6 +159,7 @@ public class GameFormController implements Initializable {
     }
 
     private void exitGameSession() {
+        Game.setGameTimeLeft(localTime.format(DATE_TIME_FORMATTER));
         if (!Game.isGameStopped()) {
             Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
             timeline.pause();
@@ -163,15 +168,28 @@ public class GameFormController implements Initializable {
                 Game.finishSingleGame();
                 temp = "Your blocks: %d".formatted(Game.getPlacedBlocks());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Single player", temp, false);
+                saveGame(Player.getPlayer(), Player.getPlayer().getPlaced());
             } else {
                 Game.finishMultiplayerGame(Game.getPlacedBlocks());
-                temp = "Winner: %s"
-                        .formatted(Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced() ? "YOU"
-                                : Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced() ? Game.getOtherPlayingPerson().getUsername()
-                                : Player.getPlayer().getPlaced() == Game.getOtherPlayingPerson().getPlaced() ? "DRAW" : "No one won");
+                if (Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced()) {
+                    temp = "Winner: %s".formatted("YOU");
+                    saveGame(Player.getPlayer(), Player.getPlayer().getPlaced());
+                } else {
+                    if (Player.getPlayer().getPlaced() < Game.getOtherPlayingPerson().getPlaced()) {
+                        temp = "Winner: %s".formatted(Game.getOtherPlayingPerson().getUsername());
+                    } else {
+                        temp = "Winner: %s".formatted(Player.getPlayer().getPlaced() == Game.getOtherPlayingPerson().getPlaced() ? "DRAW" : "No one won");
+                    }
+                }
                 temp += "\nYour blocks: %d".formatted(Game.getPlacedBlocks());
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
+            }
+        } else {
+            if (isSinglePlayer) {
+                Game.finishSingleGame();
+            } else {
+                Game.finishMultiplayerGame(Game.getPlacedBlocks());
             }
         }
         Game.setIsPlayingGame(false);

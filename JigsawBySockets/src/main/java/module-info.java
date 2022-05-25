@@ -5,6 +5,7 @@ module ru.hse.iuturakulov.jigsawbysockets {
     requires javafx.base;
     requires org.json;
     requires com.google.gson;
+    requires java.sql;
 
     opens ru.hse.iuturakulov.jigsawbysockets to javafx.fxml;
     opens ru.hse.iuturakulov.jigsawbysockets.models.enums to com.google.gson;

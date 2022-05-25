@@ -51,6 +51,7 @@ public class TBlock extends Shape {
         squares[3] = new CustomPoint(1, 1);
         squares[4] = new CustomPoint(2, 1);
     }
+
     // [ ][X][ ]
     //    [ ]
     public void createSmallRightShape() {

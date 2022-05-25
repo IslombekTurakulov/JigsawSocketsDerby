@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import ru.hse.iuturakulov.jigsawbysockets.App;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
+import ru.hse.iuturakulov.jigsawbysockets.models.RatingPlayers;
 import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
@@ -40,7 +41,7 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void ratingList(ActionEvent ae) {
-
+        RatingPlayers.getRatingList();
     }
 
     @FXML

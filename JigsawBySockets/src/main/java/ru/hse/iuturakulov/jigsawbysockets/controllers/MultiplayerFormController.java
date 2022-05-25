@@ -15,7 +15,6 @@ import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -48,9 +47,6 @@ public class MultiplayerFormController implements Initializable {
             Player player = (Player) table.getSelectionModel().getSelectedItem();
             ServerHandler.otherPlayingPlayer = player.getUsername();
             ServerHandler.otherPlayingPlayerUUID = player.getUuid();
-        /*    if (Objects.equals(player.getUsername(), Player.getPlayer().getUsername())) {
-                DialogCreator.showCustomDialog(Alert.AlertType.ERROR, "Failed", "You can't play with yourself!", false);
-            }*/
             Game.setCurrentPlayingGame(new Game(player));
             Game.getCurrentPlayingGame().sendGameRequest();
         } else {

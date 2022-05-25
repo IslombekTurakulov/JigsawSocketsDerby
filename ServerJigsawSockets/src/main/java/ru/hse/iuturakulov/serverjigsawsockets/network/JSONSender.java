@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
 import ru.hse.iuturakulov.serverjigsawsockets.models.ObjJsonSender;
 import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
+import ru.hse.iuturakulov.serverjigsawsockets.models.RatingPlayers;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
 import java.util.ArrayList;
@@ -45,6 +46,13 @@ public class JSONSender {
         keyValue.keys.add(new ObjJsonSender.Key("uuidPlayer", uuid));
         keyValue.moves.addAll(figure);
         return new Gson().toJson(keyValue);
+    }
+
+    public static JSONObject ratingPlayers() {
+        JSONObject playerJson = new JSONObject();
+        playerJson.put("type", "top_rating");
+        playerJson.put("games", RatingPlayers.getInstance().getTopPlayers());
+        return playerJson;
     }
 
     /**

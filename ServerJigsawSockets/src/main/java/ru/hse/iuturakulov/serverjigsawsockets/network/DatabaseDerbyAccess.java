@@ -1,10 +1,9 @@
 package ru.hse.iuturakulov.serverjigsawsockets.network;
 
-import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,17 +18,41 @@ import java.util.logging.Logger;
 public class DatabaseDerbyAccess {
 
     private Connection connection;
+    private Statement statement;
 
     /**
      * Instantiates a new Database derby access.
      */
     public DatabaseDerbyAccess() {
         try {
-            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            connection = DriverManager.getConnection(Constants.connectionURL);
+             /*
+                    По завершению игры результат игры записывается хостом (т.е. сервером) в свою
+                    локальную базу данных (Derby), в таблицу, состоящую из следующих столбцов:
+                    - уникальный id записи (можно использовать UUID), выступающий в качестве primary key;
+                    - login игрока (имя игрока, которое игрок ввел при запуске программы);
+                    - дата и время окончания игры (хранение делать в тайм зоне UTC+0);
+                    - количество выполненных ходов;
+                    - время потраченное на игру
+                 */
+            String databaseTable = "CREATE TABLE RATING_LIST  "
+                                    + "(GAME_ID INT NOT NULL GENERATED ALWAYS AS IDENTITY "
+                                    + "   CONSTRAINT GAME_PK PRIMARY KEY, "
+                                    + " LOGIN_PLAYER VARCHAR(32) NOT NULL, "
+                                    + " END_GAME_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                                    + " PLACED_BLOCKS INT NOT NULL, "
+                                    + " TIME_GAME TIME NOT NULL) ";
+            // Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+            connection = DriverManager.getConnection("jdbc:derby:server;create=false");
+           /* statement = connection.createStatement();
+            // statement.execute(databaseTable);*/
         } catch (Exception e) {
+            e.printStackTrace();
             Logger.getLogger(DatabaseDerbyAccess.class.getName()).log(Level.SEVERE, e.getMessage());
         }
+    }
+
+    public Statement getStatement() {
+        return statement;
     }
 
     /**

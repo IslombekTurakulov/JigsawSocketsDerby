@@ -16,9 +16,6 @@ public class Player {
     private final UUID uuidPlayer;
     private int placed;
 
-    public String getUuid() {
-        return String.valueOf(uuidPlayer);
-    }
     /**
      * Instantiates a new Player.
      *
@@ -73,8 +70,8 @@ public class Player {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "logout");
-        jsonSender.putRequest("name", getPlayer().getUsername());
-        jsonSender.putRequest("uuidPlayer", getPlayer().getUuid());
+        /*jsonSender.putRequest("name", getPlayer().getUsername());
+        jsonSender.putRequest("uuidPlayer", getPlayer().getUuid());*/
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
@@ -107,6 +104,10 @@ public class Player {
      */
     public static void setPlayer(Player player) {
         Player.player = player;
+    }
+
+    public String getUuid() {
+        return String.valueOf(uuidPlayer);
     }
 
     /**

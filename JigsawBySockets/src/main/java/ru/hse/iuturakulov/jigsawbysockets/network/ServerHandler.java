@@ -8,6 +8,7 @@ import ru.hse.iuturakulov.jigsawbysockets.App;
 import ru.hse.iuturakulov.jigsawbysockets.models.Game;
 import ru.hse.iuturakulov.jigsawbysockets.models.ObjJsonSender;
 import ru.hse.iuturakulov.jigsawbysockets.models.Player;
+import ru.hse.iuturakulov.jigsawbysockets.models.RatingPlayers;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
@@ -103,6 +104,9 @@ public class ServerHandler {
             declinedInvite(parsedResponse);
         } else if (isIt(parsedResponse, function, "get-online-players")) {
             handlePlayersList(response);
+        } else if (isIt(parsedResponse, function, "top_rating")) {
+            RatingPlayers.parseTopRatings(parsedResponse);
+            App.setRoot("rating_list");
         } else if (isIt(parsedResponse, function, "game-finish")) {
             if (isIt(parsedResponse, "status", "success")) {
                 Constants.LOGGER.log(Level.WARNING, "Force finish game");

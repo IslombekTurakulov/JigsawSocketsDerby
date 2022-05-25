@@ -67,7 +67,7 @@ public class JSONSender {
      */
     public boolean validateJSON(String json) {
         try {
-            if (json == null || json.isEmpty()){
+            if (json == null || json.isEmpty()) {
                 return false;
             }
             new JSONObject(json);

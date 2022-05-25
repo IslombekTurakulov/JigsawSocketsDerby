@@ -8,7 +8,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity"
       prefHeight="600.0" prefWidth="800.0" style="-fx-border-radius: 30; -fx-background-radius: 30;"
       stylesheets="@../style/login_form.css" xmlns="http://javafx.com/javafx/17"
       fx:controller="ru.hse.iuturakulov.jigsawbysockets.controllers.LauncherController">

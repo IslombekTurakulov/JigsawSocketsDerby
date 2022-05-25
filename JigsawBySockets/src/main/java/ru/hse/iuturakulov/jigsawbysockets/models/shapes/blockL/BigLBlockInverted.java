@@ -17,6 +17,7 @@ public class BigLBlockInverted extends Shape {
     public BigLBlockInverted() {
         super(Color.CHOCOLATE);
     }
+
     // [ ][ ][X]
     //       [ ]
     //       [ ]

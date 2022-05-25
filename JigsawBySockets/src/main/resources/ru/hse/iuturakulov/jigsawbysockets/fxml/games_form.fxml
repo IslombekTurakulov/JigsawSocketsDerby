@@ -7,7 +7,8 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity"
             prefHeight="600.0" prefWidth="800.0" styleClass="container"
             xmlns="http://javafx.com/javafx/17"
             fx:controller="ru.hse.iuturakulov.jigsawbysockets.controllers.MultiplayerFormController">
@@ -42,7 +43,7 @@
     </top>
     <bottom>
         <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="100.0" prefHeight="74.0" prefWidth="800.0">
-            <Button mnemonicParsing="false" onAction="#back"  prefHeight="43.0"
+            <Button mnemonicParsing="false" onAction="#back" prefHeight="43.0"
                     prefWidth="170.0" style="-fx-background-color: aqua; -fx-background-radius: 15;"
                     styleClass="btn-play" text="Back">
                 <font>

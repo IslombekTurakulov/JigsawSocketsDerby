@@ -64,6 +64,11 @@ public class Multiplayer extends GameLogic {
         return getOwnerOfGame().getPlayerName().equalsIgnoreCase(username) || opponent.getPlayerName().equalsIgnoreCase(username);
     }
 
+    @Override
+    public boolean hasUuid(String uuid) {
+        return getOwnerOfGame().getUuidPlayer().equalsIgnoreCase(uuid) || opponent.getUuidPlayer().equalsIgnoreCase(uuid);
+    }
+
     public void finishGame() {
         // opponent.sendRequest(JSONSender.getInstance().gameFinished("success", "Success").toString());
         opponent.sendRequest(JSONSender.getInstance().gameFinished("success", "Success").toString());

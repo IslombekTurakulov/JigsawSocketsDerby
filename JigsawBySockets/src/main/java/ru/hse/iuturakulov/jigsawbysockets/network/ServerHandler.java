@@ -47,10 +47,14 @@ public class ServerHandler {
     public static void handleAuthOrRegister(JSONObject jsonResponse) {
         if (isIt(jsonResponse, "status", "success")) {
             if (isIt(jsonResponse, "type", "login")) {
-                JSONObject parsed = jsonResponse.getJSONObject("player");
-                Player.setPlayer(new Player(parsed.getString("username"), parsed.getString("uuidPlayer"), parsed.getInt("placed")));
-                App.setRoot("main_form");
-                Constants.LOGGER.log(Level.INFO, "Connected.. Opening Main home form");
+                try {
+                    JSONObject parsed = jsonResponse.getJSONObject("player");
+                    Player.setPlayer(new Player(parsed.getString("username"), parsed.getString("uuidPlayer"), parsed.getInt("placed")));
+                    Platform.runLater(() -> App.setRoot("main_form"));
+                    Constants.LOGGER.log(Level.INFO, "Connected.. Opening Main home form");
+                } catch (Exception e) {
+                    Constants.LOGGER.log(Level.SEVERE, e.getMessage());
+                }
             } else {
                 App.setRoot("login_form");
             }

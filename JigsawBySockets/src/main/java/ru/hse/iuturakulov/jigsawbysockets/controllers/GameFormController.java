@@ -87,18 +87,24 @@ public class GameFormController implements Initializable {
             Game.setGameTimeLeft(localTime.format(DATE_TIME_FORMATTER));
             Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
             timeline.pause();
+            Game.setIsNeedToPlace(true);
             figure.setDisable(true);
-            Game.array.clear();
-            timeline.stop();
-            gameEndInfoPane.setVisible(true);
-            playAgainBtn.setVisible(true);
-            findTheWinner();
-            Player.getPlayer().setPlacedBlocks(0);
-            if (Game.getOtherPlayingPerson() != null) {
-                Game.getOtherPlayingPerson().setPlacedBlocks(0);
-            }
+            endGameLogic();
         }
         timeCurrentGame.setText("Current time: %s".formatted(time));
+    }
+
+    private void endGameLogic() {
+        Game.array.clear();
+        timeline.stop();
+        gameEndInfoPane.setVisible(true);
+        playAgainBtn.setVisible(true);
+        findTheWinner();
+        Player.getPlayer().setPlacedBlocks(0);
+        Game.setIsGameStopped(true);
+        if (Game.getOtherPlayingPerson() != null) {
+            Game.getOtherPlayingPerson().setPlacedBlocks(0);
+        }
     }
 
     private void findTheWinner() {
@@ -129,6 +135,7 @@ public class GameFormController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Game.createBoard();
         Game.showGameInfo();
+        Game.setIsNeedToPlace(false);
         yourNameForGame.setText(MessageFormat.format("You: {0}", Player.getPlayer().getUsername()));
         maxTimeForGame.setText(MessageFormat.format("Max time: {0}", Game.getCurrentGameTime()));
         currentGameMode.setText(Game.getGameMode());
@@ -188,6 +195,10 @@ public class GameFormController implements Initializable {
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
             }
+        } else {
+            if (isSinglePlayer) {
+                Game.finishSingleGame();
+            }
         }
         Game.setIsPlayingGame(false);
         Constants.LOGGER.log(Level.INFO, "Exit from game session");
@@ -199,13 +210,13 @@ public class GameFormController implements Initializable {
     private void playAgainSession() {
         recoverGameStatus();
         if (isSinglePlayer) {
-            Game.setIsPlayingGame(false);
-            Game.leave();
             JSONSender jsonSender = JSONSender.getInstance();
             jsonSender.putRequest("function", "single_player");
             ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
         } else {
-            Game.setCurrentPlayingGame(new Game(Game.getOtherPlayingPerson()));
+            Player otherPlayer = Game.getOtherPlayingPerson();
+            Game.leave();
+            Game.setCurrentPlayingGame(new Game(otherPlayer));
             Game.getCurrentPlayingGame().sendGameRequest();
         }
     }

@@ -51,10 +51,10 @@ public class Game {
     private static Player playingPerson;
     private static Player otherPlayingPerson;
     private static boolean isGameStopped;
+    private static boolean isNeedToPlace;
     private static String currentGameTime;
     private static String gameTimeLeft;
     private static Boolean isPlayingGame;
-
     /**
      * Instantiates a new Game.
      *
@@ -67,7 +67,6 @@ public class Game {
         placedBlocks = 0;
         Game.createBoard();
     }
-
     /**
      * Instantiates a new Game.
      */
@@ -84,6 +83,14 @@ public class Game {
      */
     public Game(Player players) {
         setOtherPlayingPerson(players);
+    }
+
+    public static boolean isIsNeedToPlace() {
+        return isNeedToPlace;
+    }
+
+    public static void setIsNeedToPlace(boolean isNeedToPlace) {
+        Game.isNeedToPlace = isNeedToPlace;
     }
 
     /**
@@ -162,7 +169,7 @@ public class Game {
      * Check for new figure.
      */
     public static void checkForNewFigure() {
-        if (!isGameStopped) {
+        if (!isIsNeedToPlace()) {
             checkExtraShapes();
             if (GameFormController.figure.isDisable()) {
                 play(placedBlocks);
@@ -496,6 +503,7 @@ public class Game {
         System.out.printf("Current playing player - %s%n", Player.getPlayer().getUsername());
         System.out.printf("Other opponent player - %s%n", Game.getOtherPlayingPerson() != null ? Game.getOtherPlayingPerson().getUsername() : "NULL");
         System.out.printf("Max time - %s%n", getCurrentGameTime());
+        System.out.printf("Is game stopped - %s%n", isGameStopped());
         System.out.println("==============================================");
         if (array.isEmpty()) {
             checkExtraShapes();

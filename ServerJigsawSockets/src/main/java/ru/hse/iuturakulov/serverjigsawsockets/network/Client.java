@@ -95,7 +95,7 @@ public class Client extends Player {
                             break;
                         case "multiplayer_finished":
                             if (getGame() != null) {
-                                ((Multiplayer) getGame()).finishGame();
+                                getGame().finishGame();
                             }
                             break;
                         case "save_game":
@@ -152,7 +152,7 @@ public class Client extends Player {
      */
     public Client getClientByUsername(String username, String uuid) {
         for (Client client : onlineClients) {
-            if (client.getUuidPlayer().equalsIgnoreCase(uuid)) {
+            if (client.getUuidPlayer().equals(uuid)) {
                 return client;
             }
         }
@@ -202,7 +202,7 @@ public class Client extends Player {
     public void remove() {
         setOnlineOnArrayList(false);
         onlineClients.remove(this);
-        playersList.remove(this);
+        // playersList.remove(this);
     }
 
     private void handlePlayMove(int placed) {
@@ -217,7 +217,7 @@ public class Client extends Player {
      * Remove game.
      */
     public void removeGame() {
-        GameLogic.listOfGames.removeIf(game -> game.hasPlayer(getPlayerName()));
+        GameLogic.listOfGames.removeIf(game -> game.hasUuid(getUuidPlayer()));
     }
 
     /**
@@ -227,7 +227,7 @@ public class Client extends Player {
      */
     public GameLogic getGame() {
         for (GameLogic game : GameLogic.listOfGames) {
-            if (game.hasPlayer(getPlayerName())) {
+            if (game.hasUuid(getUuidPlayer())) {
                 return game;
             }
         }

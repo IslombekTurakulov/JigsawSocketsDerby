@@ -43,6 +43,8 @@ public abstract class GameLogic {
      */
     public abstract boolean hasPlayer(String username);
 
+    public abstract boolean hasUuid(String uuid);
+
     /**
      * Finish game.
      */

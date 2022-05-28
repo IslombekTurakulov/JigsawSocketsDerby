@@ -4,8 +4,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import ru.hse.iuturakulov.jigsawbysockets.models.FigureType;
 import ru.hse.iuturakulov.jigsawbysockets.models.Game;
+import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.SIZE;
 
@@ -56,7 +58,7 @@ public class Figure extends Pane {
 
     private void handleEventsOnFigure(double layoutX, double layoutY) {
         this.setOnMouseDragged(mouseEvent -> {
-            if (!Game.isGameStopped()) {
+            if (!Game.isIsNeedToPlace()) {
                 this.setLayoutX(mouseEvent.getX() + this.getLayoutX());
                 this.setLayoutY(mouseEvent.getY() + this.getLayoutY());
             } else {
@@ -65,15 +67,22 @@ public class Figure extends Pane {
             }
         });
         this.setOnMouseReleased(mouseEvent -> {
-            if (!Game.isGameStopped()) {
+            if (!Game.isIsNeedToPlace()) {
                 if (!Game.isPossibleToPlace(this)) {
                     // If not possible, the figure comes to the initial (original place)
                     this.setLayoutX(layoutX);
                     this.setLayoutY(layoutY);
                 } else {
-                    // Checks if all figures are disabled.
-                    Game.checkForNewFigure();
+                    try {
+                        // Checks if all figures are disabled.
+                        Game.checkForNewFigure();
+                    } catch (IndexOutOfBoundsException | NullPointerException exception) {
+                        Constants.LOGGER.log(Level.SEVERE, exception.getMessage());
+                    }
                 }
+            } else {
+                this.setLayoutX(layoutX);
+                this.setLayoutY(layoutY);
             }
         });
     }

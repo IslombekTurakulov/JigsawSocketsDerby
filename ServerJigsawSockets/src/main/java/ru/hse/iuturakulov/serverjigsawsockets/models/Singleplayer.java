@@ -63,6 +63,11 @@ public class Singleplayer extends GameLogic {
     }
 
     @Override
+    public boolean hasUuid(String uuid) {
+        return getOwnerOfGame().getUuidPlayer().equalsIgnoreCase(uuid);
+    }
+
+    @Override
     public void finishGame() {
         getOwnerOfGame().removeGame();
     }

@@ -174,9 +174,6 @@ public class JSONSender {
         clearRequests();
         putRequest("type", "game-finish");
         putRequest("status", status);
-        if (status.equalsIgnoreCase("fail")) {
-            putRequest("cause", cause);
-        }
         Logger.getLogger(Client.class.getName()).log(Level.INFO, getRequestInstance().toString());
         return getRequestInstance();
     }

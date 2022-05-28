@@ -115,8 +115,6 @@ public class ServerHandler {
             if (isIt(parsedResponse, "status", "success")) {
                 Constants.LOGGER.log(Level.WARNING, "Force finish game");
                 Game.setIsGameStopped(true);
-            } else {
-                DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Please wait", parsedResponse.getString("cause"), false);
             }
         }
     }

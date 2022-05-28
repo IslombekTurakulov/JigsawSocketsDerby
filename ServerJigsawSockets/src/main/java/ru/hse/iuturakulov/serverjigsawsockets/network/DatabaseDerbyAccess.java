@@ -25,15 +25,6 @@ public class DatabaseDerbyAccess {
      */
     public DatabaseDerbyAccess() {
         try {
-             /*
-              По завершению игры результат игры записывается хостом (т.е. сервером) в свою
-              локальную базу данных (Derby), в таблицу, состоящую из следующих столбцов:
-                    - уникальный id записи (можно использовать UUID), выступающий в качестве primary key;
-                    - login игрока (имя игрока, которое игрок ввел при запуске программы);
-                    - дата и время окончания игры (хранение делать в тайм зоне UTC+0);
-                    - количество выполненных ходов;
-                    - время потраченное на игру
-              */
             String databaseTable = "CREATE TABLE RATING_LIST  "
                                    + "(GAME_ID INT NOT NULL GENERATED ALWAYS AS IDENTITY "
                                    + "   CONSTRAINT GAME_PK PRIMARY KEY, "
@@ -42,10 +33,12 @@ public class DatabaseDerbyAccess {
                                    + " PLACED_BLOCKS INT NOT NULL, "
                                    + " TIME_GAME TIME NOT NULL) ";
             // Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            // TODO : Проверка на наличие бд
-            connection = DriverManager.getConnection("jdbc:derby:server;create=false");
-            // statement = connection.createStatement();
-            // statement.execute(databaseTable);
+            connection = DriverManager.getConnection("jdbc:derby:server;create=true");
+            if (!connection.getMetaData().getTables(null, "APP", "RATING_LIST", null).next()) {
+                System.out.println("Table doesn't exist, Creating Table...");
+                statement = connection.createStatement();
+                statement.execute(databaseTable);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Logger.getLogger(DatabaseDerbyAccess.class.getName()).log(Level.SEVERE, e.getMessage());

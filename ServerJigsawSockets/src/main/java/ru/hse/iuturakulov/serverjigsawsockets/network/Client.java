@@ -95,7 +95,7 @@ public class Client extends Player {
                             break;
                         case "multiplayer_finished":
                             if (getGame() != null) {
-                                getGame().finishGame();
+                                ((Multiplayer) getGame()).finishGame();
                             }
                             break;
                         case "save_game":
@@ -202,6 +202,7 @@ public class Client extends Player {
     public void remove() {
         setOnlineOnArrayList(false);
         onlineClients.remove(this);
+        playersList.remove(this);
     }
 
     private void handlePlayMove(int placed) {

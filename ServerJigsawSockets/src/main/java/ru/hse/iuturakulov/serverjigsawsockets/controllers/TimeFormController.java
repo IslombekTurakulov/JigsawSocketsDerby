@@ -144,7 +144,7 @@ public class TimeFormController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         duration = 0D;
         String[] arr = Constants.timeCurrent != null ? (Constants.timeCurrent + ":").split(":") : null;
-        System.out.println(Arrays.toString(arr));
+        // System.out.println(Arrays.toString(arr));
         if (arr != null) {
             preview_hours = arr[0];
             preview_minutes = arr[1];

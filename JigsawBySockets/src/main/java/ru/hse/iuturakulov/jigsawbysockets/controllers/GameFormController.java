@@ -85,15 +85,14 @@ public class GameFormController implements Initializable {
         String time = localTime.format(DATE_TIME_FORMATTER);
         if (Game.isGameStopped() || time.equals(Game.getCurrentGameTime())) {
             Game.setGameTimeLeft(localTime.format(DATE_TIME_FORMATTER));
-            findTheWinner();
             Constants.LOGGER.log(Level.FINE, "Timer stopped. Game stopped.");
             timeline.pause();
             figure.setDisable(true);
-            Game.setIsGameStopped(true);
             Game.array.clear();
             timeline.stop();
             gameEndInfoPane.setVisible(true);
             playAgainBtn.setVisible(true);
+            findTheWinner();
             Player.getPlayer().setPlacedBlocks(0);
             if (Game.getOtherPlayingPerson() != null) {
                 Game.getOtherPlayingPerson().setPlacedBlocks(0);
@@ -109,6 +108,7 @@ public class GameFormController implements Initializable {
             yourPlacedBlocks.setText("Your blocks: %d".formatted(Game.getPlacedBlocks()));
             saveGame(Player.getPlayer(), Player.getPlayer().getPlaced());
         } else {
+            Game.finishMultiplayerGame(Game.getPlacedBlocks());
             winnerCurrentGame.setVisible(true);
             if (Player.getPlayer().getPlaced() > Game.getOtherPlayingPerson().getPlaced()) {
                 winnerCurrentGame.setText("Winner: %s".formatted("YOU"));
@@ -188,12 +188,6 @@ public class GameFormController implements Initializable {
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
             }
-        } else {
-            if (isSinglePlayer) {
-                Game.finishSingleGame();
-            } else {
-                Game.finishMultiplayerGame(Game.getPlacedBlocks());
-            }
         }
         Game.setIsPlayingGame(false);
         Constants.LOGGER.log(Level.INFO, "Exit from game session");
@@ -205,6 +199,8 @@ public class GameFormController implements Initializable {
     private void playAgainSession() {
         recoverGameStatus();
         if (isSinglePlayer) {
+            Game.setIsPlayingGame(false);
+            Game.leave();
             JSONSender jsonSender = JSONSender.getInstance();
             jsonSender.putRequest("function", "single_player");
             ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());

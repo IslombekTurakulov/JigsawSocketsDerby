@@ -65,13 +65,9 @@ public class Multiplayer extends GameLogic {
     }
 
     public void finishGame() {
-        if (opponent.getGame() == null) {
-            // opponent.sendRequest(JSONSender.getInstance().gameFinished("success").toString());
-            opponent.sendRequest(JSONSender.getInstance().gameFinished("success", "Success").toString());
-            getOwnerOfGame().removeGame();
-        } else {
-            getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("fail", "Opponent didn't finish the game. Please wait").toString());
-        }
+        // opponent.sendRequest(JSONSender.getInstance().gameFinished("success", "Success").toString());
+        opponent.sendRequest(JSONSender.getInstance().gameFinished("success", "Success").toString());
+        getOwnerOfGame().removeGame();
     }
 
     /**

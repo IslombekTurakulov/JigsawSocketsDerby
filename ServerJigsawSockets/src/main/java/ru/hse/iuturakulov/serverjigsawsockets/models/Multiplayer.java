@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * The type Multiplayer.
+ * Game type - Multiplayer
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see GameLogic
  */
 public class Multiplayer extends GameLogic {
 
@@ -32,8 +36,8 @@ public class Multiplayer extends GameLogic {
     }
 
     private void notifyGameStart() {
-        getOwnerOfGame().sendRequest(JSONSender.playAccepted(opponent.getPlayerName(), opponent.getuuidPlayer(), generatedShapes));
-        opponent.sendRequest(JSONSender.playAccepted(getOwnerOfGame().getPlayerName(), getOwnerOfGame().getuuidPlayer(), generatedShapes));
+        getOwnerOfGame().sendRequest(JSONSender.playAccepted(opponent.getPlayerName(), opponent.getUuidPlayer(), generatedShapes));
+        opponent.sendRequest(JSONSender.playAccepted(getOwnerOfGame().getPlayerName(), getOwnerOfGame().getUuidPlayer(), generatedShapes));
     }
 
     @Override
@@ -51,8 +55,8 @@ public class Multiplayer extends GameLogic {
     }
 
     public void play(Player player, int index) {
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getuuidPlayer(), index).toString());
-        opponent.sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getuuidPlayer(), index).toString());
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getUuidPlayer(), index).toString());
+        opponent.sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getUuidPlayer(), index).toString());
     }
 
 
@@ -61,9 +65,13 @@ public class Multiplayer extends GameLogic {
     }
 
     public void finishGame() {
-        opponent.sendRequest(JSONSender.getInstance().gameFinished("success").toString());
-        opponent.sendRequest(JSONSender.getInstance().gameFinished("success").toString());
-        getOwnerOfGame().removeGame();
+        if (opponent.getGame() == null) {
+            // opponent.sendRequest(JSONSender.getInstance().gameFinished("success").toString());
+            opponent.sendRequest(JSONSender.getInstance().gameFinished("success", "Success").toString());
+            getOwnerOfGame().removeGame();
+        } else {
+            getOwnerOfGame().sendRequest(JSONSender.getInstance().gameFinished("fail", "Opponent didn't finish the game. Please wait").toString());
+        }
     }
 
     /**

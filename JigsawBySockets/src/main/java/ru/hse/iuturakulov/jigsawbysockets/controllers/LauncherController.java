@@ -18,6 +18,14 @@ import java.util.logging.Level;
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.MAX_LENGTH_LOGIN;
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.MIN_LENGTH_LOGIN;
 
+
+/**
+ * The type Launcher controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerSocket
+ */
 public class LauncherController implements Initializable {
     @FXML
     private TextField usernameField;

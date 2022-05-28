@@ -12,6 +12,14 @@ import ru.hse.iuturakulov.jigsawbysockets.models.RatingPlayers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
+/**
+ * Rating list controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see RatingPlayers
+ */
 public class RatingListController implements Initializable {
 
 
@@ -27,8 +35,8 @@ public class RatingListController implements Initializable {
         - дата и время окончания игры (хранение делать в тайм зоне UTC+0);
         - количество выполненных ходов;
         - время потраченное на игру
+        Done.
      */
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         TableColumn gameIdCol = new TableColumn("GAME ID");
@@ -48,11 +56,21 @@ public class RatingListController implements Initializable {
         ratingPlayersTable.getItems().setAll(RatingPlayers.ratingPlayers);
     }
 
+    /**
+     * Back.
+     *
+     * @param actionEvent the action event
+     */
     @FXML
     public void back(ActionEvent actionEvent) {
         App.setRoot("main_form");
     }
 
+    /**
+     * Refresh.
+     *
+     * @param actionEvent the action event
+     */
     @FXML
     public void refresh(ActionEvent actionEvent) {
         RatingPlayers.getRatingList();

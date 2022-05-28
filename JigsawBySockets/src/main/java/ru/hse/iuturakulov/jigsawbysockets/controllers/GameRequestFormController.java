@@ -14,6 +14,11 @@ import java.util.ResourceBundle;
 
 /**
  * The type Game request form controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see GameRequestAcceptFormController
+ * @see ServerHandler
  */
 public class GameRequestFormController implements Initializable {
     @FXML
@@ -25,7 +30,7 @@ public class GameRequestFormController implements Initializable {
     }
 
     @FXML
-    private void cancel(ActionEvent ae) throws IOException {
+    private void cancel(ActionEvent ae) {
         Game.rejectGameInvite();
         if (Game.getCurrentPlayingGame() != null) {
             Game.setCurrentPlayingGame(null);

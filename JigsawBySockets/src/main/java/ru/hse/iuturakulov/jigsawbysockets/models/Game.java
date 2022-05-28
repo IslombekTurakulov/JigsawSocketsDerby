@@ -1,5 +1,6 @@
 package ru.hse.iuturakulov.jigsawbysockets.models;
 
+import javafx.animation.Timeline;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -13,6 +14,7 @@ import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -20,8 +22,26 @@ import java.util.logging.Level;
 
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.*;
 
+/**
+ * The Game logic.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see FigureType
+ */
 public class Game {
+    /**
+     * The constant array.
+     */
     public final static ArrayList<FigureType> array = new ArrayList<>();
+    /**
+     * The constant timeline.
+     */
+    public static Timeline timeline;
+    /**
+     * The constant localTime.
+     */
+    public static LocalTime localTime;
     private static Game currentPlayingGame;
     private static Rectangle[][] board = new Rectangle[WIDTH_CELL][HEIGHT_CELL];
     private static Pane gamePane;
@@ -34,58 +54,113 @@ public class Game {
     private static String currentGameTime;
     private static String gameTimeLeft;
     private static Boolean isPlayingGame;
-    private int id;
 
+    /**
+     * Instantiates a new Game.
+     *
+     * @param id      the id
+     * @param players the players
+     */
     public Game(int id, List<Player> players) {
-        this.id = id;
         playingPerson = players.get(0);
         otherPlayingPerson = players.get(1);
         placedBlocks = 0;
         Game.createBoard();
     }
 
+    /**
+     * Instantiates a new Game.
+     */
     public Game() {
         placedBlocks = 0;
         playingPerson = new Player(Player.getPlayer().getUsername(), Player.getPlayer().getUuid(), 0);
         Game.createBoard();
     }
 
+    /**
+     * Instantiates a new Game.
+     *
+     * @param players the players
+     */
     public Game(Player players) {
         setOtherPlayingPerson(players);
     }
 
+    /**
+     * Gets game time left.
+     *
+     * @return the game time left
+     */
     public static String getGameTimeLeft() {
         return gameTimeLeft;
     }
 
+    /**
+     * Sets game time left.
+     *
+     * @param gameTimeLeft the game time left
+     */
     public static void setGameTimeLeft(String gameTimeLeft) {
         Game.gameTimeLeft = gameTimeLeft;
     }
 
+    /**
+     * Gets is playing game.
+     *
+     * @return the is playing game
+     */
     public static Boolean getIsPlayingGame() {
         return isPlayingGame;
     }
 
+    /**
+     * Sets is playing game.
+     *
+     * @param isPlayingGame the is playing game
+     */
     public static void setIsPlayingGame(Boolean isPlayingGame) {
         Game.isPlayingGame = isPlayingGame;
     }
 
+    /**
+     * Sets current index shape.
+     *
+     * @param currentIndexShape the current index shape
+     */
     public static void setCurrentIndexShape(int currentIndexShape) {
         Game.currentIndexShape = currentIndexShape;
     }
 
+    /**
+     * Gets placed blocks.
+     *
+     * @return the placed blocks
+     */
     public static int getPlacedBlocks() {
         return placedBlocks;
     }
 
+    /**
+     * Sets placed blocks.
+     *
+     * @param index the index
+     */
     public static void setPlacedBlocks(int index) {
         placedBlocks = index;
     }
 
+    /**
+     * Gets game pane.
+     *
+     * @return the game pane
+     */
     public static Pane getGamePane() {
         return gamePane;
     }
 
+    /**
+     * Check for new figure.
+     */
     public static void checkForNewFigure() {
         if (!isGameStopped) {
             checkExtraShapes();
@@ -97,6 +172,9 @@ public class Game {
         }
     }
 
+    /**
+     * Check extra shapes.
+     */
     public static void checkExtraShapes() {
         if (currentIndexShape + 1 >= array.size()) {
             currentIndexShape = 0;
@@ -105,18 +183,39 @@ public class Game {
         }
     }
 
+    /**
+     * Gets next shape.
+     *
+     * @return the next shape
+     */
     public static FigureType getNextShape() {
         return array.get(currentIndexShape++);
     }
 
+    /**
+     * Gets current playing game.
+     *
+     * @return the current playing game
+     */
     public static Game getCurrentPlayingGame() {
         return Game.currentPlayingGame;
     }
 
+    /**
+     * Sets current playing game.
+     *
+     * @param currentPlayingGame the current playing game
+     */
     public static void setCurrentPlayingGame(Game currentPlayingGame) {
         Game.currentPlayingGame = currentPlayingGame;
     }
 
+    /**
+     * Is possible to place boolean.
+     *
+     * @param figure the figure
+     * @return the boolean
+     */
     public static boolean isPossibleToPlace(Figure figure) {
         ArrayList<Integer> listAxisX = new ArrayList<>();
         ArrayList<Integer> listAxisY = new ArrayList<>();
@@ -157,14 +256,29 @@ public class Game {
         }
     }
 
+    /**
+     * Gets game mode.
+     *
+     * @return the game mode
+     */
     public static String getGameMode() {
         return gameMode;
     }
 
+    /**
+     * Sets game mode.
+     *
+     * @param gameMode the game mode
+     */
     public static void setGameMode(String gameMode) {
         Game.gameMode = gameMode;
     }
 
+    /**
+     * Play.
+     *
+     * @param index the index
+     */
     public static void play(int index) {
         // Game.currentGame.play(index - 1);
         JSONSender jsonSender = JSONSender.getInstance();
@@ -176,6 +290,9 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Finish single game.
+     */
     public static void finishSingleGame() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -185,6 +302,12 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Save game.
+     *
+     * @param player the player
+     * @param index  the index
+     */
     public static void saveGame(Player player, int index) {
         // game_id,login_player,end_game_date,placed_blocks,time_game
         JSONSender jsonSender = JSONSender.getInstance();
@@ -200,6 +323,11 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Finish multiplayer game.
+     *
+     * @param index the index
+     */
     public static void finishMultiplayerGame(int index) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -210,18 +338,36 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Gets other playing person.
+     *
+     * @return the other playing person
+     */
     public static Player getOtherPlayingPerson() {
         return otherPlayingPerson;
     }
 
+    /**
+     * Sets other playing person.
+     *
+     * @param otherPlayingPerson the other playing person
+     */
     public void setOtherPlayingPerson(Player otherPlayingPerson) {
         Game.otherPlayingPerson = otherPlayingPerson;
     }
 
+    /**
+     * Is game stopped boolean.
+     *
+     * @return the boolean
+     */
     public static boolean isGameStopped() {
         return isGameStopped;
     }
 
+    /**
+     * Reject game invite.
+     */
     public static void rejectGameInvite() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_decline");
@@ -230,6 +376,12 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Reject multiplayer game invite.
+     *
+     * @param name the name
+     * @param uuid the uuid
+     */
     public static void rejectMultiplayerGameInvite(String name, String uuid) {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_decline_for_game");
@@ -239,6 +391,9 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Accept game invite.
+     */
     public static void acceptGameInvite() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.putRequest("function", "invite_accept");
@@ -249,10 +404,18 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Sets is game stopped.
+     *
+     * @param isGameStopped the is game stopped
+     */
     public static void setIsGameStopped(boolean isGameStopped) {
         Game.isGameStopped = isGameStopped;
     }
 
+    /**
+     * Leave.
+     */
     public static void leave() {
         if (Game.currentPlayingGame != null) {
             Game.currentPlayingGame = null;
@@ -261,14 +424,29 @@ public class Game {
         ServerHandler.otherPlayingPlayerUUID = null;
     }
 
+    /**
+     * Gets playing person.
+     *
+     * @return the playing person
+     */
     public static Player getPlayingPerson() {
         return playingPerson;
     }
 
+    /**
+     * Gets current game time.
+     *
+     * @return the current game time
+     */
     public static String getCurrentGameTime() {
         return currentGameTime;
     }
 
+    /**
+     * Sets current game time.
+     *
+     * @param currentGameTime the current game time
+     */
     public static void setCurrentGameTime(String currentGameTime) {
         Game.currentGameTime = currentGameTime;
     }
@@ -285,6 +463,9 @@ public class Game {
         gamePane.setVisible(true);
     }
 
+    /**
+     * Create board.
+     */
     public static void createBoard() {
         createPane();
         board = new Rectangle[HEIGHT_CELL][WIDTH_CELL];
@@ -305,6 +486,9 @@ public class Game {
         }
     }
 
+    /**
+     * Show game info.
+     */
     public static void showGameInfo() {
         System.out.println("==============================================");
         System.out.printf("Game-mode - %s%n", getGameMode());
@@ -318,6 +502,9 @@ public class Game {
         }
     }
 
+    /**
+     * Send more shape.
+     */
     public void sendMoreShape() {
         if (currentPlayingGame != null) {
             JSONSender jsonSender = JSONSender.getInstance();
@@ -327,6 +514,9 @@ public class Game {
         }
     }
 
+    /**
+     * Send game request.
+     */
     public void sendGameRequest() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -338,10 +528,4 @@ public class Game {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
-    public void sendFinishedGameRequest() {
-        JSONSender jsonSender = JSONSender.getInstance();
-        jsonSender.clearRequests();
-        jsonSender.putRequest("function", "multiplayer_finished");
-        ServerSocket.sendRequest(jsonSender.toString());
-    }
 }

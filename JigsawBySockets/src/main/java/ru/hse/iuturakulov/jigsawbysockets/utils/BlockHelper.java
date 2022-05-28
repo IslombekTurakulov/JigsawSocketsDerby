@@ -20,7 +20,7 @@ import ru.hse.iuturakulov.jigsawbysockets.models.shapes.blockT.TBlockInverted;
  * Class Block helper. To produce blocks.
  *
  * @author Islombek Turakulov
- * @version 1.0-SNAPSHOT
+ * @version 1.0
  * @see ShapeFactory
  */
 public class BlockHelper {

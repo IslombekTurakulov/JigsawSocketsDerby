@@ -11,7 +11,12 @@ import java.io.PrintStream;
 import java.net.Socket;
 
 /**
- * The type Client handler.
+ * Client handler
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see Client
+ * @see Server
  */
 class ClientHandler extends Thread {
 
@@ -59,20 +64,7 @@ class ClientHandler extends Thread {
 
     }
 
-    private Boolean checkAlreadyLoggedIn(String username) {
-        for (Client client : Client.onlineClients) {
-            if (client.playerNameProperty().getValue().equalsIgnoreCase(username)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void handleLoginRequest(String username, String uuidPlayer) {
-       /* if (checkAlreadyLoggedIn(username)) {
-            printStream.println(JSONSender.getInstance().login(false, "This username is already logged in from other client", null));
-            return;
-        }*/
         Player _player = new Player(username, uuidPlayer, 0, true);
         this.interrupt();
         new Client(_player.playerNameProperty().getValue(), uuidPlayer, bufferReader, printStream);

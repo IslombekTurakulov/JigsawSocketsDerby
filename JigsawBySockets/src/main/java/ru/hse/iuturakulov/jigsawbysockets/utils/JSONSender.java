@@ -7,7 +7,9 @@ import org.json.JSONObject;
 import ru.hse.iuturakulov.jigsawbysockets.models.ObjJsonSender;
 
 /**
- * The type Json sender.
+ * Json singleton class sender
+ * @author Islombek Turakulov
+ * @version 1.0
  */
 public class JSONSender {
 

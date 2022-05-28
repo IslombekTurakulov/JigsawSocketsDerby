@@ -11,7 +11,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The type Singleplayer.
+ * Game type - Single-player
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see GameLogic
  */
 public class Singleplayer extends GameLogic {
 
@@ -65,6 +69,6 @@ public class Singleplayer extends GameLogic {
 
     @Override
     public void play(Player player, int placed) {
-        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getuuidPlayer(), placed).toString());
+        getOwnerOfGame().sendRequest(JSONSender.getInstance().play(true, "Placed blocks", player.getPlayerName(), player.getUuidPlayer(), placed).toString());
     }
 }

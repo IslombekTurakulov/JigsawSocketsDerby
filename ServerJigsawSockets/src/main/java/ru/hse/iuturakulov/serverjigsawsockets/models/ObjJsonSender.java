@@ -1,22 +1,28 @@
 package ru.hse.iuturakulov.serverjigsawsockets.models;
 
 import com.google.gson.annotations.SerializedName;
+import ru.hse.iuturakulov.serverjigsawsockets.network.JSONSender;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Obj json sender.
+ * Key and value json sender
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see JSONSender
  */
 public class ObjJsonSender implements Serializable {
     /**
-     * The Main.
+     * List of keys.
      */
     @SerializedName("keys")
     public List<Key> keys = new ArrayList<>();
+
     /**
-     * The Figures.
+     * List of figure types.
      */
     @SerializedName("moves")
     public List<FigureType> moves = new ArrayList<>();
@@ -29,13 +35,13 @@ public class ObjJsonSender implements Serializable {
          * The Key.
          */
         @SerializedName("type")
-        private String type;
+        private final String key;
 
         /**
          * The Code.
          */
         @SerializedName("status")
-        private String value;
+        private final String code;
 
         /**
          * Instantiates a new Key.
@@ -44,16 +50,12 @@ public class ObjJsonSender implements Serializable {
          * @param value the value
          */
         public Key(String key, String value) {
-            this.type = key;
-            this.value = value;
+            this.key = key;
+            this.code = value;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public String getValue() {
-            return value;
+        public String getCode() {
+            return code;
         }
     }
 }

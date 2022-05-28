@@ -1,6 +1,7 @@
 package ru.hse.iuturakulov.jigsawbysockets.models;
 
 import org.json.JSONObject;
+import ru.hse.iuturakulov.jigsawbysockets.controllers.RatingListController;
 import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
 
@@ -9,8 +10,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * Rating players.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see RatingListController
+ */
 public class RatingPlayers {
 
+    /**
+     * The constant ratingPlayers.
+     */
     public static ArrayList<RatingPlayers> ratingPlayers = new ArrayList<>();
 
     private final int gameID;
@@ -19,6 +30,15 @@ public class RatingPlayers {
     private final int playerPlacedBlocks;
     private final String gameTime;
 
+    /**
+     * Instantiates a new Rating players.
+     *
+     * @param gameID             the game id
+     * @param loginPlayerGame    the login player game
+     * @param endDateTime        the end date time
+     * @param playerPlacedBlocks the player placed blocks
+     * @param gameTime           the game time
+     */
     public RatingPlayers(int gameID, String loginPlayerGame, Timestamp endDateTime, int playerPlacedBlocks, String gameTime) {
         this.gameID = gameID;
         this.loginPlayerGame = loginPlayerGame;
@@ -27,6 +47,11 @@ public class RatingPlayers {
         this.gameTime = gameTime;
     }
 
+    /**
+     * Parse top ratings.
+     *
+     * @param response the response
+     */
     public static void parseTopRatings(JSONObject response) {
         ratingPlayers.clear();
         for (Object object : response.getJSONArray("games")) {
@@ -50,6 +75,9 @@ public class RatingPlayers {
         return null;
     }
 
+    /**
+     * Gets rating list.
+     */
     public static void getRatingList() {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
@@ -57,22 +85,47 @@ public class RatingPlayers {
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 
+    /**
+     * Gets login player game.
+     *
+     * @return the login player game
+     */
     public String getLoginPlayerGame() {
         return loginPlayerGame;
     }
 
+    /**
+     * Gets end date time.
+     *
+     * @return the end date time
+     */
     public Timestamp getEndDateTime() {
         return endDateTime;
     }
 
+    /**
+     * Gets player placed blocks.
+     *
+     * @return the player placed blocks
+     */
     public int getPlayerPlacedBlocks() {
         return playerPlacedBlocks;
     }
 
+    /**
+     * Gets game time.
+     *
+     * @return the game time
+     */
     public String getGameTime() {
         return gameTime;
     }
 
+    /**
+     * Gets game id.
+     *
+     * @return the game id
+     */
     public int getGameID() {
         return gameID;
     }

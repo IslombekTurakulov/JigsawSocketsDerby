@@ -2,11 +2,20 @@ package ru.hse.iuturakulov.serverjigsawsockets.models;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 import ru.hse.iuturakulov.serverjigsawsockets.network.DatabaseDerbyAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Database class which gets all players
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see Client
+ * @see GameLogic
+ */
 public class RatingPlayers {
 
     public static RatingPlayers getInstance() {
@@ -16,6 +25,7 @@ public class RatingPlayers {
     public JSONArray getTopPlayers() {
         JSONArray gamesArray = new JSONArray();
         DatabaseDerbyAccess derbyAccess = new DatabaseDerbyAccess();
+        // Sorting and fetching 10 rows.
         String sql = "SELECT GAME_ID, LOGIN_PLAYER, END_GAME_DATE, PLACED_BLOCKS, TIME_GAME " +
                      "FROM RATING_LIST ORDER BY END_GAME_DATE desc, TIME_GAME desc, PLACED_BLOCKS desc" +
                      " fetch first 10 rows only";

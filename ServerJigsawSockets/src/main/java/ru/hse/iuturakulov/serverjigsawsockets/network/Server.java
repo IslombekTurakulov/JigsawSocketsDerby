@@ -14,6 +14,11 @@ import java.util.logging.Logger;
 
 /**
  * The type Server.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ClientHandler
+ * @see Client
  */
 public class Server implements Runnable {
     private static final Set<Server> SERVERS = new HashSet<>();
@@ -23,7 +28,7 @@ public class Server implements Runnable {
     private static Boolean isRunning = true;
 
     private Server(int port) {
-        this.port = port;
+        Server.port = port;
     }
 
     /**

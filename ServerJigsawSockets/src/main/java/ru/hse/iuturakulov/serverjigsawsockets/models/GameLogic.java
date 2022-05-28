@@ -4,36 +4,63 @@ import ru.hse.iuturakulov.serverjigsawsockets.network.Client;
 
 import java.util.ArrayList;
 
+/**
+ * The type main Game logic.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ */
 public abstract class GameLogic {
+    /**
+     * List of games.
+     */
     public static ArrayList<GameLogic> listOfGames = new ArrayList<GameLogic>();
+    private final Client ownerOfGame;
+    /**
+     * The Game id.
+     */
     protected int gameID;
-    protected Boolean gameOver;
-    private Client ownerOfGame;
 
+    /**
+     * Instantiates a new Game logic.
+     *
+     * @param client the client
+     */
     public GameLogic(Client client) {
         ownerOfGame = client;
     }
 
+    /**
+     * Random start.
+     */
     public abstract void randomStart();
 
+    /**
+     * Has player boolean.
+     *
+     * @param username the username
+     * @return the boolean
+     */
     public abstract boolean hasPlayer(String username);
 
+    /**
+     * Finish game.
+     */
     public abstract void finishGame();
 
+    /**
+     * Play.
+     *
+     * @param player the player
+     * @param placed the placed
+     */
     public abstract void play(Player player, int placed);
 
-    public void checkWin(Player player, boolean isSingleplayer) {
-        if (isSingleplayer)
-        if (gameOver) {
-            return;
-        }
-        if (!player.getOnline()) {
-            gameOver = true;
-        } else {
-
-        }
-    }
-
+    /**
+     * Gets owner of game.
+     *
+     * @return the owner of game
+     */
     public Client getOwnerOfGame() {
         return ownerOfGame;
     }

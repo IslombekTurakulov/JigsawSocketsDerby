@@ -21,7 +21,11 @@ import java.util.logging.Level;
 import static ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket.serverSocket;
 
 /**
- * The type Server handler.
+ * Server handler
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerSocket
  */
 public class ServerHandler {
 
@@ -106,13 +110,13 @@ public class ServerHandler {
             handlePlayersList(response);
         } else if (isIt(parsedResponse, function, "top_rating")) {
             RatingPlayers.parseTopRatings(parsedResponse);
-            Platform.runLater(() -> {
-                App.setRoot("rating_list");
-            });
+            Platform.runLater(() -> App.setRoot("rating_list"));
         } else if (isIt(parsedResponse, function, "game-finish")) {
             if (isIt(parsedResponse, "status", "success")) {
                 Constants.LOGGER.log(Level.WARNING, "Force finish game");
                 Game.setIsGameStopped(true);
+            } else {
+                DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Please wait", parsedResponse.getString("cause"), false);
             }
         }
     }

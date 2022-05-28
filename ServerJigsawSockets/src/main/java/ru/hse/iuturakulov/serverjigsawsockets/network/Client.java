@@ -17,7 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The type Client.
+ * Client model.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see Player
+ * @see Server
  */
 public class Client extends Player {
     /**
@@ -57,7 +62,7 @@ public class Client extends Player {
                         case "more_shape":
                             ((Singleplayer) getGame()).generateExtraShape();
                         case "online_players":
-                            sendRequest(JSONSender.getInstance().onlinePlayers(getPlayerName(), String.valueOf(getuuidPlayer())).toString());
+                            sendRequest(JSONSender.getInstance().onlinePlayers(getPlayerName(), String.valueOf(getUuidPlayer())).toString());
                             break;
                         case "single_player":
                             GameLogic.listOfGames.add(new Singleplayer(this));
@@ -133,7 +138,7 @@ public class Client extends Player {
 
     private void notifyAllPlayers() {
         for (Client c : Client.onlineClients) {
-            if (!c.getuuidPlayer().equalsIgnoreCase(getuuidPlayer())) {
+            if (!c.getUuidPlayer().equalsIgnoreCase(getUuidPlayer())) {
                 c.sendRequest(JSONSender.getInstance().playerConnected(getPlayerName(), getPlacedBlocks()).toString());
             }
         }
@@ -147,7 +152,7 @@ public class Client extends Player {
      */
     public Client getClientByUsername(String username, String uuid) {
         for (Client client : onlineClients) {
-            if (client.getuuidPlayer().equalsIgnoreCase(uuid)) {
+            if (client.getUuidPlayer().equalsIgnoreCase(uuid)) {
                 return client;
             }
         }
@@ -168,12 +173,12 @@ public class Client extends Player {
     private void handleMultiplayerGame(String opponent, String uuid, String inviter, String uuidPlayer) {
         Client opponentClient = getClientByUsername(opponent, uuid);
         if (opponentClient != null) {
-            if (!opponentClient.getuuidPlayer().equalsIgnoreCase(uuidPlayer)) {
+            if (!opponentClient.getUuidPlayer().equalsIgnoreCase(uuidPlayer)) {
                 if (opponentClient.getGame() != null) {
                     printStream.println(JSONSender.getInstance().playRequest(false, "Player is currently playing a game", uuid, inviter, uuidPlayer).toString());
                     return;
                 }
-                opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName(), getuuidPlayer(), inviter, uuidPlayer).toString());
+                opponentClient.sendRequest(JSONSender.getInstance().playRequest(true, getPlayerName(), getUuidPlayer(), inviter, uuidPlayer).toString());
             } else {
                 printStream.println(JSONSender.getInstance().playRequest(false, "You can't play with yourself!", uuid, inviter, uuidPlayer).toString());
             }
@@ -201,7 +206,7 @@ public class Client extends Player {
 
     private void handlePlayMove(int placed) {
         if (getGame() == null) {
-            sendRequest(JSONSender.getInstance().play(false, "No Active game", getPlayerName(), getuuidPlayer(), 0).toString());
+            sendRequest(JSONSender.getInstance().play(false, "No Active game", getPlayerName(), getUuidPlayer(), 0).toString());
         } else {
             getGame().play(this, placed);
         }

@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import ru.hse.iuturakulov.serverjigsawsockets.models.FigureType;
-import ru.hse.iuturakulov.serverjigsawsockets.models.ObjJsonSender;
-import ru.hse.iuturakulov.serverjigsawsockets.models.Player;
-import ru.hse.iuturakulov.serverjigsawsockets.models.RatingPlayers;
+import ru.hse.iuturakulov.serverjigsawsockets.models.*;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
 import java.util.ArrayList;
@@ -16,7 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The type Json sender.
+ * Json singleton class sender
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ClientHandler
+ * @see GameLogic
  */
 public class JSONSender {
 
@@ -119,7 +121,7 @@ public class JSONSender {
         if (player != null) {
             JSONObject playerJson = new JSONObject();
             playerJson.put("username", player.getPlayerName());
-            playerJson.put("uuidPlayer", player.getuuidPlayer());
+            playerJson.put("uuidPlayer", player.getUuidPlayer());
             playerJson.put("placed", player.getPlacedBlocks());
             putRequest("player", playerJson);
         }
@@ -150,11 +152,10 @@ public class JSONSender {
         clearRequests();
         JSONArray jsonResponse = new JSONArray();
         for (Client client : Client.onlineClients) {
-            if (client.getPlayerName().equalsIgnoreCase(myUsername) && client.getuuidPlayer().equals(uuid))
-                continue;
+            if (client.getPlayerName().equalsIgnoreCase(myUsername) && client.getUuidPlayer().equals(uuid)) continue;
             JSONObject playerJSON = new JSONObject();
             playerJSON.put("username", client.getPlayerName());
-            playerJSON.put("uuidPlayer", client.getuuidPlayer());
+            playerJSON.put("uuidPlayer", client.getUuidPlayer());
             playerJSON.put("placed", client.getPlacedBlocks());
             jsonResponse.put(playerJSON);
         }
@@ -169,10 +170,13 @@ public class JSONSender {
      * @param status the status
      * @return the json object
      */
-    public JSONObject gameFinished(String status) {
+    public JSONObject gameFinished(String status, String cause) {
         clearRequests();
         putRequest("type", "game-finish");
         putRequest("status", status);
+        if (status.equalsIgnoreCase("fail")) {
+            putRequest("cause", cause);
+        }
         Logger.getLogger(Client.class.getName()).log(Level.INFO, getRequestInstance().toString());
         return getRequestInstance();
     }

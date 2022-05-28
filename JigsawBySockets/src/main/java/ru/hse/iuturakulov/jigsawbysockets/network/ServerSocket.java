@@ -1,6 +1,7 @@
 package ru.hse.iuturakulov.jigsawbysockets.network;
 
 import javafx.scene.control.Alert;
+import ru.hse.iuturakulov.jigsawbysockets.models.Game;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.DialogCreator;
 
@@ -12,8 +13,14 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 
+import static ru.hse.iuturakulov.jigsawbysockets.models.Game.timeline;
+
 /**
  * The type Server socket.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerHandler
  */
 public abstract class ServerSocket {
 
@@ -38,6 +45,12 @@ public abstract class ServerSocket {
                     ServerHandler.initializeResponses(bufferedReader.readLine());
                 }
                 Constants.LOGGER.log(Level.WARNING, "Server is closing...");
+                if (Game.getIsPlayingGame() != null) {
+                    timeline.setCycleCount(0);
+                    timeline.stop();
+                    Game.setIsGameStopped(false);
+                    Game.setCurrentPlayingGame(null);
+                }
                 printStream.close();
                 serverSocket.close();
             } catch (NullPointerException | IOException exception) {

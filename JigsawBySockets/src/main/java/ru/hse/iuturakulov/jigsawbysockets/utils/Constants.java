@@ -4,6 +4,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
+/**
+ * Constants
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ */
 public class Constants {
     public static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");

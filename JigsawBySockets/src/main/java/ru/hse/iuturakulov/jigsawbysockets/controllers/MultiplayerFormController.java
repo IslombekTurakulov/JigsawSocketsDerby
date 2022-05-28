@@ -19,6 +19,11 @@ import java.util.ResourceBundle;
 
 /**
  * The type Multiplayer form controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerHandler
+ * @see Game
  */
 public class MultiplayerFormController implements Initializable {
     @FXML
@@ -36,7 +41,7 @@ public class MultiplayerFormController implements Initializable {
     }
 
     @FXML
-    private void back(ActionEvent ae) throws IOException {
+    private void back(ActionEvent ae) {
         App.setRoot("main_form");
     }
 

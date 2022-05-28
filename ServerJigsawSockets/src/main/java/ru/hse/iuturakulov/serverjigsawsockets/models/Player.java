@@ -3,15 +3,13 @@ package ru.hse.iuturakulov.serverjigsawsockets.models;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.hse.iuturakulov.serverjigsawsockets.network.DatabaseDerbyAccess;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.UUID;
 
 /**
- * The type Player.
+ * Player model
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see GameLogic
  */
 public class Player {
 
@@ -27,10 +25,10 @@ public class Player {
     /**
      * Instantiates a new Player.
      *
-     * @param _username the username
+     * @param name the username
      */
-    public Player(String _username, String uuid) {
-        setPlayerName(_username);
+    public Player(String name, String uuid) {
+        setPlayerName(name);
         setUuidPlayer(uuid);
         setPlacedBlocks(0);
     }
@@ -38,42 +36,15 @@ public class Player {
     /**
      * Instantiates a new Player.
      *
-     * @param _username the username
-     * @param _points   the points
-     * @param isOnline  the is online
+     * @param name         the username
+     * @param placedBlocks the placed blocks
+     * @param isOnline     the is online
      */
-    public Player(String _username, String uuid, int _points, boolean isOnline) {
-        setPlayerName(_username);
+    public Player(String name, String uuid, int placedBlocks, boolean isOnline) {
+        setPlayerName(name);
         setUuidPlayer(uuid);
-        setPlacedBlocks(_points);
+        setPlacedBlocks(placedBlocks);
         setOnline(isOnline);
-    }
-
-    public static void register(String username, UUID uuid) {
-        DatabaseDerbyAccess da = new DatabaseDerbyAccess();
-        try (PreparedStatement st = da.getConnection().prepareStatement("INSERT INTO players(username,uuid) VALUES(?,?)")) {
-            st.setString(1, username);
-            st.setString(2, String.valueOf(uuid));
-            st.executeUpdate();
-            Player.getAll();
-            da.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static synchronized ObservableList<Player> getAll() throws Exception {
-        playersList.clear();
-        String query = "SELECT * FROM players";
-        DatabaseDerbyAccess da = new DatabaseDerbyAccess();
-        Statement st = da.getConnection().createStatement();
-        ResultSet result = st.executeQuery(query);
-        while (result.next()) {
-            Player player = new Player(result.getString("username"), result.getString("uuid"));
-            playersList.add(player);
-        }
-        da.close();
-        return playersList;
     }
 
     /**
@@ -81,7 +52,7 @@ public class Player {
      *
      * @return the player name
      */
-    public String getuuidPlayer() {
+    public String getUuidPlayer() {
         return this.uuidPlayer.get();
     }
 
@@ -118,7 +89,7 @@ public class Player {
      */
     public void setOnlineOnArrayList(Boolean status) {
         for (Player player : playersList) {
-            if (player.getuuidPlayer().equalsIgnoreCase(this.getuuidPlayer())) {
+            if (player.getUuidPlayer().equalsIgnoreCase(this.getUuidPlayer())) {
                 player.setOnline(status);
                 break;
             }

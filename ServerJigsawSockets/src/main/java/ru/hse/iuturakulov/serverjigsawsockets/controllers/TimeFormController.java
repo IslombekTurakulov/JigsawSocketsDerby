@@ -9,10 +9,14 @@ import ru.hse.iuturakulov.serverjigsawsockets.ServerMain;
 import ru.hse.iuturakulov.serverjigsawsockets.utils.Constants;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
- * The type Time form controller.
+ * Timer controller.
+ *
+ * @author Stackoverflow, not me :)
+ * @version 1.0
  */
 public class TimeFormController implements Initializable {
     /**
@@ -139,16 +143,16 @@ public class TimeFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         duration = 0D;
-        String tempTime = null;
-        if (Constants.timeCurrent != null) {
-            tempTime = Constants.timeCurrent;
+        String[] arr = Constants.timeCurrent != null ? (Constants.timeCurrent + ":").split(":") : null;
+        System.out.println(Arrays.toString(arr));
+        if (arr != null) {
+            preview_hours = arr[0];
+            preview_minutes = arr[1];
+            preview_seconds = arr[2];
+            labelSeconds.setText(preview_seconds);
+            labelMinutes.setText(preview_minutes);
+            labelHours.setText(preview_hours);
+            duration = Double.parseDouble(labelHours.getText()) * 3600 + Double.parseDouble(labelMinutes.getText()) * 60 + Double.parseDouble(labelSeconds.getText());
         }
-        String[] arr = tempTime != null ? tempTime.split(":") : null;
-        preview_hours = tempTime == null ? labelHours.getText() : arr[0];
-        preview_minutes = tempTime == null ? labelMinutes.getText() : arr[1];
-        preview_seconds = tempTime == null ? labelSeconds.getText() : arr[2];
-        labelSeconds.setText(preview_seconds);
-        labelMinutes.setText(preview_minutes);
-        labelHours.setText(preview_hours);
     }
 }

@@ -14,6 +14,10 @@ import java.util.ResourceBundle;
 
 /**
  * The type Game request accept form controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerHandler
  */
 public class GameRequestAcceptFormController implements Initializable {
 

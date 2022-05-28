@@ -16,7 +16,11 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 /**
- * The type Server main controller.
+ * Server controller
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see Server
  */
 public class ServerMainController implements Initializable {
 
@@ -50,7 +54,7 @@ public class ServerMainController implements Initializable {
         uuidCol.setCellValueFactory(cellData -> cellData.getValue().getUuidPlayerProperty());
         TableColumn<Player, String> usernameCol = new TableColumn<>("Player");
         usernameCol.setCellValueFactory(cellData -> cellData.getValue().playerNameProperty());
-        gameTime.setText(Constants.timeCurrent == null || Constants.timeCurrent.equals("00:00:00") ? "Please choose game time" : "Game time: " + Constants.timeCurrent);
+        gameTime.setText(Constants.timeCurrent == null || Constants.timeCurrent.contentEquals("00:00:00") ? "Please choose game time" : "Game time: " + Constants.timeCurrent);
         TableColumn<Player, Boolean> onlineCol = new TableColumn<>("Status");
         onlineCol.setCellValueFactory(cellData -> cellData.getValue().onlineProperty());
         playersTable.getColumns().addAll(uuidCol, usernameCol, onlineCol);
@@ -81,6 +85,7 @@ public class ServerMainController implements Initializable {
      * @param ae the ae
      */
     public void startServer(ActionEvent ae) {
+        // Port validation
         if (portField.getText().isEmpty() || !Pattern.matches(
                 "^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$",
                 portField.getText())) {
@@ -92,7 +97,8 @@ public class ServerMainController implements Initializable {
             alert.showAndWait();
             return;
         }
-        if (Constants.timeCurrent == null) {
+        // Game time validation
+        if (Constants.timeCurrent == null || Constants.timeCurrent.contentEquals("00:00:00")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Failed");
             alert.setHeaderText("Incorrect time");

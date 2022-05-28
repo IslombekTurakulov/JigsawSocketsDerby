@@ -27,11 +27,15 @@ import java.time.LocalTime;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-import static ru.hse.iuturakulov.jigsawbysockets.models.Game.saveGame;
+import static ru.hse.iuturakulov.jigsawbysockets.models.Game.*;
 import static ru.hse.iuturakulov.jigsawbysockets.utils.Constants.DATE_TIME_FORMATTER;
 
 /**
  * The type Game form controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see Game
  */
 public class GameFormController implements Initializable {
 
@@ -43,8 +47,6 @@ public class GameFormController implements Initializable {
      * The Is single player.
      */
     boolean isSinglePlayer;
-    private Timeline timeline;
-    private LocalTime localTime;
     @FXML
     private Button playAgainBtn;
     @FXML
@@ -74,6 +76,7 @@ public class GameFormController implements Initializable {
     @FXML
     private Pane gameEndInfoPane;
 
+
     /**
      * Increment time.
      */
@@ -100,11 +103,6 @@ public class GameFormController implements Initializable {
     }
 
     private void findTheWinner() {
-        if (isSinglePlayer) {
-            Game.finishSingleGame();
-        } else {
-            Game.finishMultiplayerGame(Game.getPlacedBlocks());
-        }
         if (isSinglePlayer) {
             opponentPlacedBlocks.setVisible(false);
             winnerCurrentGame.setVisible(false);
@@ -189,6 +187,12 @@ public class GameFormController implements Initializable {
                 temp += "\nYour blocks: %d".formatted(Game.getPlacedBlocks());
                 temp += "\nOpponent blocks: %d".formatted(Game.getOtherPlayingPerson().getPlaced());
                 DialogCreator.showCustomDialog(Alert.AlertType.INFORMATION, "Results - Multi player", temp, false);
+            }
+        } else {
+            if (isSinglePlayer) {
+                Game.finishSingleGame();
+            } else {
+                Game.finishMultiplayerGame(Game.getPlacedBlocks());
             }
         }
         Game.setIsPlayingGame(false);

@@ -14,6 +14,9 @@ import java.util.logging.Level;
 
 /**
  * The type App.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
  */
 public class App extends Application {
     private static Scene scene;

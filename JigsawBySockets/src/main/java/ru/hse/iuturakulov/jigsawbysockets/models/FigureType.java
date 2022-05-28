@@ -5,6 +5,17 @@ import ru.hse.iuturakulov.jigsawbysockets.models.enums.*;
 import java.util.Objects;
 
 
+/**
+ * The type Figure type.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see BlockPosition
+ * @see BlockSide
+ * @see BlockType
+ * @see ShapeType
+ * @see BlockOrientation
+ */
 public class FigureType {
     private final BlockOrientation blockOrientation;
     private final BlockPosition blockPosition;
@@ -12,6 +23,15 @@ public class FigureType {
     private final BlockType blockType;
     private final ShapeType shapeType;
 
+    /**
+     * Instantiates a new Figure type.
+     *
+     * @param blockOrientation the block orientation
+     * @param blockPosition    the block position
+     * @param blockSide        the block side
+     * @param blockType        the block type
+     * @param shapeType        the shape type
+     */
     public FigureType(BlockOrientation blockOrientation,
                       BlockPosition blockPosition,
                       BlockSide blockSide,
@@ -52,22 +72,47 @@ public class FigureType {
                "shapeType=" + shapeType + ']';
     }
 
+    /**
+     * Block orientation.
+     *
+     * @return the block orientation
+     */
     public BlockOrientation blockOrientation() {
         return blockOrientation;
     }
 
+    /**
+     * Block position.
+     *
+     * @return the block position
+     */
     public BlockPosition blockPosition() {
         return blockPosition;
     }
 
+    /**
+     * Block side.
+     *
+     * @return the block side
+     */
     public BlockSide blockSide() {
         return blockSide;
     }
 
+    /**
+     * Block type.
+     *
+     * @return the block type
+     */
     public BlockType blockType() {
         return blockType;
     }
 
+    /**
+     * Shape type.
+     *
+     * @return the shape type
+     */
     public ShapeType shapeType() {
         return shapeType;
     }

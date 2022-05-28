@@ -12,6 +12,9 @@ import java.io.IOException;
 
 /**
  * The type Server main.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
  */
 public class ServerMain extends Application {
 

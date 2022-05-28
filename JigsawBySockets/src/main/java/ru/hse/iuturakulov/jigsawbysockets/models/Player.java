@@ -1,5 +1,6 @@
 package ru.hse.iuturakulov.jigsawbysockets.models;
 
+import ru.hse.iuturakulov.jigsawbysockets.network.ServerHandler;
 import ru.hse.iuturakulov.jigsawbysockets.network.ServerSocket;
 import ru.hse.iuturakulov.jigsawbysockets.utils.Constants;
 import ru.hse.iuturakulov.jigsawbysockets.utils.JSONSender;
@@ -9,6 +10,11 @@ import java.util.logging.Level;
 
 /**
  * The type Player.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerHandler
+ * @see Game
  */
 public class Player {
     private static Player player = null;
@@ -70,8 +76,9 @@ public class Player {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         jsonSender.putRequest("function", "logout");
-        /*jsonSender.putRequest("name", getPlayer().getUsername());
-        jsonSender.putRequest("uuidPlayer", getPlayer().getUuid());*/
+        // Just for information, who is logging out
+        jsonSender.putRequest("name", getPlayer().getUsername());
+        jsonSender.putRequest("uuidPlayer", getPlayer().getUuid());
         ServerSocket.sendRequest(jsonSender.getRequestInstance().toString());
     }
 

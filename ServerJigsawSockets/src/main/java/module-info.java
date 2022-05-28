@@ -1,6 +1,7 @@
 module ru.hse.iuturakulov.serverjigsawsockets {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
     requires java.logging;
     requires org.json;
     requires com.google.gson;

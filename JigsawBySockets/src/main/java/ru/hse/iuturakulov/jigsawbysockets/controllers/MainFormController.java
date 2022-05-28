@@ -16,6 +16,13 @@ import java.util.ResourceBundle;
 
 /**
  * The type Main form controller.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see ServerSocket
+ * @see RatingPlayers
+ * @see GameFormController
+ * @see MultiplayerFormController
  */
 public class MainFormController implements Initializable {
     @FXML

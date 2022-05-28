@@ -4,7 +4,10 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
 /**
- * The type Dialog creator.
+ * Custom dialog class creator
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
  */
 public class DialogCreator {
 

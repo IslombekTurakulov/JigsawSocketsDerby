@@ -4,12 +4,23 @@ import ru.hse.iuturakulov.serverjigsawsockets.models.enums.*;
 
 import java.util.Objects;
 
+/**
+ * The type Figure type.
+ *
+ * @author Islombek Turakulov
+ * @version 1.0
+ * @see BlockPosition
+ * @see BlockSide
+ * @see BlockType
+ * @see ShapeType
+ * @see BlockOrientation
+ */
 public class FigureType {
-    private BlockOrientation blockOrientation;
-    private BlockPosition blockPosition;
-    private BlockSide blockSide;
-    private BlockType blockType;
-    private ShapeType shapeType;
+    private final BlockOrientation blockOrientation;
+    private final BlockPosition blockPosition;
+    private final BlockSide blockSide;
+    private final BlockType blockType;
+    private final ShapeType shapeType;
 
     public FigureType(BlockOrientation blockOrientation,
                       BlockPosition blockPosition,

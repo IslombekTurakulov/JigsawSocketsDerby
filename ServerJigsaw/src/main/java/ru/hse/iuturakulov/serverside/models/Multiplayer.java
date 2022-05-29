@@ -45,21 +45,21 @@ public class Multiplayer extends GameLogic {
 
     public void generateExtraShape(String name, String uuid) {
         if (opponent.getUuidPlayer().equalsIgnoreCase(uuid)) {
-            if (firstClient > overallSize) {
+            if (firstClient >= overallSize) {
                 randomStart();
             } else {
                 firstClient += 10;
             }
             Logger.getLogger(Multiplayer.class.getName()).log(Level.INFO, "Generating %d more shapes for %s %s".formatted(overallSize - firstClient + 10, name, uuid));
-            opponent.sendRequest(JSONSender.getInstance().getShapesForGame(new ArrayList<>(generatedShapes.stream().skip(firstClient - 10).limit(overallSize - firstClient).toList())));
+            opponent.sendRequest(JSONSender.getInstance().getShapesForGame(new ArrayList<>(generatedShapes.stream().skip(firstClient - 10).limit(10).toList())));
         } else {
-            if (secondClient > overallSize) {
+            if (secondClient >= overallSize) {
                 randomStart();
             } else {
                 secondClient += 10;
             }
-            Logger.getLogger(Multiplayer.class.getName()).log(Level.INFO, "Generating %d more shapes for %s %s".formatted(overallSize - secondClient, name, uuid));
-            getOwnerOfGame().sendRequest(JSONSender.getInstance().getShapesForGame(new ArrayList<>(generatedShapes.stream().skip(secondClient - 10).limit(overallSize - secondClient).toList())));
+            Logger.getLogger(Multiplayer.class.getName()).log(Level.INFO, "Generating %d more shapes for %s %s".formatted(overallSize - secondClient + 10, name, uuid));
+            getOwnerOfGame().sendRequest(JSONSender.getInstance().getShapesForGame(new ArrayList<>(generatedShapes.stream().skip(secondClient - 10).limit(10).toList())));
         }
     }
 

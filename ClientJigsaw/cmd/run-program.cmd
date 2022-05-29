@@ -1,0 +1,1 @@
+java --module-path %cd% --add-modules javafx.controls,javafx.fxml,javafx.media -jar ClientJigsaw-1.0.jar

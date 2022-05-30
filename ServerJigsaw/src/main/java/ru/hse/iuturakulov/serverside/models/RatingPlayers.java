@@ -27,7 +27,7 @@ public class RatingPlayers {
         DatabaseDerbyAccess derbyAccess = new DatabaseDerbyAccess();
         // Sorting and fetching 10 rows.
         String sql = "SELECT GAME_ID, LOGIN_PLAYER, END_GAME_DATE, PLACED_BLOCKS, TIME_GAME " +
-                     "FROM RATING_LIST ORDER BY END_GAME_DATE desc, TIME_GAME desc, PLACED_BLOCKS desc" +
+                     "FROM RATING_LIST ORDER BY PLACED_BLOCKS desc, TIME_GAME asc, END_GAME_DATE desc" +
                      " fetch first 10 rows only";
         try (PreparedStatement statement = derbyAccess.getConnection().prepareStatement(sql)) {
             ResultSet result = statement.executeQuery();

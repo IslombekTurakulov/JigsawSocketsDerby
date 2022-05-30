@@ -136,7 +136,7 @@ game", происходит выход на главный экран `MainFormC
 
 При нажатии на кнопку "Rating", происходит переход на страницу топ 10 пользователей.
 
-![](images/client/client_tenth.png)
+![](images/client/client_tenth.jpg)
 
 Таблица состоит из пяти столбцов:
 

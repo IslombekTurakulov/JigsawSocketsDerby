@@ -2,16 +2,14 @@ package ru.hse.iuturakulov.serverside.network;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import ru.hse.iuturakulov.serverside.models.GameLogic;
-import ru.hse.iuturakulov.serverside.models.Multiplayer;
-import ru.hse.iuturakulov.serverside.models.Player;
-import ru.hse.iuturakulov.serverside.models.Singleplayer;
+import ru.hse.iuturakulov.serverside.models.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.PreparedStatement;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -147,22 +145,23 @@ public class Client extends Player {
     public void saveGame(String loginPlayer, String endGameDate, int placedBlocks, String timeGame) {
         // game_id, login_player, end_game_date, placed_blocks, time_game
         DatabaseDerbyAccess da = new DatabaseDerbyAccess();
-        try (PreparedStatement st = da.getConnection().prepareStatement("INSERT INTO RATING_LIST (LOGIN_PLAYER, PLACED_BLOCKS, TIME_GAME) VALUES (?, ?, ?)")) {
+        try (PreparedStatement st = da.getConnection().prepareStatement("INSERT INTO RATING_LIST (LOGIN_PLAYER, END_GAME_DATE, PLACED_BLOCKS, TIME_GAME) VALUES (?, ?, ?, ?)")) {
             st.setString(1, loginPlayer);
-            st.setInt(2, placedBlocks);
-            st.setTime(3, Time.valueOf(timeGame));
+            st.setTimestamp(2, Timestamp.valueOf(endGameDate));
+            st.setInt(3, placedBlocks);
+            st.setTime(4, Time.valueOf(timeGame));
             st.executeUpdate();
-            // ResultSet resultSet = da.getConnection().createStatement().executeQuery("select max(rowid) from games");
+            Logger.getLogger(RatingPlayers.class.getName()).log(Level.INFO, "Inserted data to database is [%s %s %d %s] ".formatted(loginPlayer, endGameDate, placedBlocks, timeGame));
             da.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(RatingPlayers.class.getName()).log(Level.SEVERE, e.getMessage());
         }
     }
 
     private void notifyAllPlayers() {
-        for (Client c : Client.onlineClients) {
-            if (!c.getUuidPlayer().equalsIgnoreCase(getUuidPlayer())) {
-                c.sendRequest(JSONSender.getInstance().playerConnected(getPlayerName(), getPlacedBlocks()).toString());
+        for (Client client : Client.onlineClients) {
+            if (!client.getUuidPlayer().equalsIgnoreCase(getUuidPlayer())) {
+                client.sendRequest(JSONSender.getInstance().playerConnected(getPlayerName(), getPlacedBlocks()).toString());
             }
         }
     }

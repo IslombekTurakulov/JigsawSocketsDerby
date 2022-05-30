@@ -15,6 +15,7 @@ import ru.hse.iuturakulov.clientside.utils.JSONSender;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -55,6 +56,7 @@ public class Game {
     private static String currentGameTime;
     private static String gameTimeLeft;
     private static Boolean isPlayingGame;
+
     /**
      * Instantiates a new Game.
      *
@@ -67,6 +69,7 @@ public class Game {
         placedBlocks = 0;
         Game.createBoard();
     }
+
     /**
      * Instantiates a new Game.
      */
@@ -320,8 +323,8 @@ public class Game {
         JSONSender jsonSender = JSONSender.getInstance();
         jsonSender.clearRequests();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss.");
-        format.setTimeZone(TimeZone.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.");
+        format.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
         jsonSender.putRequest("function", "save_game");
         jsonSender.putRequest("login_player", player.getUsername());
         jsonSender.putRequest("end_game_date", format.format(timestamp) + String.format("%09d", timestamp.getNanos()));

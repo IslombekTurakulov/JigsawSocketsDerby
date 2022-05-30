@@ -8,6 +8,7 @@ import ru.hse.iuturakulov.clientside.models.ObjJsonSender;
 
 /**
  * Json singleton class sender
+ *
  * @author Islombek Turakulov
  * @version 1.0
  */

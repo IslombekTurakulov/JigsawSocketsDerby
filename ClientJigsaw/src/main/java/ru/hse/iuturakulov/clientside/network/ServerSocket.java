@@ -1,8 +1,8 @@
 package ru.hse.iuturakulov.clientside.network;
 
 import javafx.scene.control.Alert;
-import ru.hse.iuturakulov.clientside.utils.Constants;
 import ru.hse.iuturakulov.clientside.models.Game;
+import ru.hse.iuturakulov.clientside.utils.Constants;
 import ru.hse.iuturakulov.clientside.utils.DialogCreator;
 
 import java.io.BufferedReader;

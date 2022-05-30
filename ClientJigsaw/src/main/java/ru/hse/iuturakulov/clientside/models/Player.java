@@ -1,9 +1,9 @@
 package ru.hse.iuturakulov.clientside.models;
 
+import ru.hse.iuturakulov.clientside.network.ServerHandler;
 import ru.hse.iuturakulov.clientside.network.ServerSocket;
 import ru.hse.iuturakulov.clientside.utils.Constants;
 import ru.hse.iuturakulov.clientside.utils.JSONSender;
-import ru.hse.iuturakulov.clientside.network.ServerHandler;
 
 import java.util.UUID;
 import java.util.logging.Level;
